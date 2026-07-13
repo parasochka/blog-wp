@@ -21,16 +21,6 @@
 	</div>
 	<!-- /wp:group -->
 
-	<!-- wp:group {"tagName":"section","align":"wide","style":{"spacing":{"blockGap":"var:preset|spacing|40","margin":{"top":"var:preset|spacing|90"}}},"layout":{"type":"constrained"}} -->
-	<section class="wp-block-group alignwide" style="margin-top:var(--wp--preset--spacing--90)">
-		<!-- wp:heading {"level":2,"style":{"typography":{"fontSize":"var:preset|font-size|large"}},"textColor":"muted"} -->
-		<h2 class="wp-block-heading has-muted-color has-text-color" style="font-size:var(--wp--preset--font-size--large)">Browse by category</h2>
-		<!-- /wp:heading -->
-
-		<!-- wp:categories {"showPostCounts":false,"showHierarchy":false,"className":"now-category-pills"} /-->
-	</section>
-	<!-- /wp:group -->
-
 	<!-- wp:group {"tagName":"section","anchor":"latest","align":"wide","style":{"spacing":{"margin":{"top":"var:preset|spacing|90"}}},"layout":{"type":"constrained"}} -->
 	<section class="wp-block-group alignwide" id="latest" style="margin-top:var(--wp--preset--spacing--90)">
 		<!-- wp:group {"className":"now-section-head","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"bottom"}} -->
@@ -43,7 +33,7 @@
 
 		<!-- wp:query {"queryId":0,"query":{"perPage":7,"pages":0,"offset":1,"postType":"post","order":"desc","orderBy":"date","inherit":false},"layout":{"type":"default"}} -->
 		<div class="wp-block-query">
-			<!-- wp:post-template {"className":"now-grid","layout":{"type":"default"}} -->
+			<!-- wp:post-template {"className":"now-grid","layout":{"type":"grid","minimumColumnWidth":"20rem"}} -->
 				<!-- wp:group {"className":"now-card","layout":{"type":"default"}} -->
 				<div class="wp-block-group now-card">
 					<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","style":{"border":{"radius":"var:custom|radius|lg"}}} /-->

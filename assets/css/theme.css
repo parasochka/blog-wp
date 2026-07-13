@@ -104,11 +104,14 @@ a,
 .site-header .wp-block-navigation a,
 .site-footer .wp-block-navigation a {
 	color: var(--wp--preset--color--text);
-	font-family: var(--wp--preset--font-family--heading);
-	font-weight: 500;
+	font-family: var(--wp--preset--font-family--body);
+	font-weight: 600;
+	font-size: var(--wp--preset--font-size--small);
+	letter-spacing: 0.01em;
 }
 
-.site-header .wp-block-navigation a:hover {
+.site-header .wp-block-navigation a:hover,
+.site-header .wp-block-navigation .current-menu-item a {
 	color: var(--wp--preset--color--contrast);
 }
 
@@ -459,6 +462,12 @@ button:focus-visible,
 }
 
 /* ---- Featured lead story (Revolut-style hero article) -------------- */
+/*
+ * The lead is a native core/columns block (58% image / text), so the
+ * side-by-side layout and its mobile stacking come from WordPress itself
+ * and survive even if this stylesheet fails to load. Everything below is
+ * pure enhancement layered on top of that native structure.
+ */
 .now-featured .wp-block-post-template {
 	margin: 0;
 	padding: 0;
@@ -466,10 +475,7 @@ button:focus-visible,
 }
 
 .now-featured-item {
-	display: grid;
-	grid-template-columns: 1.35fr 1fr;
 	align-items: center;
-	gap: clamp(var(--wp--preset--spacing--50), 4vw, var(--wp--preset--spacing--80));
 }
 
 .now-featured-item .wp-block-post-featured-image {
@@ -497,13 +503,6 @@ button:focus-visible,
 .now-featured-item .wp-block-post-excerpt__excerpt {
 	color: var(--wp--preset--color--text);
 	font-size: var(--wp--preset--font-size--large);
-}
-
-@media (max-width: 781px) {
-	.now-featured-item {
-		grid-template-columns: 1fr;
-		gap: var(--wp--preset--spacing--40);
-	}
 }
 
 /* ---- Section header: title + "view all" on one baseline ----------- */
@@ -627,6 +626,30 @@ button:focus-visible,
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
 	color: var(--wp--preset--color--muted);
+}
+
+/* ---- Sidebar sections menu (native core/navigation, vertical) ------ */
+/*
+ * The article sidebar's categories menu. WordPress renders it as a real
+ * navigation block so the list is native and editable; this only tunes the
+ * colours and spacing to match the quiet sidebar voice.
+ */
+.now-sidebar-nav .wp-block-navigation .wp-block-navigation__container {
+	gap: var(--wp--preset--spacing--20);
+}
+
+.now-sidebar-nav .wp-block-navigation-item__content {
+	display: block;
+	color: var(--wp--preset--color--text);
+	font-family: var(--wp--preset--font-family--heading);
+	font-size: var(--wp--preset--font-size--small);
+	line-height: 1.4;
+	text-decoration: none;
+}
+
+.now-sidebar-nav .wp-block-navigation-item__content:hover,
+.now-sidebar-nav .current-menu-item .wp-block-navigation-item__content {
+	color: var(--wp--preset--color--primary-light);
 }
 
 /* ---- Auto table of contents -------------------------------------- */

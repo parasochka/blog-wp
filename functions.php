@@ -98,6 +98,49 @@ function now_blog_editor_assets() {
 add_action( 'enqueue_block_editor_assets', 'now_blog_editor_assets' );
 
 /**
+ * Build core/navigation-link block markup for the blog's real categories.
+ *
+ * Both the header main menu and the article sidebar menu are dynamic:
+ * WordPress renders the site's actual categories (busiest first), so the
+ * links always resolve to a live archive — never a guessed slug that 404s —
+ * and the menus maintain themselves as categories come and go. The owner can
+ * still curate everything from the Site Editor; this is only the fallback
+ * content the theme ships so the menus are never empty on a fresh pull.
+ *
+ * @param int $limit Maximum number of categories to include.
+ * @return string Concatenated block markup (empty string if no categories).
+ */
+function now_blog_category_nav_links( $limit = 8 ) {
+	$categories = get_categories(
+		array(
+			'orderby'    => 'count',
+			'order'      => 'DESC',
+			'number'     => (int) $limit,
+			'hide_empty' => true,
+		)
+	);
+
+	if ( empty( $categories ) || is_wp_error( $categories ) ) {
+		return '';
+	}
+
+	$markup = '';
+	foreach ( $categories as $category ) {
+		$link = get_category_link( $category->term_id );
+		if ( is_wp_error( $link ) ) {
+			continue;
+		}
+		$markup .= sprintf(
+			'<!-- wp:navigation-link {"label":%s,"url":%s,"kind":"custom","isTopLevelLink":true} /-->',
+			wp_json_encode( $category->name ),
+			wp_json_encode( $link )
+		);
+	}
+
+	return $markup;
+}
+
+/**
  * Register a "NOW" block pattern category so theme patterns group together.
  */
 function now_blog_register_pattern_categories() {
