@@ -1,118 +1,102 @@
-# CLAUDE.md — NOW block theme
+# CLAUDE.md — NOW theme (classic PHP)
 
 Guidance for AI agents (and humans) working in this repo. Read this first.
 
 ## What this is
 
-**NOW** is a custom WordPress **block theme (Full Site Editing)** for the
-[Nowplix blog](https://blog.nowplix.dev). The **repo root IS the theme folder** —
-there is no `wp-content/themes/now/` nesting here; `style.css` and `theme.json`
-sit at the root.
+**NOW** is a custom WordPress **classic PHP theme** for the
+[NowPlix blog](https://blog.nowplix.dev). The **repo root IS the theme folder** —
+`style.css`, `functions.php` and the `*.php` templates sit at the root.
 
-Design tokens come from the Figma **"NOW"** design system and live in
-`theme.json`. Figma is the source of truth for color/type/spacing/radii/shadows —
-see [`DESIGN-SYNC.md`](./DESIGN-SYNC.md) for the mapping.
+The **design system is the source of truth for styling.** The Claude Design
+"NOW" tokens live in [`_ds/…/tokens/*.css`](./_ds) and are enqueued **as-is** —
+they are the single place colors, type, spacing, radii, glows and gradients are
+defined. There is **no `theme.json` token bridge** (deliberately removed): edit a
+token in `_ds/…/tokens/` and the whole site re-themes.
 
 ```
-Figma "NOW"  ─►  theme.json + templates  ─►  GitHub  ─►  WP Pusher  ─►  WordPress
- design system     this repo                  version    (pull in wp-admin)  live site
+Claude Design "NOW"  ─►  _ds/tokens + PHP templates  ─►  GitHub  ─►  WP Pusher  ─►  WordPress
+ design-handoff screens    this repo (the theme)          (main)     (pull in wp-admin)  live site
 ```
 
 ## File map
 
 | Path | Purpose |
 | --- | --- |
-| `style.css` | Theme header only (required by WP). No real CSS here. |
-| `theme.json` | **Primary styling surface** — design tokens + global styles. Edit this first. |
-| `functions.php` | Asset/font loading, pattern categories, block styles. |
-| `assets/css/theme.css` | Supplemental CSS for **only what `theme.json` can't express** (custom block styles, glows, transitions, forms, scroll-reveal). |
-| `templates/*.html` | Block-markup page templates (index, home, single, page, archive, author, search, 404). |
-| `parts/*.html` | `header.html`, `footer.html`. |
-| `patterns/*.php` | Reusable NOW blocks (`hero`, `newsletter-cta`). PHP so strings are translatable. |
-| `.github/workflows/validate.yml` | CI: checks `theme.json` is valid JSON + required files/`style.css` header exist on every push. |
-| `.claude/skills/` | Installed design skills (see below). |
+| `style.css` | WP theme header + a pointer note. No real CSS here. |
+| `functions.php` | Enqueue tokens/CSS/JS, theme supports, nav menu, and the design **helpers** (`now_render_card`, `now_reading_time`, `now_author_badge`, `now_primary_nav`, `now_category_pills`, `now_logo_img`). |
+| `header.php` / `footer.php` | Sticky glass masthead / footer. Shared by every template. |
+| `home.php` | Blog front page: hero → featured lead → one horizontal rail per category → newsletter. |
+| `single.php` | Article: centered head → 21:9 hero → 760px prose + sticky TOC/share sidebar → related. |
+| `archive.php` | Category/tag/author/date: header + responsive card grid. |
+| `search.php` | Search results (card grid). |
+| `page.php` | Standard page (readable prose column). |
+| `page-canvas.php` | Template Name **"Full-width canvas"** — edge-to-edge `the_content()`; use for the designed About/Platform pages. |
+| `index.php` / `404.php` | Fallback grid / not-found. |
+| `_ds/…/tokens/*.css` + `styles.css` | **Design-system source of truth.** Do not fork these values elsewhere. |
+| `assets/css/now.css` | Supplemental CSS only: page canvas, `.now-prose`, real `:hover` states, responsive stacking, reduced-motion. References DS tokens. |
+| `assets/js/now.js` | Optional progressive JS: rail arrows, article TOC + scrollspy, copy-link. |
+| `assets/img/*` | Logo (`logo-now-glass.png`) + 3D glass-render illustrations. |
+| `.github/workflows/validate.yml` | CI: `php -l` every file + required files/tokens present. |
+
+## How the templates are built
+
+Each template is cut from a design-handoff **screen** (`NowBlog-*.dc.html`). The
+rule: **keep the screen's HTML and inline styles verbatim; swap only the dynamic
+slots** for WordPress calls (`the_title`, `the_content`, `the_post_thumbnail`,
+`WP_Query`, `get_category_link`, etc.). This is why the templates carry inline
+`style="…"` with `var(--token)` — that is the handoff, preserved 1:1.
+
+- The handoff's preview-only `style-hover="…"` attribute is **not real CSS** —
+  every hover/active state is reimplemented in `assets/css/now.css` (keyed by a
+  class like `.now-card`, `.now-pill`, `.now-nav-link`, `.now-toc-link`).
+- Repeated markup (the story card) lives once in `now_render_card()` so the home
+  rails, archive grid, search and "related" stay identical.
 
 ## How to make design changes (order of preference)
 
-1. **`theme.json` first.** Colors, fonts, sizes, spacing, radii, shadows, and
-   per-block/element styles belong here. They generate `--wp--preset--*` and
-   `--wp--custom--*` CSS variables automatically.
-2. **`assets/css/theme.css` only when `theme.json` can't express it** — custom
-   block styles (`.is-style-card`), hover glows, transitions, `:active`
-   feedback, form controls, scroll-reveal, reduced-motion. Always reference
-   tokens via `var(--wp--preset--…)` / `var(--wp--custom--…)`, never raw hex.
-3. **Templates/patterns** for structure. Reference tokens with
-   `var:preset|color|<slug>`, `var:preset|spacing|NN`, `var:custom|radius|xx` —
-   **never hardcoded hex or rem**.
-
-After any `theme.json` edit, confirm it still parses:
-`python3 -c "import json; json.load(open('theme.json'))"`.
+1. **A token value** (color/space/radius/type/glow) → edit `_ds/…/tokens/*.css`.
+   One edit re-themes everywhere. This is the single source of truth.
+2. **A shared style** (prose, hover, responsive) → `assets/css/now.css`, always
+   via `var(--…)` tokens — never raw hex/px that duplicates a token.
+3. **Layout/structure** → the relevant `*.php`, matching the handoff screen.
+   Reference tokens with `var(--…)` inline, exactly as the screens do.
 
 ## Design-system rules (non-negotiable)
 
-- **No raw hex in templates, patterns, or CSS.** Every color is a palette slug.
-- **Every color used must exist as a palette slug** in `theme.json`.
-- **Spacing uses the scale** (`spacing|10…110` = 4…128px on a 4px grid).
-- **Fonts:** Archivo Black → headings (single weight **400** — it is already
-  black; never 700/800 or you get faux-bold). 42dot Sans → body/UI (600 for
-  buttons/labels). JetBrains Mono → code.
-- **Roles, not literals.** Map by semantic role (background/primary/muted) so a
-  Figma palette change re-themes the whole site through `theme.json` alone.
-- **Motion tokens live in `theme.json`** (`custom.ease`, `custom.duration`,
-  `custom.z`) and are mirrored as `--now-*` fallbacks in `theme.css`.
+- **Tokens are the source of truth.** No second copy of a color/space value in
+  PHP or `now.css` — reference `var(--primary-500)`, `var(--space-6)`, etc.
+- **Fonts:** Archivo Black → display/headings (single weight **400** — never
+  700/800). 42dot Sans → body/UI (600 for buttons/labels). Inter → data/tables.
+- **Elevation = glow, not shadow.** Use `--elev-*` / `--glow-*`. Amber
+  `--accent-400` is reserved for top-priority CTAs (Explore platform, Subscribe).
+- **Verify pixel-for-pixel** against the handoff screens
+  (`design_handoff_nowplix_wordpress/screens/*.dc.html` in the design package).
+- **Layout widths:** content rail `1200px` (`max-width:1200px; padding-inline:24px`
+  on every section), article reading column `760px`.
 
-## Installed design skills
+## Content vs code
 
-Three skills are installed under `.claude/skills/`. They encode the design bar
-this theme is held to. Invoke them by name when doing design work.
-
-| Skill | By | Use for |
-| --- | --- | --- |
-| `impeccable` | Paul Bakaus | Full design language: `critique`, `audit`, `polish`, `layout`, `typeset`, `colorize`, `animate`. Catches AI "slop" and enforces the absolute bans below. |
-| `design-taste-frontend` (`taste-skill`) | Leon Lin | Anti-slop taste pass for landing/editorial surfaces (hero, newsletter, home). Pulls output toward top-studio quality. |
-| `emil-design-eng` | Emil Kowalski | Motion decisions: what should animate, easing, duration, `:active` feedback. Companions: `review-animations`, `improve-animations`, `animation-vocabulary`. |
-
-### Impeccable absolute bans — already enforced here, keep it that way
-
-- **No side-stripe borders** (`border-left`/`right` > 1px as an accent). Quotes
-  use a surface card / full top+bottom rules instead of a colored stripe.
-- **No gradient text** (`background-clip: text` on a gradient).
-- **Glassmorphism only when purposeful** — the sticky header blur is the one
-  sanctioned use; don't add decorative glass cards.
-- **No hero-metric template, no identical endless card grids.**
-- **No tiny uppercase tracked eyebrow above _every_ section.** The one hero
-  kicker is deliberate brand voice; don't scatter more.
-- **No text that overflows its container** — test heading copy at every
-  breakpoint (display clamp max is 72px, under the 96px ceiling).
-- **Contrast:** body ≥ 4.5:1, large text ≥ 3:1. Don't lighten body "for
-  elegance."
-
-### Emil motion rules — already applied in `theme.css`
-
-- Custom ease-out curves, **not** the weak CSS defaults. Tokens:
-  `--wp--custom--ease--out` = `cubic-bezier(0.23, 1, 0.32, 1)`.
-- Colour/hover changes may use plain `ease`; transform/shadow use ease-out.
-- **UI animations < 320ms.** Button press feedback 100–160ms (`scale(0.97)` on
-  `:active`).
-- **Never animate high-frequency / keyboard-initiated actions.**
-- **`prefers-reduced-motion: reduce` is not optional** — the global reset in
-  `theme.css` neutralizes animation/transition for those users.
-- Reveals must **enhance an already-visible default** — the scroll-reveal is
-  gated behind `@supports (animation-timeline: view())` + reduced-motion so
-  content is never hidden on unsupported browsers or crawlers.
+Code (theme, tokens, templates) is versioned here → push `main` → WP Pusher
+pulls. **Content** (posts, pages, categories, menus, media) lives in WordPress,
+edited in wp-admin or via the WordPress MCP — never in git. The theme renders
+whatever categories/posts exist (nav, pills, footer "Sections" and the home rails
+are all built from the live taxonomy).
 
 ## Validation & deploy
 
-- CI (`validate.yml`) runs on push: valid JSON + required files. Keep it green —
-  WP Pusher pulls from GitHub, so a broken build ships a broken theme.
-- Deploy is admin-only via **WP Pusher** (`parasochka/blog-wp`, branch `main`),
-  or manual zip upload. No SSH/secrets. See [`README.md`](./README.md).
+- CI (`validate.yml`) runs `php -l` on every file and checks required files +
+  tokens on each push. Keep it green — WP Pusher ships whatever is on `main`.
+- Deploy: WP Pusher (Install/Update Theme from `parasochka/blog-wp`, branch
+  `main`, install-from-subdirectory empty — repo root is the theme). See
+  [`README.md`](./README.md).
+- After activating: Site Logo is optional — the theme falls back to the bundled
+  `assets/img/logo-now-glass.png`. Set Permalinks to `/%category%/%postname%/`
+  and Reading → "your latest posts" so `home.php` drives the front page.
 
-## Working conventions
+## Re-syncing the design system
 
-- Develop on the assigned feature branch; commit with clear messages; push with
-  `git push -u origin <branch>`. Do **not** open a PR unless asked.
-- Content (posts, pages, menus, media) lives in WordPress, not in git. The theme
-  ships structure + style only.
-- When in doubt about a token value, check `theme.json` and `DESIGN-SYNC.md`
-  before inventing one.
+When Claude Design re-exports the package, drop the new `_ds/…/` folder over the
+existing one (same path) for a clean diff, and re-cut any screen whose markup
+changed. Keeping the `_ds/` path stable is what makes the re-sync a diff, not a
+manual retranslation.

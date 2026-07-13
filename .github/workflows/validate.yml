@@ -1,8 +1,9 @@
 name: Validate theme
 
 # Sanity-checks the theme on every push so WP Pusher never pulls a broken build.
-# No secrets, no server access — pure validation. Deploy happens in WordPress
-# via the WP Pusher plugin (Install/Update Theme from this repo).
+# Classic PHP theme: lint every PHP file, confirm the required theme files exist,
+# and confirm the design-system tokens are present. No secrets, no server access.
+# Deploy happens in WordPress via WP Pusher (Install/Update Theme from this repo).
 
 on:
   push:
@@ -20,19 +21,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate theme.json is well-formed JSON
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Lint all PHP files
         run: |
-          python3 -c "import json; json.load(open('theme.json')); print('theme.json is valid JSON')"
+          set -e
+          find . -name '*.php' -not -path './vendor/*' -print0 \
+            | xargs -0 -n1 -P4 php -l
+          echo "All PHP files parse."
 
       - name: Ensure required theme files exist
         run: |
-          for f in style.css theme.json functions.php templates/index.html; do
+          for f in style.css functions.php index.php header.php footer.php home.php single.php; do
             if [ ! -f "$f" ]; then
-              echo "::error title=Missing theme file::$f is required for a valid block theme"
+              echo "::error title=Missing theme file::$f is required for this classic theme"
               exit 1
             fi
           done
           echo "All required theme files present."
+
+      - name: Ensure the design-system tokens are present
+        run: |
+          DS="_ds/nowplix-igaming-design-system-5bcffbc0-c8f0-442c-b6f3-9be1de820175"
+          for f in "styles.css" "tokens/colors.css" "tokens/typography.css" "tokens/spacing.css" "tokens/radius.css" "tokens/elevation.css" "tokens/fonts.css"; do
+            if [ ! -f "$DS/$f" ]; then
+              echo "::error title=Missing design token::$DS/$f is required"
+              exit 1
+            fi
+          done
+          echo "Design-system tokens present."
 
       - name: Ensure style.css has a Theme Name header
         run: |
