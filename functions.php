@@ -205,24 +205,12 @@ function now_render_card( $show_excerpt = true ) {
 }
 
 /**
- * Primary navigation: Home + category links. Uses a menu assigned to the
- * "primary" location if present; otherwise renders Home + the first four
- * categories (mirrors the handoff header). Styled via .now-nav in now.css.
+ * Primary navigation: a short curated menu — Home · Categories (a dropdown
+ * listing every live category) · About · Platform. Kept short by design; the
+ * full taxonomy hangs off the Categories dropdown. Styled via .now-nav in
+ * now.css. Pages resolve by slug (about / platform) with a sensible fallback.
  */
 function now_primary_nav() {
-	if ( has_nav_menu( 'primary' ) ) {
-		wp_nav_menu(
-			array(
-				'theme_location' => 'primary',
-				'container'      => false,
-				'menu_class'     => 'now-nav-menu',
-				'depth'          => 1,
-				'fallback_cb'    => false,
-			)
-		);
-		return;
-	}
-
 	$home_active = ( is_front_page() || is_home() ) ? ' now-active' : '';
 	printf(
 		'<a class="now-nav-link%s" href="%s">%s</a>',
@@ -231,23 +219,48 @@ function now_primary_nav() {
 		esc_html__( 'Home', 'now-blog' )
 	);
 
+	// Categories dropdown — every non-empty category with its blurb.
 	$cats = get_categories(
 		array(
-			'orderby'    => 'term_id',
+			'orderby'    => 'name',
 			'order'      => 'ASC',
 			'hide_empty' => true,
-			'number'     => 4,
 		)
 	);
-	foreach ( $cats as $c ) {
-		$active = is_category( $c->term_id ) ? ' now-active' : '';
+	if ( ! empty( $cats ) ) {
+		$cat_active = is_category() ? ' now-active' : '';
+		echo '<div class="now-nav-item">';
 		printf(
-			'<a class="now-nav-link%s" href="%s">%s</a>',
-			esc_attr( $active ),
-			esc_url( get_category_link( $c ) ),
-			esc_html( $c->name )
+			'<a class="now-nav-link now-dropdown-toggle%s" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">%s <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></a>',
+			esc_attr( $cat_active ),
+			esc_html__( 'Categories', 'now-blog' )
 		);
+		echo '<div class="now-dropdown"><div class="now-dropdown-grid">';
+		foreach ( $cats as $c ) {
+			$blurb = trim( wp_strip_all_tags( $c->description ) );
+			printf(
+				'<a class="now-dropdown-link" href="%s"><span class="now-dropdown-name">%s</span>%s</a>',
+				esc_url( get_category_link( $c ) ),
+				esc_html( $c->name ),
+				$blurb ? '<span class="now-dropdown-blurb">' . esc_html( $blurb ) . '</span>' : ''
+			);
+		}
+		echo '</div></div></div>';
 	}
+
+	// Pages (resolve by slug; fall back to the conventional path).
+	$about    = get_page_by_path( 'about' );
+	$platform = get_page_by_path( 'platform' );
+	printf(
+		'<a class="now-nav-link" href="%s">%s</a>',
+		esc_url( $about ? get_permalink( $about ) : home_url( '/about/' ) ),
+		esc_html__( 'About', 'now-blog' )
+	);
+	printf(
+		'<a class="now-nav-link" href="%s">%s</a>',
+		esc_url( $platform ? get_permalink( $platform ) : home_url( '/platform/' ) ),
+		esc_html__( 'Platform', 'now-blog' )
+	);
 }
 
 /**
