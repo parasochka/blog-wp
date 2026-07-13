@@ -264,6 +264,52 @@ function now_primary_nav() {
 }
 
 /**
+ * Mobile navigation — a flat, tap-friendly list shown inside the burger menu.
+ * The desktop header hides its nav (and hover Categories dropdown, which touch
+ * can't open) below 560px; this restores full navigation on phones: Home, every
+ * live category, then About · Platform. Styled via .now-mobile-* in now.css.
+ */
+function now_mobile_nav() {
+	echo '<nav class="now-mobile-links" aria-label="' . esc_attr__( 'Mobile', 'now-blog' ) . '">';
+
+	printf(
+		'<a class="now-mobile-link" href="%s">%s</a>',
+		esc_url( home_url( '/' ) ),
+		esc_html__( 'Home', 'now-blog' )
+	);
+
+	$cats = get_categories(
+		array(
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'hide_empty' => true,
+		)
+	);
+	foreach ( $cats as $c ) {
+		printf(
+			'<a class="now-mobile-link" href="%s">%s</a>',
+			esc_url( get_category_link( $c ) ),
+			esc_html( $c->name )
+		);
+	}
+
+	$about    = get_page_by_path( 'about' );
+	$platform = get_page_by_path( 'platform' );
+	printf(
+		'<a class="now-mobile-link" href="%s">%s</a>',
+		esc_url( $about ? get_permalink( $about ) : home_url( '/about/' ) ),
+		esc_html__( 'About', 'now-blog' )
+	);
+	printf(
+		'<a class="now-mobile-link" href="%s">%s</a>',
+		esc_url( $platform ? get_permalink( $platform ) : home_url( '/platform/' ) ),
+		esc_html__( 'Platform', 'now-blog' )
+	);
+
+	echo '</nav>';
+}
+
+/**
  * Category "pills" browse row (hero + archive header). $active highlights the
  * current category. Inline styles mirror the handoff; hover via .now-pill.
  */

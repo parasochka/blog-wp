@@ -79,4 +79,26 @@
 			}
 		});
 	});
+
+	/* ---- 4. Mobile menu (burger) ---- */
+	var burger = document.querySelector('.now-burger');
+	var mobileMenu = document.getElementById('now-mobile-menu');
+	if (burger && mobileMenu) {
+		var setOpen = function (open) {
+			burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+			mobileMenu.hidden = !open;
+		};
+		burger.addEventListener('click', function () {
+			setOpen(burger.getAttribute('aria-expanded') !== 'true');
+		});
+		// Close on Escape or when a menu link is followed.
+		document.addEventListener('keydown', function (e) {
+			if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+				setOpen(false); burger.focus();
+			}
+		});
+		mobileMenu.addEventListener('click', function (e) {
+			if (e.target.closest('a')) { setOpen(false); }
+		});
+	}
 })();
