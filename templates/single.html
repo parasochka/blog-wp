@@ -63,6 +63,8 @@
 
 		<!-- wp:group {"tagName":"aside","className":"now-sidebar","layout":{"type":"default"}} -->
 		<aside class="wp-block-group now-sidebar">
+			<!-- wp:pattern {"slug":"now/sidebar-sections"} /-->
+
 			<!-- wp:group {"className":"now-toc is-style-card","layout":{"type":"default"}} -->
 			<div class="wp-block-group now-toc is-style-card">
 				<!-- wp:paragraph {"className":"now-sidebar-label"} -->
@@ -104,7 +106,7 @@
 
 		<!-- wp:query {"queryId":12,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","exclude":[],"inherit":false},"layout":{"type":"default"}} -->
 		<div class="wp-block-query">
-			<!-- wp:post-template {"layout":{"type":"default"}} -->
+			<!-- wp:post-template {"layout":{"type":"grid","minimumColumnWidth":"20rem"}} -->
 				<!-- wp:group {"className":"now-card","layout":{"type":"default"}} -->
 				<div class="wp-block-group now-card">
 					<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","style":{"border":{"radius":"var:custom|radius|lg"}}} /-->
