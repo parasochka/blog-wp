@@ -19,6 +19,19 @@ function now_blog_setup() {
 	add_theme_support( 'responsive-embeds' );
 	add_theme_support( 'editor-styles' );
 	add_theme_support( 'html5', array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script' ) );
+
+	// Site logo — the NOW wordmark. Wide lockup, so a generous default
+	// width and no forced crop (see MEDIA-GUIDE.md for asset sizes).
+	add_theme_support(
+		'custom-logo',
+		array(
+			'height'      => 96,
+			'width'       => 320,
+			'flex-height' => true,
+			'flex-width'  => true,
+		)
+	);
+
 	add_editor_style( 'assets/css/theme.css' );
 	load_theme_textdomain( 'now-blog', get_template_directory() . '/languages' );
 }
@@ -57,6 +70,20 @@ function now_blog_enqueue_assets() {
 		get_theme_file_uri( 'assets/css/theme.css' ),
 		array( 'now-blog-fonts' ),
 		NOW_BLOG_VERSION
+	);
+
+	// Progressive reading enhancements (auto table-of-contents, reading
+	// progress, scrollspy, share links). Dependency-free vanilla JS; the
+	// article reads perfectly with it disabled, so it is purely additive.
+	wp_enqueue_script(
+		'now-blog-reader',
+		get_theme_file_uri( 'assets/js/now.js' ),
+		array(),
+		NOW_BLOG_VERSION,
+		array(
+			'strategy'  => 'defer',
+			'in_footer' => true,
+		)
 	);
 }
 add_action( 'wp_enqueue_scripts', 'now_blog_enqueue_assets' );

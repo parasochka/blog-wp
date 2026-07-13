@@ -93,6 +93,14 @@ a,
 	border-bottom: 1px solid var(--wp--preset--color--border);
 }
 
+.site-header .wp-block-site-logo img,
+.site-header .custom-logo {
+	display: block;
+	height: 34px;
+	width: auto;
+	max-width: 160px;
+}
+
 .site-header .wp-block-navigation a,
 .site-footer .wp-block-navigation a {
 	color: var(--wp--preset--color--text);
@@ -186,6 +194,11 @@ a,
 .wp-block-post-content figure,
 .wp-block-post-content .wp-block-image {
 	margin-block: var(--wp--preset--spacing--50);
+}
+
+/* Anchor jumps from the auto-TOC clear the sticky header. */
+.wp-block-post-content :is(h2, h3) {
+	scroll-margin-top: calc(var(--wp--preset--spacing--80) + var(--wp--preset--spacing--30));
 }
 
 /* ---- Scroll-reveal (progressive, dependency-free) ------------------- */
@@ -292,6 +305,562 @@ button:focus-visible,
 	outline-offset: 2px;
 }
 
+/* ====================================================================
+ * MAGAZINE REDESIGN — full-width editorial layout
+ * Featured lead, category pills, magazine grid, editorial cards,
+ * category rows, single-article floating sidebar + auto-TOC, reading
+ * progress, share, related. Every value is a design token.
+ * ==================================================================== */
+
+/* ---- Post cards (borderless — editorial, not boxed) ---------------- */
+/*
+ * Impeccable: cards are the lazy answer. Listing "cards" here are NOT
+ * boxed containers — image + text grouped by proximity. The image is the
+ * card; the box is gone. Boxed .is-style-card is reserved for the sidebar
+ * where a distinct, actionable surface earns the container.
+ */
+.now-card {
+	gap: var(--wp--preset--spacing--30);
+}
+
+.now-card .wp-block-post-featured-image {
+	margin: 0;
+	overflow: hidden;
+	border-radius: var(--wp--custom--radius--lg);
+}
+
+.now-card .wp-block-post-title {
+	margin: 0;
+	line-height: 1.2;
+}
+
+.now-card .wp-block-post-title a {
+	color: var(--wp--preset--color--contrast);
+}
+
+.now-card .wp-block-post-title a:hover {
+	color: var(--wp--preset--color--primary-light);
+	text-decoration: none;
+}
+
+.now-card .wp-block-post-excerpt__excerpt {
+	color: var(--wp--preset--color--text);
+}
+
+/* Meta row (author · date · reading time) sits quiet and small. */
+.now-meta {
+	align-items: center;
+	color: var(--wp--preset--color--muted);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.now-meta .wp-block-post-author-name a {
+	color: var(--wp--preset--color--muted);
+}
+
+.now-meta .wp-block-post-author-name a:hover {
+	color: var(--wp--preset--color--text);
+	text-decoration: none;
+}
+
+/* Category eyebrow on a card — one per card, brand voice, not scaffolding. */
+.wp-block-post-terms {
+	font-family: var(--wp--preset--font-family--heading);
+	font-weight: 400;
+}
+
+/* ---- Category pill list (core/categories) -------------------------- */
+/*
+ * Full-width horizontal browse bar (the Revolut move). Dynamic — WordPress
+ * renders the real categories, so it never needs maintenance.
+ */
+.now-category-pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--wp--preset--spacing--20);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.now-category-pills li {
+	margin: 0;
+}
+
+.now-category-pills.aligncenter {
+	justify-content: center;
+}
+
+.now-category-pills a {
+	display: inline-block;
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--wp--preset--color--border);
+	border-radius: var(--wp--custom--radius--pill);
+	background: var(--wp--preset--color--surface);
+	color: var(--wp--preset--color--text);
+	font-family: var(--wp--preset--font-family--heading);
+	font-size: var(--wp--preset--font-size--small);
+	text-decoration: none;
+}
+
+.now-category-pills a:hover {
+	border-color: var(--wp--preset--color--primary);
+	background: color-mix(in srgb, var(--wp--preset--color--primary) 16%, var(--wp--preset--color--surface));
+	color: var(--wp--preset--color--contrast);
+}
+
+.now-category-pills .post-count {
+	color: var(--wp--preset--color--muted);
+	margin-left: 0.35rem;
+}
+
+/* ---- Magazine grid — break the identical-card monotony ------------- */
+/*
+ * The first story in a "latest" grid spans two columns and reads large;
+ * the rest fall into an even three-up. One deliberate asymmetry, not an
+ * endless uniform grid (Impeccable ban).
+ */
+.now-grid.wp-block-post-template {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: var(--wp--preset--spacing--70) var(--wp--preset--spacing--60);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.now-grid.wp-block-post-template > li {
+	margin: 0;
+}
+
+@media (min-width: 782px) {
+	.now-grid.wp-block-post-template > li:first-child {
+		grid-column: span 2;
+	}
+
+	.now-grid.wp-block-post-template > li:first-child .wp-block-post-title {
+		font-size: var(--wp--preset--font-size--xx-large);
+	}
+
+	.now-grid.wp-block-post-template > li:first-child .wp-block-post-excerpt {
+		display: block;
+	}
+}
+
+/* Excerpt only shows on the lead card by default — keeps the grid tidy. */
+.now-grid.wp-block-post-template > li:not(:first-child) .wp-block-post-excerpt {
+	display: none;
+}
+
+@media (max-width: 781px) {
+	.now-grid.wp-block-post-template {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ---- Featured lead story (Revolut-style hero article) -------------- */
+.now-featured .wp-block-post-template {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.now-featured-item {
+	display: grid;
+	grid-template-columns: 1.35fr 1fr;
+	align-items: center;
+	gap: clamp(var(--wp--preset--spacing--50), 4vw, var(--wp--preset--spacing--80));
+}
+
+.now-featured-item .wp-block-post-featured-image {
+	margin: 0;
+	overflow: hidden;
+	border-radius: var(--wp--custom--radius--2xl);
+	box-shadow: var(--wp--preset--shadow--card);
+}
+
+.now-featured-item .wp-block-post-title {
+	font-size: clamp(2rem, 4vw, var(--wp--preset--font-size--huge));
+	line-height: 1.08;
+	margin: 0;
+}
+
+.now-featured-item .wp-block-post-title a {
+	color: var(--wp--preset--color--contrast);
+}
+
+.now-featured-item .wp-block-post-title a:hover {
+	color: var(--wp--preset--color--primary-light);
+	text-decoration: none;
+}
+
+.now-featured-item .wp-block-post-excerpt__excerpt {
+	color: var(--wp--preset--color--text);
+	font-size: var(--wp--preset--font-size--large);
+}
+
+@media (max-width: 781px) {
+	.now-featured-item {
+		grid-template-columns: 1fr;
+		gap: var(--wp--preset--spacing--40);
+	}
+}
+
+/* ---- Section header: title + "view all" on one baseline ----------- */
+.now-section-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--wp--preset--spacing--30);
+	margin-bottom: var(--wp--preset--spacing--50);
+}
+
+.now-section-head h2 {
+	margin: 0;
+}
+
+.now-section-head .now-view-all a {
+	color: var(--wp--preset--color--primary-light);
+	font-family: var(--wp--preset--font-family--heading);
+	font-size: var(--wp--preset--font-size--small);
+	text-decoration: none;
+}
+
+.now-section-head .now-view-all a:hover {
+	color: var(--wp--preset--color--secondary);
+}
+
+/* ---- Category row: horizontal scroll rail on desktop -------------- */
+/*
+ * Each category is its own row (the user's ask + the Nexo pattern). The
+ * rail scroll-snaps so many stories fit one band without an endless grid.
+ */
+.now-row .wp-block-post-template {
+	display: grid;
+	grid-auto-flow: column;
+	grid-auto-columns: minmax(260px, 1fr);
+	gap: var(--wp--preset--spacing--60);
+	margin: 0;
+	padding: 0 0 var(--wp--preset--spacing--30);
+	list-style: none;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: thin;
+	scrollbar-color: var(--wp--preset--color--border) transparent;
+}
+
+.now-row .wp-block-post-template > li {
+	margin: 0;
+	scroll-snap-align: start;
+}
+
+@media (min-width: 1024px) {
+	/* On wide screens show four across without horizontal scroll. */
+	.now-row .wp-block-post-template {
+		grid-auto-flow: row;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-auto-columns: auto;
+		overflow: visible;
+	}
+}
+
+/* ---- Single article: floating sidebar layout --------------------- */
+.now-article {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: flex-start;
+	justify-content: center;
+	gap: clamp(var(--wp--preset--spacing--60), 5vw, var(--wp--preset--spacing--90));
+}
+
+.now-article-main {
+	flex: 1 1 auto;
+	min-width: 0;
+	max-width: 760px;
+}
+
+/* Comfortable long-form measure — the two-column shell fills the page so
+ * the article never reads as a narrow column stranded in empty space. */
+.now-article-main .wp-block-post-content {
+	max-width: none;
+	font-size: var(--wp--preset--font-size--large);
+	line-height: 1.75;
+}
+
+.now-sidebar {
+	flex: 0 0 300px;
+	position: sticky;
+	top: calc(var(--wp--preset--spacing--80) + var(--wp--preset--spacing--30));
+	align-self: start;
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--40);
+}
+
+/* Collapse to a single column: sidebar drops below the article. */
+@media (max-width: 1023px) {
+	.now-article {
+		flex-direction: column;
+	}
+
+	.now-sidebar {
+		position: static;
+		width: 100%;
+	}
+
+	/* The auto-TOC is desktop wayfinding; on mobile it is noise. */
+	.now-toc {
+		display: none;
+	}
+}
+
+/* Sidebar cards */
+.now-sidebar .is-style-card {
+	padding: var(--wp--preset--spacing--50);
+}
+
+.now-sidebar-label {
+	margin: 0 0 var(--wp--preset--spacing--30);
+	font-family: var(--wp--preset--font-family--heading);
+	font-size: var(--wp--preset--font-size--small);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--muted);
+}
+
+/* ---- Auto table of contents -------------------------------------- */
+/*
+ * Built by assets/js/now.js from the article's own headings. It is
+ * navigation, not content, so it stays hidden until JS populates it —
+ * the article is complete without it (Impeccable: enhance, never gate).
+ */
+.now-toc {
+	display: none;
+}
+
+.now-toc.is-populated {
+	display: block;
+}
+
+.now-toc ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: none;
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--20);
+}
+
+.now-toc li {
+	margin: 0;
+	line-height: 1.35;
+}
+
+.now-toc li.now-toc-h3 {
+	padding-left: var(--wp--preset--spacing--40);
+}
+
+.now-toc a {
+	display: block;
+	color: var(--wp--preset--color--muted);
+	font-size: var(--wp--preset--font-size--small);
+	text-decoration: none;
+	border-left: 2px solid transparent;
+	padding-left: var(--wp--preset--spacing--30);
+	transition: color var(--now-dur-fast) ease, border-color var(--now-dur-fast) ease;
+}
+
+.now-toc a:hover {
+	color: var(--wp--preset--color--text);
+}
+
+.now-toc a.is-active {
+	color: var(--wp--preset--color--primary-light);
+	border-left-color: var(--wp--preset--color--primary);
+}
+
+/* ---- Share widget ------------------------------------------------- */
+.now-share-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--wp--preset--spacing--20);
+}
+
+.now-share-links a,
+.now-share-links button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	padding: 0.5rem 0.9rem;
+	border: 1px solid var(--wp--preset--color--border);
+	border-radius: var(--wp--custom--radius--md);
+	background: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--text);
+	font-family: var(--wp--preset--font-family--body);
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 600;
+	cursor: pointer;
+	text-decoration: none;
+	transition: border-color var(--now-dur-fast) ease, color var(--now-dur-fast) ease, background-color var(--now-dur-fast) ease;
+}
+
+.now-share-links a:hover,
+.now-share-links button:hover {
+	border-color: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--contrast);
+	background: color-mix(in srgb, var(--wp--preset--color--primary) 14%, var(--wp--preset--color--base));
+}
+
+.now-share-links button:active {
+	transform: scale(0.97);
+}
+
+/* ---- Reading progress bar (pure CSS scroll-driven) --------------- */
+/*
+ * Communicates "how far through this article am I" — motivated motion.
+ * Injected by now.js only on posts; animated by the scroll timeline so no
+ * scroll listeners run. Absent on browsers without support — no fallback
+ * needed for a progress hint.
+ */
+.now-progress {
+	position: fixed;
+	inset: 0 0 auto 0;
+	height: 3px;
+	z-index: calc(var(--now-z-sticky) + 1);
+	background: var(--wp--preset--color--primary);
+	transform: scaleX(0);
+	transform-origin: 0 50%;
+	pointer-events: none;
+}
+
+@supports (animation-timeline: scroll()) {
+	@media (prefers-reduced-motion: no-preference) {
+		.now-progress {
+			animation: now-progress-grow linear both;
+			animation-timeline: scroll(root block);
+		}
+	}
+}
+
+@keyframes now-progress-grow {
+	from { transform: scaleX(0); }
+	to { transform: scaleX(1); }
+}
+
+/* ---- Reading time chip ------------------------------------------- */
+.now-reading-time:empty {
+	display: none;
+}
+
+/* ---- Article hero band ------------------------------------------- */
+.now-article-head {
+	position: relative;
+}
+
+.now-article-head .wp-block-post-title {
+	max-width: 20ch;
+}
+
+/* Author identity line in the article hero */
+.now-byline {
+	align-items: center;
+	color: var(--wp--preset--color--muted);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.now-byline .wp-block-avatar {
+	flex: 0 0 auto;
+}
+
+/* ---- Archive / author header band -------------------------------- */
+.now-page-head {
+	position: relative;
+	overflow: hidden;
+}
+
+.now-page-head .wp-block-query-title,
+.now-page-head h1 {
+	font-size: clamp(2.25rem, 5vw, var(--wp--preset--font-size--display));
+}
+
+/* ---- Related / more stories -------------------------------------- */
+.now-related .wp-block-post-template {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: var(--wp--preset--spacing--60);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.now-related .wp-block-post-template > li {
+	margin: 0;
+}
+
+@media (max-width: 781px) {
+	.now-related .wp-block-post-template {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ---- Pagination polish ------------------------------------------- */
+.wp-block-query-pagination {
+	gap: var(--wp--preset--spacing--30);
+}
+
+.wp-block-query-pagination a,
+.wp-block-query-pagination .wp-block-query-pagination-numbers {
+	color: var(--wp--preset--color--muted);
+	font-family: var(--wp--preset--font-family--heading);
+}
+
+.wp-block-query-pagination a:hover {
+	color: var(--wp--preset--color--contrast);
+	text-decoration: none;
+}
+
+.wp-block-query-pagination .current {
+	color: var(--wp--preset--color--contrast);
+}
+
+/* ---- Media containers -------------------------------------------- */
+/*
+ * The NOW illustration set is dark-navy 3D art. A base-deep backing means
+ * any cover/letterbox area blends into the artwork instead of showing a
+ * seam or a bright edge, and object-fit:cover keeps aspect ratios honest.
+ */
+.wp-block-post-featured-image,
+.now-featured-item .wp-block-post-featured-image,
+.now-sidebar-image {
+	background-color: var(--wp--preset--color--base-deep);
+}
+
+.wp-block-post-featured-image img,
+.now-sidebar-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* Square art slot for the article sidebar (1:1 illustrations). */
+.now-sidebar-image {
+	overflow: hidden;
+	border-radius: var(--wp--custom--radius--xl);
+	aspect-ratio: 1 / 1;
+}
+
+/* ---- Author bio box ---------------------------------------------- */
+.now-author-box {
+	align-items: center;
+}
+
+.now-author-box .wp-block-avatar {
+	flex: 0 0 auto;
+}
+
 /* ---- Reduced motion — honour the OS preference (not optional) ------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -306,5 +875,11 @@ button:focus-visible,
 
 	.wp-block-post-featured-image a:hover img {
 		transform: none;
+	}
+
+	/* The progress bar animates via the scroll timeline; hide it outright
+	 * for reduced-motion users rather than leaving a frozen sliver. */
+	.now-progress {
+		display: none;
 	}
 }

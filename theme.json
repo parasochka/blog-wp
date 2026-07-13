@@ -5,7 +5,7 @@
 		"appearanceTools": true,
 		"useRootPaddingAwareAlignments": true,
 		"layout": {
-			"contentSize": "760px",
+			"contentSize": "800px",
 			"wideSize": "1280px"
 		},
 		"color": {

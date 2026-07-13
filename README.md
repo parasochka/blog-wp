@@ -36,11 +36,18 @@ Figma "NOW"  ──►  theme.json + templates  ──►  GitHub  ──►  WP
 │   ├── author.html          #   author archive
 │   ├── search.html          #   search results
 │   └── 404.html             #   not found
-├── parts/                   # header.html, footer.html
-├── patterns/                # hero, newsletter-cta (reusable NOW blocks)
+├── parts/                   # header.html (logo + nav), footer.html
+├── patterns/                # hero, hero-image, featured-lead, category-row,
+│                            #   article-cta, newsletter-cta (reusable NOW blocks)
 ├── assets/css/theme.css     # supplemental styles theme.json can't express
+├── assets/js/now.js         # auto table-of-contents, reading progress, share
 └── .github/workflows/       # validate.yml (checks theme.json/style.css on push)
 ```
+
+Uploading your own logo, featured images and hero/section artwork (with exact
+aspect ratios and where each goes in wp-admin), plus the one-time WordPress
+settings (permalinks, homepage, menu), are documented in
+[`MEDIA-GUIDE.md`](./MEDIA-GUIDE.md).
 
 ## Pages covered
 
