@@ -3,10 +3,14 @@
 <!-- wp:group {"tagName":"main","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|100"}}},"layout":{"type":"constrained"}} -->
 <main class="wp-block-group" style="margin-bottom:var(--wp--preset--spacing--100)">
 
-	<!-- wp:group {"tagName":"section","align":"full","className":"now-page-head","backgroundColor":"base-deep","style":{"spacing":{"padding":{"top":"var:preset|spacing|90","bottom":"var:preset|spacing|70"},"blockGap":"var:preset|spacing|30"}},"layout":{"type":"constrained"}} -->
-	<section class="wp-block-group alignfull now-page-head has-base-deep-background-color has-background" style="padding-top:var(--wp--preset--spacing--90);padding-bottom:var(--wp--preset--spacing--70)">
+	<!-- wp:group {"tagName":"section","align":"wide","className":"now-page-head","style":{"spacing":{"padding":{"top":"var:preset|spacing|90","bottom":"var:preset|spacing|40"},"blockGap":"var:preset|spacing|30"}},"layout":{"type":"constrained"}} -->
+	<section class="wp-block-group alignwide now-page-head" style="padding-top:var(--wp--preset--spacing--90);padding-bottom:var(--wp--preset--spacing--40)">
+		<!-- wp:paragraph {"className":"now-section-eyebrow","style":{"typography":{"fontSize":"var:preset|font-size|small","textTransform":"uppercase","letterSpacing":"0.16em"}},"textColor":"primary-light","fontFamily":"heading"} -->
+		<p class="now-section-eyebrow has-primary-light-color has-text-color has-heading-font-family" style="font-size:var(--wp--preset--font-size--small);letter-spacing:0.16em;text-transform:uppercase">Category</p>
+		<!-- /wp:paragraph -->
 		<!-- wp:query-title {"type":"archive"} /-->
-		<!-- wp:term-description {"style":{"typography":{"fontSize":"var:preset|font-size|large"}},"textColor":"muted"} /-->
+		<!-- wp:term-description {"style":{"typography":{"fontSize":"var:preset|font-size|large"}},"textColor":"text"} /-->
+		<!-- wp:categories {"showPostCounts":false,"showEmpty":false,"className":"now-category-pills","style":{"spacing":{"margin":{"top":"var:preset|spacing|30"}}}} /-->
 	</section>
 	<!-- /wp:group -->
 

@@ -1,15 +1,64 @@
-<!-- wp:group {"tagName":"footer","className":"site-footer","style":{"spacing":{"padding":{"top":"var:preset|spacing|80","bottom":"var:preset|spacing|60"},"blockGap":"var:preset|spacing|50"}},"backgroundColor":"base-deep","layout":{"type":"constrained"}} -->
-<footer class="wp-block-group site-footer has-base-deep-background-color has-background" style="padding-top:var(--wp--preset--spacing--80);padding-bottom:var(--wp--preset--spacing--60)">
-	<!-- wp:group {"align":"wide","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
-	<div class="wp-block-group alignwide">
-		<!-- wp:site-title {"level":0} /-->
+<!-- wp:group {"tagName":"footer","className":"site-footer","style":{"spacing":{"padding":{"top":"var:preset|spacing|80","bottom":"var:preset|spacing|70"},"blockGap":"var:preset|spacing|70"}},"backgroundColor":"base-deep","layout":{"type":"constrained"}} -->
+<footer class="wp-block-group site-footer has-base-deep-background-color has-background" style="padding-top:var(--wp--preset--spacing--80);padding-bottom:var(--wp--preset--spacing--70)">
+	<!-- wp:group {"align":"wide","className":"now-footer-top","style":{"spacing":{"blockGap":"var:preset|spacing|80"}},"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"top"}} -->
+	<div class="wp-block-group alignwide now-footer-top">
+		<!-- wp:group {"className":"now-footer-brand","style":{"spacing":{"blockGap":"var:preset|spacing|40"}},"layout":{"type":"constrained","contentSize":"320px"}} -->
+		<div class="wp-block-group now-footer-brand">
+			<!-- wp:site-logo {"width":120} /-->
+			<!-- wp:paragraph {"style":{"typography":{"fontSize":"var:preset|font-size|small"}},"textColor":"muted"} -->
+			<p class="has-muted-color has-text-color" style="font-size:var(--wp--preset--font-size--small)">Signals from the future of iGaming — product, design and engineering stories from the NowPlix platform.</p>
+			<!-- /wp:paragraph -->
+		</div>
+		<!-- /wp:group -->
 
-		<!-- wp:navigation {"overlayMenu":"never","layout":{"type":"flex","justifyContent":"right"},"style":{"spacing":{"blockGap":"var:preset|spacing|50"}}} /-->
+		<!-- wp:group {"className":"now-footer-cols","style":{"spacing":{"blockGap":"var:preset|spacing|80"}},"layout":{"type":"flex","flexWrap":"wrap","verticalAlignment":"top"}} -->
+		<div class="wp-block-group now-footer-cols">
+			<!-- wp:pattern {"slug":"now/footer-sections"} /-->
+
+			<!-- wp:group {"className":"now-footer-col","style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"constrained"}} -->
+			<div class="wp-block-group now-footer-col">
+				<!-- wp:heading {"level":4,"className":"now-footer-head"} -->
+				<h4 class="wp-block-heading now-footer-head">Platform</h4>
+				<!-- /wp:heading -->
+				<!-- wp:list {"className":"now-footer-links"} -->
+				<ul class="wp-block-list now-footer-links"><!-- wp:list-item --><li><a href="https://nowplix.dev" target="_blank" rel="noreferrer noopener">Casino</a></li><!-- /wp:list-item -->
+				<!-- wp:list-item --><li><a href="https://nowplix.dev" target="_blank" rel="noreferrer noopener">Sportsbook</a></li><!-- /wp:list-item -->
+				<!-- wp:list-item --><li><a href="https://nowplix.dev" target="_blank" rel="noreferrer noopener">Live</a></li><!-- /wp:list-item -->
+				<!-- wp:list-item --><li><a href="https://nowplix.dev" target="_blank" rel="noreferrer noopener">Promotions</a></li><!-- /wp:list-item --></ul>
+				<!-- /wp:list -->
+			</div>
+			<!-- /wp:group -->
+
+			<!-- wp:group {"className":"now-footer-col","style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"constrained"}} -->
+			<div class="wp-block-group now-footer-col">
+				<!-- wp:heading {"level":4,"className":"now-footer-head"} -->
+				<h4 class="wp-block-heading now-footer-head">Company</h4>
+				<!-- /wp:heading -->
+				<!-- wp:list {"className":"now-footer-links"} -->
+				<ul class="wp-block-list now-footer-links"><!-- wp:list-item --><li><a href="/about/">About</a></li><!-- /wp:list-item -->
+				<!-- wp:list-item --><li><a href="/platform/">Platform</a></li><!-- /wp:list-item -->
+				<!-- wp:list-item --><li><a href="https://nowplix.dev" target="_blank" rel="noreferrer noopener">Press</a></li><!-- /wp:list-item -->
+				<!-- wp:list-item --><li><a href="https://nowplix.dev" target="_blank" rel="noreferrer noopener">Responsible gaming</a></li><!-- /wp:list-item --></ul>
+				<!-- /wp:list -->
+			</div>
+			<!-- /wp:group -->
+		</div>
+		<!-- /wp:group -->
 	</div>
 	<!-- /wp:group -->
 
-	<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"var:preset|font-size|small"}},"textColor":"muted"} -->
-	<p class="has-text-align-center has-muted-color has-text-color" style="font-size:var(--wp--preset--font-size--small)">© Nowplix. Built with the NOW design system.</p>
-	<!-- /wp:paragraph -->
+	<!-- wp:group {"align":"wide","className":"now-footer-bottom","style":{"spacing":{"padding":{"top":"var:preset|spacing|50"},"blockGap":"var:preset|spacing|40"},"border":{"top":{"color":"var:preset|color|border","width":"1px"}}},"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
+	<div class="wp-block-group alignwide now-footer-bottom" style="border-top-color:var(--wp--preset--color--border);border-top-width:1px;padding-top:var(--wp--preset--spacing--50)">
+		<!-- wp:paragraph {"style":{"typography":{"fontSize":"var:preset|font-size|small"}},"textColor":"muted"} -->
+		<p class="has-muted-color has-text-color" style="font-size:var(--wp--preset--font-size--small)">© 2026 NowPlix. Built with the NOW design system.</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:list {"className":"now-footer-legal"} -->
+		<ul class="wp-block-list now-footer-legal"><!-- wp:list-item --><li><a href="https://nowplix.dev" target="_blank" rel="noreferrer noopener">Terms</a></li><!-- /wp:list-item -->
+		<!-- wp:list-item --><li><a href="https://nowplix.dev" target="_blank" rel="noreferrer noopener">Privacy</a></li><!-- /wp:list-item -->
+		<!-- wp:list-item --><li>18+</li><!-- /wp:list-item --></ul>
+		<!-- /wp:list -->
+	</div>
+	<!-- /wp:group -->
 </footer>
 <!-- /wp:group -->

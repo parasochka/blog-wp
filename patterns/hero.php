@@ -3,19 +3,19 @@
  * Title: Hero
  * Slug: now/hero
  * Categories: now, banner
- * Description: Editorial hero with eyebrow, display heading and CTAs (dark).
+ * Description: Editorial hero — eyebrow, display heading, sub, CTAs and category pills (dark).
  *
  * @package now-blog
  */
 ?>
-<!-- wp:group {"align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|100","bottom":"var:preset|spacing|90"}},"blockGap":"var:preset|spacing|40"},"gradient":"purple-fade","layout":{"type":"constrained","contentSize":"860px"}} -->
-<div class="wp-block-group alignfull has-purple-fade-gradient-background has-background" style="padding-top:var(--wp--preset--spacing--100);padding-bottom:var(--wp--preset--spacing--90)">
-	<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"var:preset|font-size|small","textTransform":"uppercase","letterSpacing":"0.14em","fontStyle":"normal","fontWeight":"400"}},"textColor":"primary-light","fontFamily":"heading"} -->
-	<p class="has-text-align-center has-primary-light-color has-text-color has-heading-font-family" style="font-size:var(--wp--preset--font-size--small);font-style:normal;font-weight:400;letter-spacing:0.14em;text-transform:uppercase"><?php esc_html_e( 'The NowPlix Blog', 'now-blog' ); ?></p>
+<!-- wp:group {"align":"wide","className":"now-hero","style":{"spacing":{"padding":{"top":"var:preset|spacing|100","bottom":"var:preset|spacing|70"}},"blockGap":"var:preset|spacing|40"},"layout":{"type":"constrained","contentSize":"820px"}} -->
+<div class="wp-block-group alignwide now-hero" style="padding-top:var(--wp--preset--spacing--100);padding-bottom:var(--wp--preset--spacing--70)">
+	<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"var:preset|font-size|small","textTransform":"uppercase","letterSpacing":"0.16em","fontStyle":"normal","fontWeight":"400"}},"textColor":"primary-light","fontFamily":"heading"} -->
+	<p class="has-text-align-center has-primary-light-color has-text-color has-heading-font-family" style="font-size:var(--wp--preset--font-size--small);font-style:normal;font-weight:400;letter-spacing:0.16em;text-transform:uppercase"><?php esc_html_e( 'The NowPlix Blog', 'now-blog' ); ?></p>
 	<!-- /wp:paragraph -->
 
-	<!-- wp:heading {"textAlign":"center","level":1,"style":{"typography":{"fontSize":"var:preset|font-size|display","fontWeight":"400"}},"textColor":"contrast"} -->
-	<h1 class="wp-block-heading has-text-align-center has-contrast-color has-text-color" style="font-size:var(--wp--preset--font-size--display);font-weight:400"><?php esc_html_e( 'Signals from the future of iGaming.', 'now-blog' ); ?></h1>
+	<!-- wp:heading {"textAlign":"center","level":1,"style":{"typography":{"fontSize":"var:preset|font-size|display","fontWeight":"400","lineHeight":"1.02","letterSpacing":"-0.02em"}},"textColor":"contrast"} -->
+	<h1 class="wp-block-heading has-text-align-center has-contrast-color has-text-color" style="font-size:var(--wp--preset--font-size--display);font-weight:400;letter-spacing:-0.02em;line-height:1.02"><?php esc_html_e( 'Signals from the future of iGaming.', 'now-blog' ); ?></h1>
 	<!-- /wp:heading -->
 
 	<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"var:preset|font-size|large"}},"textColor":"text"} -->
@@ -33,5 +33,7 @@
 		<!-- /wp:button -->
 	</div>
 	<!-- /wp:buttons -->
+
+	<!-- wp:categories {"showPostCounts":false,"showEmpty":false,"className":"now-category-pills aligncenter","style":{"spacing":{"margin":{"top":"var:preset|spacing|20"}}}} /-->
 </div>
 <!-- /wp:group -->
