@@ -1,0 +1,16 @@
+/* NowPlix iGaming — Border Radius Tokens
+   Scale from the "Border Radius" frame, plus the signature asymmetric
+   button radius used across marketing CTAs. */
+
+:root {
+  --radius-sm:  4px;
+  --radius-md:  8px;   /* buttons, inputs, small controls */
+  --radius-lg:  12px;  /* cards, tables */
+  --radius-xl:  16px;  /* large surface cards */
+  --radius-2xl: 24px;
+  --radius-3xl: 32px;
+  --radius-pill: 999px; /* badges, tags */
+
+  /* Signature NowPlix CTA — asymmetric "spark" corners */
+  --radius-cta: 12px 4px 12px 4px;
+}

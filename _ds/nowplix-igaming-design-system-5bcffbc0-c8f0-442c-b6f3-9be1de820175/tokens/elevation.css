@@ -1,0 +1,24 @@
+/* NowPlix iGaming — Elevation & Glow Tokens
+   The system expresses depth with hairline strokes + inner brand glow,
+   not soft drop shadows. Transcribed from the Elevation + component frames. */
+
+:root {
+  /* Level 1 — resting surface: a single hairline stroke, no shadow */
+  --elev-1: inset 0 0 0 1px var(--border);
+
+  /* Level 2 — Brand Glow: elevated panel / featured card */
+  --elev-2: inset 0 0 0 1px var(--primary-500),
+            inset 0 0 32px 0 rgba(81, 73, 230, 0.15);
+
+  /* Level 3 — Strong Glow: modal / high-emphasis, lifted off the page */
+  --elev-3: inset 0 0 0 1px var(--border),
+            0 8px 16px 0 rgba(0, 0, 0, 0.4);
+
+  /* Focus — input / select active state */
+  --focus-glow: inset 0 0 0 1.5px var(--primary-500),
+                0 0 8px 0 rgba(81, 73, 230, 0.2);
+
+  /* Ambient brand halo for hero renders / active tiles */
+  --glow-brand: 0 0 24px 0 rgba(81, 73, 230, 0.45);
+  --glow-accent: 0 0 24px 0 rgba(255, 172, 52, 0.35);
+}

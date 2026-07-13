@@ -1,130 +1,62 @@
-# NOW — WordPress block theme
+# NOW — NowPlix blog (classic WordPress theme)
 
-A custom WordPress **block theme (Full Site Editing)** for the
-[Nowplix blog](https://blog.nowplix.dev), driven by the Figma **"NOW"**
-design system. Design tokens live in `theme.json` and map 1:1 to Figma
-variables — see [`DESIGN-SYNC.md`](./DESIGN-SYNC.md).
-
-## The pipeline
+A custom WordPress **classic PHP theme** for the
+[NowPlix blog](https://blog.nowplix.dev). The Claude Design **"NOW"** design
+system is the source of truth for styling: its tokens live in
+[`_ds/…/tokens/*.css`](./_ds) and are enqueued **as-is**. Templates are plain
+PHP that reproduce the design-handoff screens pixel-for-pixel. **The repo root
+is the theme.**
 
 ```
-Figma "NOW"  ──►  theme.json + templates  ──►  GitHub  ──►  WP Pusher plugin  ──►  WordPress
-  design system     this repo                    version      (pull in wp-admin)     blog.nowplix.dev
+Claude Design "NOW"  ─►  _ds/tokens + *.php  ─►  GitHub  ─►  WP Pusher  ─►  WordPress
+ design-handoff screens    this repo (theme)      (main)     (pull/update)    live site
 ```
-
-- **Figma is the source of truth.** Colors, type, spacing, radii, shadows
-  come from Figma variables and land in `theme.json`.
-- **This repo IS the theme.** Its root is the theme folder.
-- **WP Pusher pulls the theme from GitHub** straight through the WordPress
-  admin — no server/SSH access required. Push to GitHub, click Update in
-  wp-admin (or wire the webhook for one-click auto-update).
 
 ## Structure
 
 ```
-.
-├── style.css                # theme header (required)
-├── theme.json               # design tokens + global styles (the Figma bridge)
-├── functions.php            # asset loading, pattern categories, block styles
-├── templates/               # page templates (cover every page type)
-│   ├── index.html           #   fallback
-│   ├── home.html            #   blog posts index (hero + grid + CTA)
-│   ├── single.html          #   single post (+ comments)
-│   ├── page.html            #   static page
-│   ├── page-wide.html       #   wide page template
-│   ├── archive.html         #   category / tag / date archives
-│   ├── author.html          #   author archive
-│   ├── search.html          #   search results
-│   └── 404.html             #   not found
-├── parts/                   # header.html (logo + nav), footer.html
-├── patterns/                # hero, hero-image, featured-lead, category-row,
-│                            #   article-cta, newsletter-cta (reusable NOW blocks)
-├── assets/css/theme.css     # supplemental styles theme.json can't express
-├── assets/js/now.js         # auto table-of-contents, reading progress, share
-└── .github/workflows/       # validate.yml (checks theme.json/style.css on push)
+blog-wp/  (= the theme)
+├── style.css                # WP theme header (metadata)
+├── functions.php            # enqueue tokens/CSS/JS, supports, nav, helpers
+├── header.php · footer.php  # sticky glass masthead / footer (shared)
+├── home.php                 # hero → featured → per-category rails → newsletter
+├── single.php               # article: 21:9 hero, 760px prose, sticky sidebar
+├── archive.php · search.php # card grids
+├── page.php · page-canvas.php  # pages (full-bleed designed / readable text)
+├── index.php · 404.php      # fallbacks
+├── _ds/…/tokens/*.css       # DESIGN-SYSTEM SOURCE OF TRUTH (colors/type/space…)
+├── _ds/…/styles.css         # token @import manifest (enqueued)
+├── assets/css/now.css       # supplemental: prose, hovers, responsive, motion
+├── assets/js/now.js         # rail arrows, article TOC, copy-link
+├── assets/img/*             # logo (logo-now-glass.png) + 3D illustrations
+└── .github/workflows/       # validate.yml (php -l + required files/tokens)
 ```
 
-Uploading your own logo, featured images and hero/section artwork (with exact
-aspect ratios and where each goes in wp-admin), plus the one-time WordPress
-settings (permalinks, homepage, menu), are documented in
-[`MEDIA-GUIDE.md`](./MEDIA-GUIDE.md).
+## Design changes
 
-## Pages covered
+1. **A token** (color/space/radius/type/glow) → edit `_ds/…/tokens/*.css`.
+   One edit re-themes the whole site.
+2. **A shared style** (prose/hover/responsive) → `assets/css/now.css`, via
+   `var(--…)` tokens only.
+3. **Layout** → the relevant `*.php`, mirroring the handoff screen.
 
-Home/blog index, single post, static page, category, tag, date archive,
-author archive, search results, and 404 — the full set a blog needs.
+No raw hex/px that duplicates a token. Full rules: [`CLAUDE.md`](./CLAUDE.md).
 
-## Install (Method A — manual zip)
+## Deploy
 
-No plugin, works everywhere:
+WP Pusher pulls this repo (branch **main**, install-from-subdirectory empty).
+Push to `main` → WP Pusher → **Update** → activate **"NOW — NowPlix Blog"**.
+Full migration/ops guide: [`MIGRATION.md`](./MIGRATION.md).
 
-1. Download the repo as a zip:
-   `https://github.com/parasochka/blog-wp/archive/refs/heads/main.zip`
-2. WordPress admin: **Appearance → Themes → Add New → Upload Theme** →
-   pick the zip → **Install** → **Activate**.
-3. Edit visually under **Appearance → Editor** (Site Editor).
+## Validation
 
-The theme folder will be `blog-wp-main`; it shows in the theme list as
-**NOW**. To update, re-upload a fresh zip.
+`.github/workflows/validate.yml` runs on every push: `php -l` on all PHP files
+plus a check that the required theme files and `_ds/` tokens exist. Keep it
+green — WP Pusher ships whatever is on `main`.
 
-## Install (Method B — WP Pusher, admin-only auto-update)
+## Content
 
-Deploy from GitHub without any server/SSH access — everything happens in
-wp-admin. Recommended once you're iterating on the theme.
-
-1. Install the **WP Pusher** plugin: **Plugins → Add New → Upload Plugin**
-   (get it from [wppusher.com](https://wppusher.com)) → Activate.
-2. **WP Pusher → Install Theme**:
-   - Repository: `parasochka/blog-wp`
-   - Branch: `main`
-   - Leave "Install from subdirectory" empty (repo root **is** the theme).
-   - Click **Install Theme**.
-3. **Appearance → Themes → Activate "NOW"**.
-4. To update after a new push: **WP Pusher → Themes → Update**, or enable
-   **Push-to-Deploy** to have GitHub trigger updates automatically via the
-   webhook WP Pusher generates.
-
-WP Pusher pulls over HTTPS from the public repo — no keys, no secrets.
-
-## Design system & AI skills
-
-The theme is held to a high craft bar via three installed design skills in
-[`.claude/skills/`](./.claude/skills):
-
-- **[Impeccable](https://github.com/pbakaus/impeccable)** (Paul Bakaus) — a
-  design language that catches AI "slop" and enforces hard bans (no
-  side-stripe borders, no gradient text, no decorative glassmorphism, contrast
-  minimums).
-- **[Taste Skill](https://github.com/Leonxlnx/taste-skill)** (Leon Lin,
-  installed as `design-taste-frontend`) — anti-slop taste pass trained on
-  award-winning sites, for editorial/landing surfaces.
-- **[emil-design-eng](https://github.com/emilkowalski/skills)** (Emil Kowalski)
-  — motion decisions: custom ease-out curves, sub-320ms UI, `:active` feedback,
-  reduced-motion support (+ `review-animations` / `improve-animations`).
-
-Agent guidance and the design guardrails live in
-[`CLAUDE.md`](./CLAUDE.md) · [`AGENTS.md`](./AGENTS.md) ·
-[`PRODUCT.md`](./PRODUCT.md) · [`DESIGN.md`](./DESIGN.md). The theme has already
-been passed through these skills: motion tokens (`custom.ease` / `custom.duration`)
-live in `theme.json`, quotes use no side-stripe, and `theme.css` carries
-custom easing, `:active` press feedback, `text-wrap`, a progressive
-scroll-reveal, and a `prefers-reduced-motion` reset.
-
-## Continuous validation
-
-`.github/workflows/validate.yml` runs on every push: it checks `theme.json`
-is valid JSON and that the required theme files and `style.css` header are
-present, so WP Pusher never pulls a broken build. No secrets required.
-
-## Updating design tokens from Figma
-
-See [`DESIGN-SYNC.md`](./DESIGN-SYNC.md) for the full mapping and the
-MCP-driven sync workflow. In short: pull Figma variables with the Figma
-MCP, map them to `theme.json` paths, commit, push — then update the theme
-in WP Pusher (or let Push-to-Deploy do it).
-
-> **Tokens are live.** `theme.json` now carries the **real NowPlix "NOW"**
-> design-system values — dark palette (`#0f0f2d` base, `#5149e6` primary,
-> `#ffac34` accent), the 12→72px type scale, 4px spacing grid, radii and
-> brand-glow elevation. Fonts: **Archivo Black** (headings) + **42dot Sans**
-> (body). See [`DESIGN-SYNC.md`](./DESIGN-SYNC.md) for the full mapping.
+Content (posts, pages, categories, menus, media) lives in WordPress, not git —
+edited in wp-admin or via the WordPress MCP. The theme renders whatever exists.
+For bulk/awkward uploads there is a small helper backend in
+[`tools/uploader/`](./tools/uploader).

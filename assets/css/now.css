@@ -1,0 +1,215 @@
+/* ==========================================================================
+   NOW theme — supplemental CSS.
+   The design system (_ds/…/tokens/*.css) owns all tokens. This file carries
+   only what the inline template markup can't: the page canvas, prose, real
+   :hover states (the handoff used a preview-only `style-hover`), responsive
+   stacking and reduced-motion. Everything references DS tokens — no raw values
+   beyond what the screens themselves inline.
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+	margin: 0;
+	background: var(--bg-page);
+	color: var(--text-secondary);
+	font-family: var(--font-body);
+	font-size: 16px;
+	line-height: 1.65;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	background-image:
+		radial-gradient(900px 520px at 18% -8%, rgba(81, 73, 230, 0.20), transparent 60%),
+		radial-gradient(760px 480px at 92% 2%, rgba(107, 85, 245, 0.14), transparent 60%);
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+}
+
+img { max-width: 100%; height: auto; }
+
+a { color: var(--text-brand); text-decoration: none; }
+a:hover { color: var(--primary-200); }
+
+::selection { background: var(--primary-500); color: #fff; }
+
+:focus-visible { outline: 2px solid var(--primary-500); outline-offset: 2px; }
+
+/* ---- Header nav ---------------------------------------------------------- */
+.now-nav a,
+.now-nav .now-nav-link,
+.now-nav-menu a {
+	font-family: var(--font-body);
+	font-weight: 600;
+	font-size: 14px;
+	color: var(--text-secondary);
+	white-space: nowrap;
+}
+.now-nav a:hover,
+.now-nav .now-nav-link:hover,
+.now-nav .now-nav-link.now-active,
+.now-nav-menu .current-menu-item > a,
+.now-nav-menu .current_page_item > a { color: var(--text-primary); }
+
+.now-nav-menu { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: 24px; }
+
+/* Categories dropdown */
+.now-nav-item { position: relative; display: inline-flex; align-items: center; }
+.now-dropdown-toggle { cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.now-dropdown-toggle svg { transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1); }
+.now-nav-item:hover .now-dropdown-toggle svg,
+.now-nav-item:focus-within .now-dropdown-toggle svg { transform: rotate(180deg); }
+.now-dropdown {
+	position: absolute; top: calc(100% + 12px); left: 50%;
+	transform: translateX(-50%) translateY(6px);
+	min-width: 520px; max-width: 92vw;
+	background: var(--surface-panel); border: 1px solid var(--border);
+	border-radius: var(--radius-xl); box-shadow: var(--elev-3);
+	padding: 12px; z-index: 200;
+	opacity: 0; visibility: hidden; pointer-events: none;
+	transition: opacity 160ms ease, transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+/* invisible hover bridge so the pointer can cross the 12px gap */
+.now-dropdown::before { content: ""; position: absolute; top: -12px; left: 0; right: 0; height: 12px; }
+.now-nav-item:hover .now-dropdown,
+.now-nav-item:focus-within .now-dropdown {
+	opacity: 1; visibility: visible; pointer-events: auto;
+	transform: translateX(-50%) translateY(0);
+}
+.now-dropdown-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.now-dropdown-link { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: var(--radius-md); }
+.now-dropdown-link:hover { background: color-mix(in srgb, var(--primary-500) 14%, transparent); }
+.now-dropdown-name { font-family: var(--font-display); font-weight: 400; font-size: 14px; color: var(--text-primary); }
+.now-dropdown-blurb { font-family: var(--font-body); font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+.now-brand:hover { color: inherit; }
+.now-search:focus-within { border-color: var(--border-strong); }
+
+/* ---- Buttons / CTAs ------------------------------------------------------ */
+.now-cta-accent:hover { filter: brightness(1.06); }
+.now-btn-primary:hover { background: var(--primary-400); box-shadow: var(--glow-brand); }
+.now-btn-ghost:hover { background: color-mix(in srgb, var(--primary-500) 16%, transparent); color: #fff; }
+
+/* ---- Category pills ------------------------------------------------------ */
+.now-pill:hover { border-color: var(--primary-500); color: #fff; }
+
+/* ---- Section "view all" + rail arrows ------------------------------------ */
+.now-viewall:hover { color: var(--primary-200); }
+.now-rail-btn:hover { border-color: var(--primary-500); color: #fff; }
+
+/* ---- Story cards --------------------------------------------------------- */
+.now-card-media img {
+	transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 320ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.now-card-media:hover img { transform: scale(1.045); }
+.now-card:hover .now-card-media { box-shadow: var(--glow-brand); }
+.now-card-title { transition: color 160ms ease; }
+.now-card-title:hover { color: var(--primary-200); }
+
+/* ---- Footer links -------------------------------------------------------- */
+.now-foot-link:hover { color: var(--text-primary); }
+.now-share:hover { border-color: var(--primary-500); color: #fff; }
+
+/* ---- Rail scrollbar ------------------------------------------------------ */
+.now-rail { scrollbar-color: var(--border) transparent; }
+.now-rail::-webkit-scrollbar { height: 6px; }
+.now-rail::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+.now-rail::-webkit-scrollbar-track { background: transparent; }
+
+/* ---- Article prose (mirrors screens/NowBlog-Article.dc.html) ------------- */
+.now-prose > * { margin: 0 0 24px; }
+.now-prose > *:last-child { margin-bottom: 0; }
+.now-prose h2 { font-family: var(--font-display); font-weight: 400; font-size: 28px; margin-top: 48px; color: var(--text-primary); letter-spacing: -0.01em; line-height: 1.15; }
+.now-prose h3 { font-family: var(--font-display); font-weight: 400; font-size: 22px; margin-top: 32px; color: var(--text-primary); letter-spacing: -0.01em; line-height: 1.2; }
+.now-prose a { color: var(--text-brand); text-decoration: underline; text-underline-offset: 2px; }
+.now-prose a:hover { color: var(--primary-200); }
+.now-prose ul, .now-prose ol { padding-left: 22px; }
+.now-prose li { margin-bottom: 8px; }
+.now-prose strong { color: var(--text-primary); font-weight: 600; }
+.now-prose code { font-family: ui-monospace, "JetBrains Mono", monospace; font-size: 0.9em; background: var(--surface-panel); padding: 2px 6px; border-radius: var(--radius-sm); color: var(--primary-200); }
+.now-prose pre { background: var(--bg-page-deep); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; overflow: auto; }
+.now-prose pre code { background: none; padding: 0; color: var(--text-secondary); }
+.now-prose blockquote { margin: 32px 0; padding: 24px; background: var(--surface-card); border-radius: var(--radius-lg); box-shadow: var(--elev-1); font-family: var(--font-display); font-weight: 400; font-size: 22px; line-height: 1.4; color: var(--text-primary); }
+.now-prose figure { margin: 32px 0; }
+.now-prose figure img, .now-prose img { border-radius: var(--radius-lg); width: 100%; }
+.now-prose figcaption, .now-prose .wp-caption-text { color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 8px; }
+.now-prose h2:first-child, .now-prose h3:first-child { margin-top: 0; }
+
+/* ---- Pages --------------------------------------------------------------- */
+/* Designed pages (About/Platform) use full-width <section> children and are
+   left untouched; plain text pages get a readable, centered column. */
+.now-page > p,
+.now-page > h1, .now-page > h2, .now-page > h3, .now-page > h4, .now-page > h5, .now-page > h6,
+.now-page > ul, .now-page > ol, .now-page > blockquote, .now-page > figure, .now-page > pre, .now-page > table {
+	max-width: 760px;
+	margin-inline: auto;
+	padding-inline: 24px;
+}
+.now-page > p { font-size: 18px; line-height: 1.78; color: var(--text-secondary); }
+.now-page > h1, .now-page > h2, .now-page > h3, .now-page > h4 { font-family: var(--font-display); font-weight: 400; color: var(--text-primary); letter-spacing: -0.01em; }
+.now-page > h1 { font-size: clamp(38px, 5vw, 60px); line-height: 1.05; margin-bottom: 8px; }
+.now-page > h2 { font-size: 28px; margin-top: 40px; }
+.now-page > ul, .now-page > ol { padding-left: 46px; }
+.now-page > blockquote { border-left: 0; }
+/* Only plain (text-first) pages need top breathing room; section-first
+   designed pages already pad their hero. */
+.now-page > :first-child:not(section) { margin-top: 64px; }
+
+/* ---- On-this-page TOC (populated by now.js) ------------------------------ */
+.now-toc-link {
+	display: block;
+	color: var(--text-muted);
+	font-family: var(--font-body);
+	font-size: 14px;
+	padding: 6px 0 6px 12px;
+	border-left: 2px solid var(--border);
+	text-decoration: none;
+	transition: color 160ms ease, border-color 160ms ease;
+}
+.now-toc-link:hover, .now-toc-link.now-active { color: var(--primary-200); border-left-color: var(--primary-500); }
+
+/* ---- Pagination ---------------------------------------------------------- */
+.now-pagination .page-numbers {
+	display: inline-flex; align-items: center; justify-content: center;
+	min-width: 40px; height: 40px; padding: 0 12px;
+	border: 1px solid var(--border); border-radius: var(--radius-md);
+	background: var(--surface-card); color: var(--text-secondary);
+	font-family: var(--font-body); font-weight: 600; font-size: 14px;
+	text-decoration: none; margin: 0 4px 8px 0;
+}
+.now-pagination .page-numbers.current { border-color: var(--primary-500); color: #fff; background: color-mix(in srgb, var(--primary-500) 16%, var(--surface-card)); }
+.now-pagination .page-numbers:hover { border-color: var(--primary-500); color: #fff; }
+.now-pagination .nav-links { display: flex; flex-wrap: wrap; align-items: center; }
+
+/* ---- Responsive ---------------------------------------------------------- */
+@media (max-width: 960px) {
+	.now-search { display: none !important; }
+}
+@media (max-width: 900px) {
+	.now-featured { grid-template-columns: 1fr !important; gap: 32px !important; }
+}
+@media (max-width: 1040px) {
+	.now-article-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 48px !important; }
+	.now-sidebar { position: static !important; top: auto !important; }
+}
+@media (max-width: 820px) {
+	.now-nav { gap: 16px !important; }
+	.now-dropdown { min-width: 300px; }
+	.now-dropdown-grid { grid-template-columns: 1fr; }
+	.now-related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 560px) {
+	.now-nav { display: none !important; }
+	.now-related-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ---- Reduced motion ------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+}

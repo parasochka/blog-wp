@@ -1,0 +1,76 @@
+/* NowPlix iGaming — Color Tokens
+   Values transcribed verbatim from the NOW.fig "NowPlix Design System" frame. */
+
+:root {
+  /* ── Primary (Brand) — violet ─────────────────────────── */
+  --primary-100: #D4D5FF;
+  --primary-200: #ABABFF;
+  --primary-300: #8A74FF;
+  --primary-400: #7060F0;
+  --primary-500: #5149E6; /* brand base */
+  --primary-600: #3B34C0;
+  --primary-700: #2A2590;
+  --primary-800: #1A1760;
+  --primary-900: #0F0F40;
+
+  /* ── Secondary — purple ───────────────────────────────── */
+  --secondary-400: #8A74FF;
+  --secondary-500: #6B55F5;
+  --secondary-600: #5040D8;
+  --secondary-700: #3A2DAA;
+
+  /* ── Accent — gaming orange ───────────────────────────── */
+  --accent-400: #FFAC34;
+  --accent-500: #F5900A;
+  --accent-600: #D47004;
+  --accent-700: #A55206;
+
+  /* ── Neutral ──────────────────────────────────────────── */
+  --neutral-50:  #F5F5FA;
+  --neutral-100: #EAEAF2;
+  --neutral-200: #D0D0E0;
+  --neutral-300: #ABABC8;
+  --neutral-400: #8080A8;
+  --neutral-500: #5A5A80;
+  --neutral-600: #414168;
+  --neutral-700: #2E2E52;
+  --neutral-800: #1E1E40;
+  --neutral-900: #0F0F2D;
+  --neutral-950: #080818;
+
+  /* ── Semantic ─────────────────────────────────────────── */
+  --success: #22C55E;
+  --warning: #FFAC34;
+  --error:   #EF4444;
+  --info:    #3B82F6;
+
+  --success-bg: rgba(34, 197, 94, 0.15);
+  --warning-bg: rgba(255, 172, 52, 0.15);
+  --error-bg:   rgba(239, 68, 68, 0.15);
+  --info-bg:    rgba(59, 130, 246, 0.15);
+
+  /* ── Signature gradients ──────────────────────────────── */
+  --gradient-brand:     linear-gradient(90deg, #534699 35.95%, #8A74FF 100%); /* @kind color */
+  --gradient-sunset:    linear-gradient(135deg, #FFC05E, #7060F0); /* @kind color */
+  --gradient-lavender:  linear-gradient(135deg, #EDEEFF, #5149E6); /* @kind color */
+  --gradient-ocean:     linear-gradient(135deg, #6B55F5, #0F0F40); /* @kind color */
+  --gradient-amber:     linear-gradient(135deg, #FFC05E, #A55206); /* @kind color */
+  --gradient-aurora:    linear-gradient(135deg, #B09BFF, #FFAC34); /* @kind color */
+
+  /* ── Semantic aliases (surfaces / text / lines) ───────── */
+  --bg-page:        var(--neutral-900);   /* #0F0F2D deep indigo */
+  --bg-page-deep:   var(--neutral-950);
+  --surface-card:   #141430;              /* default card / input fill */
+  --surface-panel:  var(--neutral-800);   /* elevated panel, dropdown, header */
+  --surface-subtle: #1A1A3C;
+  --border:         var(--neutral-700);   /* #2E2E52 hairline */
+  --border-strong:  var(--neutral-600);
+
+  --text-primary:   #FFFFFF;
+  --text-secondary: var(--neutral-300);   /* #ABABC8 */
+  --text-muted:     var(--neutral-500);   /* #5A5A80 */
+  --text-brand:     var(--secondary-400); /* #8A74FF link / highlight */
+  --text-on-brand:  #FFFFFF;
+
+  --focus-ring:     var(--primary-500);
+}

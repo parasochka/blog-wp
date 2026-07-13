@@ -7,9 +7,8 @@ vendor/
 dist/
 build/
 
-# Design source — keep the deployed theme lean; re-export from Figma to
-# re-sync (see DESIGN-CONSTANTS.md). The parsed tokens live in
-# design-constants.json + theme.json, so the binary need not ship to WP.
+# Design source binary — the live tokens ship as CSS in _ds/…/tokens/*.css,
+# so the Figma export need not be committed.
 *.fig
 
 # OS / editor

@@ -7,8 +7,8 @@
 
 The **NowPlix blog** (blog.nowplix.dev) — an editorial publication for the
 NowPlix iGaming platform. Product, design, and technology stories about casino,
-sportsbook, and the tech around them. Delivered as the **NOW** WordPress block
-theme (this repo).
+sportsbook, and the tech around them. Delivered as the **NOW** WordPress
+classic theme (this repo), styled by the Claude Design "NOW" design system.
 
 ## Register
 
@@ -23,7 +23,7 @@ prospective NowPlix users. Skims on mobile, reads long-form on desktop.
 
 ## Platform
 
-`web` — WordPress Full Site Editing. No native app.
+`web` — WordPress classic PHP theme. No native app.
 
 ## Voice & tone
 
@@ -40,5 +40,5 @@ saturated brand colors carry identity; motion is purposeful and restrained.
 ## Guardrails
 
 Follow the Impeccable absolute bans and Emil Kowalski motion rules — both are
-summarized in [`CLAUDE.md`](./CLAUDE.md). Tokens are the source of truth; see
-[`DESIGN.md`](./DESIGN.md) and [`DESIGN-SYNC.md`](./DESIGN-SYNC.md).
+summarized in [`CLAUDE.md`](./CLAUDE.md). Tokens are the source of truth — they
+live in [`_ds/…/tokens/*.css`](./_ds).
