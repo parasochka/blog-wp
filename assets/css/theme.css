@@ -1,0 +1,70 @@
+/*
+ * NOW theme — supplemental styles.
+ * Only what theme.json cannot express: custom block styles, transitions,
+ * and small refinements. Design tokens are exposed by WordPress as
+ * --wp--preset--* and --wp--custom--* CSS variables from theme.json.
+ */
+
+/* Smooth interactions across the theme */
+a,
+.wp-block-button__link,
+.wp-block-post-featured-image img {
+	transition: color 0.15s ease, background-color 0.15s ease, opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Featured image hover lift on cards/listings */
+.wp-block-post-featured-image a:hover img {
+	transform: translateY(-2px);
+	box-shadow: var(--wp--preset--shadow--md);
+}
+
+/* Block style: "Card" for core/group */
+.wp-block-group.is-style-card {
+	background-color: var(--wp--preset--color--base);
+	border: 1px solid var(--wp--preset--color--border);
+	border-radius: var(--wp--custom--radius--lg);
+	padding: var(--wp--preset--spacing--50);
+	box-shadow: var(--wp--preset--shadow--sm);
+}
+
+.wp-block-group.is-style-card:hover {
+	box-shadow: var(--wp--preset--shadow--md);
+}
+
+/* Block style: "Rounded (large)" for core/image */
+.wp-block-image.is-style-rounded-lg img {
+	border-radius: var(--wp--custom--radius--lg);
+}
+
+/* Block style: "Ghost" for core/button */
+.wp-block-button.is-style-ghost .wp-block-button__link {
+	background-color: transparent;
+	color: var(--wp--preset--color--primary);
+	border: 1px solid var(--wp--preset--color--border);
+}
+
+.wp-block-button.is-style-ghost .wp-block-button__link:hover {
+	background-color: var(--wp--preset--color--surface);
+	border-color: var(--wp--preset--color--primary);
+}
+
+/* Rounded avatars everywhere */
+.wp-block-avatar img {
+	border-radius: var(--wp--custom--radius--pill);
+}
+
+/* Post content rhythm: constrain media, keep comfortable measure */
+.wp-block-post-content > * {
+	margin-block: var(--wp--preset--spacing--40);
+}
+
+.wp-block-post-content figure,
+.wp-block-post-content .wp-block-image {
+	margin-block: var(--wp--preset--spacing--50);
+}
+
+/* Search field polish */
+.wp-block-search__inside-wrapper {
+	border: 1px solid var(--wp--preset--color--border);
+	overflow: hidden;
+}

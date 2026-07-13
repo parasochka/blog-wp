@@ -1,0 +1,22 @@
+/*
+Theme Name: NOW
+Theme URI: https://blog.nowplix.dev
+Author: Nowplix
+Author URI: https://blog.nowplix.dev
+Description: NOW — a custom WordPress block theme (FSE) for the Nowplix blog, driven by the Figma "NOW" design system. All design tokens (color, typography, spacing, radii, shadows) live in theme.json and map 1:1 to Figma variables.
+Requires at least: 6.5
+Tested up to: 6.7
+Requires PHP: 7.4
+Version: 0.1.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: now-blog
+Tags: blog, full-site-editing, block-patterns, custom-colors, custom-menu, editor-style, featured-images, threaded-comments, translation-ready
+*/
+
+/*
+ * Block themes are styled primarily through theme.json.
+ * This file only carries the theme header (required by WordPress).
+ * Extra CSS that theme.json cannot express is enqueued from
+ * assets/css/theme.css via functions.php.
+ */

@@ -1,0 +1,67 @@
+name: Deploy theme
+
+# Deploys the NOW block theme to the self-hosted WordPress server over SSH.
+# Triggers on pushes to the working branch, plus manual dispatch.
+
+on:
+  push:
+    branches:
+      - claude/wordpress-figma-theme-59xsom
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate theme.json
+        run: |
+          python3 -c "import json,sys; json.load(open('theme.json')); print('theme.json is valid JSON')"
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${SSH_PORT:-22}" -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+
+      - name: Deploy via rsync
+        run: |
+          rsync -az --delete \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude 'node_modules' \
+            --exclude '*.md' \
+            --exclude '.gitignore' \
+            --exclude 'DESIGN-SYNC.md' \
+            -e "ssh -i ~/.ssh/deploy_key -p ${SSH_PORT:-22}" \
+            ./ "${SSH_USER}@${SSH_HOST}:${WP_THEME_PATH}/"
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          WP_THEME_PATH: ${{ secrets.WP_THEME_PATH }}
+
+      - name: Flush WordPress cache (optional, needs WP-CLI on server)
+        continue-on-error: true
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "${SSH_PORT:-22}" "${SSH_USER}@${SSH_HOST}" \
+            "cd ${WP_PATH} && wp cache flush && wp theme activate now-blog || true"
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          WP_PATH: ${{ secrets.WP_PATH }}

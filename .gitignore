@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build artifacts
+*.zip
+dist/
+build/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Local WordPress / secrets
+wp-config.php
+.env
+.env.*
