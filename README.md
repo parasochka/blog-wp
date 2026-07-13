@@ -79,6 +79,30 @@ wp-admin. Recommended once you're iterating on the theme.
 
 WP Pusher pulls over HTTPS from the public repo — no keys, no secrets.
 
+## Design system & AI skills
+
+The theme is held to a high craft bar via three installed design skills in
+[`.claude/skills/`](./.claude/skills):
+
+- **[Impeccable](https://github.com/pbakaus/impeccable)** (Paul Bakaus) — a
+  design language that catches AI "slop" and enforces hard bans (no
+  side-stripe borders, no gradient text, no decorative glassmorphism, contrast
+  minimums).
+- **[Taste Skill](https://github.com/Leonxlnx/taste-skill)** (Leon Lin,
+  installed as `design-taste-frontend`) — anti-slop taste pass trained on
+  award-winning sites, for editorial/landing surfaces.
+- **[emil-design-eng](https://github.com/emilkowalski/skills)** (Emil Kowalski)
+  — motion decisions: custom ease-out curves, sub-320ms UI, `:active` feedback,
+  reduced-motion support (+ `review-animations` / `improve-animations`).
+
+Agent guidance and the design guardrails live in
+[`CLAUDE.md`](./CLAUDE.md) · [`AGENTS.md`](./AGENTS.md) ·
+[`PRODUCT.md`](./PRODUCT.md) · [`DESIGN.md`](./DESIGN.md). The theme has already
+been passed through these skills: motion tokens (`custom.ease` / `custom.duration`)
+live in `theme.json`, quotes use no side-stripe, and `theme.css` carries
+custom easing, `:active` press feedback, `text-wrap`, a progressive
+scroll-reveal, and a `prefers-reduced-motion` reset.
+
 ## Continuous validation
 
 `.github/workflows/validate.yml` runs on every push: it checks `theme.json`
