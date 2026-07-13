@@ -86,6 +86,55 @@ a:hover { color: var(--primary-200); }
 .now-brand:hover { color: inherit; }
 .now-search:focus-within { border-color: var(--border-strong); }
 
+/* ---- Mobile menu (burger) ------------------------------------------------ */
+/* Hidden on desktop; the burger + panel only appear once the inline nav is
+   dropped (≤560px). Everything references DS tokens. */
+.now-burger {
+	display: none;
+	width: 40px; height: 40px;
+	align-items: center; justify-content: center;
+	padding: 0; margin: 0;
+	border: 1px solid var(--border); border-radius: var(--radius-md);
+	background: var(--surface-card); color: var(--text-secondary);
+	cursor: pointer;
+}
+.now-burger:hover { border-color: var(--primary-500); color: var(--text-primary); }
+.now-burger-box { position: relative; display: block; width: 18px; height: 12px; }
+.now-burger-line {
+	position: absolute; left: 0; width: 18px; height: 2px;
+	background: currentColor; border-radius: 2px;
+	transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1), opacity 160ms ease;
+}
+.now-burger-line:nth-child(1) { top: 0; }
+.now-burger-line:nth-child(2) { top: 5px; }
+.now-burger-line:nth-child(3) { top: 10px; }
+.now-burger[aria-expanded="true"] .now-burger-line:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+.now-burger[aria-expanded="true"] .now-burger-line:nth-child(2) { opacity: 0; }
+.now-burger[aria-expanded="true"] .now-burger-line:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+
+.now-mobile-menu {
+	border-top: 1px solid var(--border);
+	background: color-mix(in srgb, var(--bg-page) 92%, transparent);
+}
+.now-mobile-search {
+	display: flex; align-items: center; gap: 8px;
+	height: 44px; padding: 0 14px; margin: 8px 0 12px;
+	border-radius: var(--radius-md); border: 1px solid var(--border);
+	background: var(--surface-card); color: var(--text-muted);
+	font-family: var(--font-body); font-size: 15px;
+}
+.now-mobile-search:focus-within { border-color: var(--border-strong); }
+.now-mobile-search input { border: 0; background: transparent; outline: none; color: var(--text-primary); font: inherit; width: 100%; }
+.now-mobile-links { display: flex; flex-direction: column; }
+.now-mobile-link {
+	padding: 13px 4px;
+	font-family: var(--font-body); font-weight: 600; font-size: 16px;
+	color: var(--text-secondary);
+	border-bottom: 1px solid var(--border);
+}
+.now-mobile-link:last-child { border-bottom: 0; }
+.now-mobile-link:hover, .now-mobile-link:focus-visible { color: var(--text-primary); }
+
 /* ---- Buttons / CTAs ------------------------------------------------------ */
 .now-cta-accent:hover { filter: brightness(1.06); }
 .now-btn-primary:hover { background: var(--primary-400); box-shadow: var(--glow-brand); }
@@ -201,7 +250,13 @@ a:hover { color: var(--primary-200); }
 }
 @media (max-width: 560px) {
 	.now-nav { display: none !important; }
+	.now-burger { display: inline-flex; }
 	.now-related-grid { grid-template-columns: 1fr !important; }
+}
+/* The mobile panel is a phone-only affordance: never show it once the inline
+   nav returns, even if it was left open before a resize. */
+@media (min-width: 561px) {
+	.now-mobile-menu { display: none !important; }
 }
 
 /* ---- Reduced motion ------------------------------------------------------ */
