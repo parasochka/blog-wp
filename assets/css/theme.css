@@ -88,17 +88,34 @@ a,
 	position: sticky;
 	top: 0;
 	z-index: var(--now-z-sticky);
-	background: color-mix(in srgb, var(--wp--preset--color--base) 82%, transparent);
-	backdrop-filter: saturate(140%) blur(12px);
+	background: color-mix(in srgb, var(--wp--preset--color--base) 78%, transparent);
+	backdrop-filter: saturate(150%) blur(14px);
+	-webkit-backdrop-filter: saturate(150%) blur(14px);
 	border-bottom: 1px solid var(--wp--preset--color--border);
+}
+
+/* One 68px band; the three zones (brand · nav · actions) sit on its baseline. */
+.site-header-inner {
+	min-height: 68px;
+	padding-block: var(--wp--preset--spacing--20);
 }
 
 .site-header .wp-block-site-logo img,
 .site-header .custom-logo {
 	display: block;
-	height: 34px;
+	height: 26px;
 	width: auto;
-	max-width: 160px;
+	max-width: 140px;
+}
+
+/* "blog" wordmark tag beside the glass logo. */
+.now-brand-tag {
+	margin: 0;
+	font-family: var(--wp--preset--font-family--body);
+	font-weight: 700;
+	font-size: var(--wp--preset--font-size--small);
+	letter-spacing: 0.02em;
+	color: var(--wp--preset--color--muted);
 }
 
 .site-header .wp-block-navigation a,
@@ -113,6 +130,60 @@ a,
 .site-header .wp-block-navigation a:hover,
 .site-header .wp-block-navigation .current-menu-item a {
 	color: var(--wp--preset--color--contrast);
+}
+
+/* Header right cluster: search pill + amber CTA. */
+.now-header-actions {
+	flex: 0 0 auto;
+}
+
+.now-header-search {
+	margin: 0;
+}
+
+.now-header-search .wp-block-search__inside-wrapper {
+	border-radius: var(--wp--custom--radius--pill);
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	padding-left: var(--wp--preset--spacing--30);
+}
+
+.now-header-search .wp-block-search__input {
+	min-width: 8rem;
+	max-width: 12rem;
+	font-size: var(--wp--preset--font-size--small);
+	color: var(--wp--preset--color--muted);
+}
+
+.now-header-search .wp-block-search__button {
+	background: transparent;
+	color: var(--wp--preset--color--muted);
+	padding-inline: var(--wp--preset--spacing--30);
+}
+
+.now-header-search .wp-block-search__button:hover {
+	color: var(--wp--preset--color--contrast);
+}
+
+.now-header-cta {
+	margin: 0;
+}
+
+.now-header-cta .wp-block-button__link {
+	font-size: var(--wp--preset--font-size--small);
+	padding: 0.55rem var(--wp--preset--spacing--40);
+	box-shadow: var(--wp--preset--shadow--glow);
+}
+
+.now-header-cta .wp-block-button__link:hover {
+	filter: brightness(1.06);
+}
+
+/* Below the wide breakpoint the search field is noise next to the burger. */
+@media (max-width: 900px) {
+	.now-header-search {
+		display: none;
+	}
 }
 
 .site-footer {
@@ -882,6 +953,289 @@ button:focus-visible,
 
 .now-author-box .wp-block-avatar {
 	flex: 0 0 auto;
+}
+
+/* ====================================================================
+ * REFERENCE PARITY — page halos, footer, hero, newsletter, page cards
+ * (About / Platform). Every value is a design token.
+ * ==================================================================== */
+
+/* ---- Page background: two faint brand halos over the deep field ---- */
+body {
+	background-color: var(--wp--preset--color--base);
+	background-image:
+		radial-gradient(900px 520px at 18% -8%, color-mix(in srgb, var(--wp--preset--color--primary) 20%, transparent), transparent 60%),
+		radial-gradient(760px 480px at 92% 2%, color-mix(in srgb, var(--wp--preset--color--secondary) 16%, transparent), transparent 60%);
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+}
+
+/* ---- Section eyebrow (display-font, tracked, brand) ---------------- */
+.now-section-eyebrow {
+	margin: 0 0 var(--wp--preset--spacing--10);
+	font-family: var(--wp--preset--font-family--heading);
+	font-weight: 400;
+}
+
+/* ---- Hero: sub reads as one calm measure -------------------------- */
+.now-hero > .has-text-align-center {
+	max-width: 40ch;
+	margin-inline: auto;
+}
+
+.now-hero .now-category-pills {
+	justify-content: center;
+}
+
+/* ---- Newsletter email capture ------------------------------------- */
+.now-newsletter-eyebrow {
+	margin: 0;
+	opacity: 0.85;
+}
+
+.now-newsletter-form {
+	display: flex;
+	gap: var(--wp--preset--spacing--20);
+	max-width: 460px;
+	margin: var(--wp--preset--spacing--20) auto 0;
+}
+
+.now-newsletter-form input[type="email"] {
+	flex: 1;
+	height: 48px;
+	padding: 0 var(--wp--preset--spacing--40);
+	border-radius: var(--wp--custom--radius--md);
+	border: 1px solid color-mix(in srgb, #fff 28%, transparent);
+	background: color-mix(in srgb, var(--wp--preset--color--base-deep) 35%, transparent);
+	color: #fff;
+	font-family: var(--wp--preset--font-family--body);
+	font-size: var(--wp--preset--font-size--medium);
+}
+
+.now-newsletter-form input[type="email"]::placeholder {
+	color: color-mix(in srgb, #fff 65%, transparent);
+}
+
+.now-newsletter-form input[type="email"]:focus {
+	outline: none;
+	border-color: #fff;
+	box-shadow: 0 0 0 3px color-mix(in srgb, #fff 22%, transparent);
+}
+
+.now-newsletter-form button {
+	height: 48px;
+	padding: 0 var(--wp--preset--spacing--50);
+	border: 0;
+	border-radius: var(--wp--custom--radius--md);
+	background: var(--wp--preset--color--accent);
+	color: var(--wp--preset--color--base-deep);
+	font-family: var(--wp--preset--font-family--body);
+	font-weight: 600;
+	font-size: var(--wp--preset--font-size--small);
+	box-shadow: var(--wp--preset--shadow--glow);
+	cursor: pointer;
+}
+
+.now-newsletter-form button:active {
+	transform: scale(0.97);
+}
+
+/* ---- Footer: brand + three link columns + bottom bar -------------- */
+.now-footer-top {
+	gap: var(--wp--preset--spacing--80);
+}
+
+.now-footer-brand .wp-block-site-logo img,
+.now-footer-brand .custom-logo {
+	height: 28px;
+	width: auto;
+}
+
+.now-footer-cols {
+	gap: var(--wp--preset--spacing--80);
+}
+
+.now-footer-head {
+	margin: 0 0 var(--wp--preset--spacing--30);
+	font-family: var(--wp--preset--font-family--heading);
+	font-weight: 400;
+	font-size: var(--wp--preset--font-size--small);
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--muted);
+}
+
+.now-footer-links {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--10);
+}
+
+.now-footer-links li {
+	margin: 0;
+	color: var(--wp--preset--color--text);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.now-footer-links a,
+.now-footer-nav .wp-block-navigation-item__content {
+	color: var(--wp--preset--color--text);
+	font-family: var(--wp--preset--font-family--body);
+	font-size: var(--wp--preset--font-size--small);
+	text-decoration: none;
+}
+
+.now-footer-links a:hover,
+.now-footer-nav .wp-block-navigation-item__content:hover {
+	color: var(--wp--preset--color--contrast);
+}
+
+.now-footer-nav.wp-block-navigation {
+	--wp--style--block-gap: var(--wp--preset--spacing--10);
+}
+
+.now-footer-bottom {
+	color: var(--wp--preset--color--muted);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.now-footer-legal {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	gap: var(--wp--preset--spacing--40);
+}
+
+.now-footer-legal li {
+	margin: 0;
+	color: var(--wp--preset--color--muted);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.now-footer-legal a {
+	color: var(--wp--preset--color--muted);
+	text-decoration: none;
+}
+
+.now-footer-legal a:hover {
+	color: var(--wp--preset--color--contrast);
+}
+
+/* ====================================================================
+ * PAGE COMPONENTS — About / Platform (StatCard, values, pillars,
+ * feature list, dashboard showcase, CTA band). Marketing surfaces
+ * built from tokens so they re-theme with the design system.
+ * ==================================================================== */
+
+/* Icon chip that leads a value / pillar / feature. */
+.now-icon-chip {
+	width: 44px;
+	height: 44px;
+	border-radius: var(--wp--custom--radius--md);
+	background: var(--wp--preset--color--surface-elevated);
+	color: var(--wp--preset--color--primary-light);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: var(--wp--preset--font-family--heading);
+	font-size: var(--wp--preset--font-size--medium);
+	flex: 0 0 auto;
+}
+
+/* Stat strip (4-up) — big number over a quiet label. */
+.now-stats {
+	gap: var(--wp--preset--spacing--50);
+}
+
+.now-stat {
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	border-radius: var(--wp--custom--radius--lg);
+	padding: var(--wp--preset--spacing--50);
+}
+
+.now-stat .now-stat-value {
+	margin: 0;
+	font-family: var(--wp--preset--font-family--heading);
+	font-weight: 400;
+	font-size: var(--wp--preset--font-size--xx-large);
+	line-height: 1.05;
+	color: var(--wp--preset--color--contrast);
+}
+
+.now-stat .now-stat-label {
+	margin: var(--wp--preset--spacing--20) 0 0;
+	font-family: var(--wp--preset--font-family--heading);
+	font-size: var(--wp--preset--font-size--small);
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--muted);
+}
+
+/* Value / pillar / feature cards */
+.now-card-surface {
+	background: var(--wp--preset--color--surface);
+	border: 1px solid var(--wp--preset--color--border);
+	border-radius: var(--wp--custom--radius--xl);
+	padding: var(--wp--preset--spacing--60);
+}
+
+.now-card-surface:hover {
+	box-shadow: var(--wp--preset--shadow--glow);
+	border-color: color-mix(in srgb, var(--wp--preset--color--primary) 55%, var(--wp--preset--color--border));
+}
+
+/* Dashboard showcase frame */
+.now-showcase img {
+	display: block;
+	width: 100%;
+	border-radius: var(--wp--custom--radius--2xl);
+}
+
+.now-icon-chip-lg {
+	width: 48px;
+	height: 48px;
+}
+
+/* Feature row: chip beside a tight text block. */
+.now-feature {
+	align-items: flex-start;
+}
+
+.now-feature .now-icon-chip {
+	width: 40px;
+	height: 40px;
+}
+
+/* Value / pillar cards stack their contents with breathing room. */
+.now-value-grid .now-card-surface,
+.now-pillar-grid .now-card-surface {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--30);
+	align-items: flex-start;
+}
+
+/* Stat cards: keep even widths, no inherited column padding. */
+.now-stats.wp-block-columns {
+	gap: var(--wp--preset--spacing--50);
+}
+
+.now-stats .now-stat {
+	flex-basis: 0;
+	flex-grow: 1;
+}
+
+/* Full-bleed brand CTA band (About / Platform) */
+.now-cta-band {
+	position: relative;
+	overflow: hidden;
+	border-radius: var(--wp--custom--radius--2xl);
+	box-shadow: var(--wp--preset--shadow--glow);
 }
 
 /* ---- Reduced motion — honour the OS preference (not optional) ------- */
