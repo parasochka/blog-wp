@@ -3,7 +3,22 @@
  * Only what theme.json cannot express: custom block styles, glows,
  * transitions, form controls. Tokens come from theme.json as
  * --wp--preset--* and --wp--custom--* CSS variables.
+ *
+ * Motion follows Emil Kowalski's rules (custom ease-out curves, <320ms,
+ * :active feedback, reduced-motion honoured) and the Impeccable bans
+ * (no side-stripe borders, motion is part of the build not an afterthought).
  */
+
+/* ---- Motion tokens (mirror theme.json custom.ease / custom.duration) --- */
+
+:root {
+	--now-ease-out: var(--wp--custom--ease--out, cubic-bezier(0.23, 1, 0.32, 1));
+	--now-ease-in-out: var(--wp--custom--ease--in-out, cubic-bezier(0.77, 0, 0.175, 1));
+	--now-dur-fast: var(--wp--custom--duration--fast, 160ms);
+	--now-dur-base: var(--wp--custom--duration--base, 220ms);
+	--now-dur-slow: var(--wp--custom--duration--slow, 320ms);
+	--now-z-sticky: var(--wp--custom--z--sticky, 100);
+}
 
 /* ---- Base polish ---------------------------------------------------- */
 
@@ -17,16 +32,42 @@ body {
 	color: #fff;
 }
 
+/* Even line lengths on display type; fewer orphans in prose (Impeccable). */
+h1,
+h2,
+h3,
+.wp-block-heading,
+.wp-block-post-title,
+.wp-block-pullquote {
+	text-wrap: balance;
+}
+
+.wp-block-post-content p,
+.wp-block-post-excerpt__excerpt,
+.entry-content p {
+	text-wrap: pretty;
+}
+
 /* Uppercase category eyebrow tracking */
 .wp-block-post-terms {
 	font-weight: 600;
 }
 
-/* Smooth interactions */
+/*
+ * Smooth interactions. Colour changes ride the default `ease`; transform
+ * and shadow ride a strong custom ease-out so hovers feel responsive
+ * rather than mushy (Emil: the built-in CSS easings lack punch).
+ */
 a,
 .wp-block-button__link,
 .wp-block-post-featured-image img {
-	transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, opacity 0.2s ease, transform 0.2s ease, box-shadow 0.25s ease;
+	transition:
+		color var(--now-dur-fast) ease,
+		background-color var(--now-dur-fast) ease,
+		border-color var(--now-dur-fast) ease,
+		opacity var(--now-dur-base) var(--now-ease-out),
+		transform var(--now-dur-base) var(--now-ease-out),
+		box-shadow var(--now-dur-slow) var(--now-ease-out);
 }
 
 /* Featured image hover lift + brand glow on listings */
@@ -35,12 +76,18 @@ a,
 	box-shadow: var(--wp--preset--shadow--glow);
 }
 
+/* Press feedback — every button confirms the press (Emil). */
+.wp-block-button__link:active,
+.wp-block-search__button:active {
+	transform: scale(0.97);
+}
+
 /* ---- Header / Footer ------------------------------------------------ */
 
 .site-header {
 	position: sticky;
 	top: 0;
-	z-index: 100;
+	z-index: var(--now-z-sticky);
 	background: color-mix(in srgb, var(--wp--preset--color--base) 82%, transparent);
 	backdrop-filter: saturate(140%) blur(12px);
 	border-bottom: 1px solid var(--wp--preset--color--border);
@@ -105,6 +152,31 @@ a,
 	border-radius: var(--wp--custom--radius--pill);
 }
 
+/* ---- Quotes (no side-stripe — Impeccable absolute ban) ------------- */
+
+/*
+ * theme.json styles the quote as a surface card and the pullquote as a
+ * typographic block with full top/bottom rules. Defend against WordPress
+ * core's default `border-left` stripe leaking back in.
+ */
+.wp-block-quote {
+	border-left: 0;
+}
+
+.wp-block-pullquote {
+	border-left: 0;
+	border-right: 0;
+	text-align: center;
+}
+
+.wp-block-quote cite,
+.wp-block-pullquote cite {
+	color: var(--wp--preset--color--muted);
+	font-family: var(--wp--preset--font-family--body);
+	font-style: normal;
+	font-size: var(--wp--preset--font-size--small);
+}
+
 /* ---- Reading rhythm ------------------------------------------------- */
 
 .wp-block-post-content > * {
@@ -114,6 +186,37 @@ a,
 .wp-block-post-content figure,
 .wp-block-post-content .wp-block-image {
 	margin-block: var(--wp--preset--spacing--50);
+}
+
+/* ---- Scroll-reveal (progressive, dependency-free) ------------------- */
+
+/*
+ * Cards rise in as they scroll into view. Impeccable rule: a reveal must
+ * enhance an already-visible default — never gate content on a class.
+ * So the initial hidden state lives ONLY inside @supports animation-timeline
+ * and prefers-reduced-motion: no-preference. Browsers without scroll-driven
+ * animations (and reduced-motion users) see fully-visible content, always.
+ */
+@keyframes now-rise-in {
+	from {
+		opacity: 0;
+		transform: translateY(24px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	@supports (animation-timeline: view()) {
+		.wp-block-post-template > li,
+		.wp-block-post-template > .wp-block-group {
+			animation: now-rise-in linear both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 55%;
+		}
+	}
 }
 
 /* ---- Form controls (dark) ------------------------------------------ */
@@ -187,4 +290,21 @@ button:focus-visible,
 .wp-block-button__link:focus-visible {
 	outline: 2px solid var(--wp--preset--color--primary-light);
 	outline-offset: 2px;
+}
+
+/* ---- Reduced motion — honour the OS preference (not optional) ------- */
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+
+	.wp-block-post-featured-image a:hover img {
+		transform: none;
+	}
 }

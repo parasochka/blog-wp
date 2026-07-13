@@ -123,6 +123,21 @@
 				"accent": {
 					"300": "#ffc05e", "400": "#ffac34", "500": "#f5900a", "600": "#d47004", "700": "#a55206"
 				}
+			},
+			"ease": {
+				"out": "cubic-bezier(0.23, 1, 0.32, 1)",
+				"inOut": "cubic-bezier(0.77, 0, 0.175, 1)",
+				"drawer": "cubic-bezier(0.32, 0.72, 0, 1)"
+			},
+			"duration": {
+				"fast": "160ms",
+				"base": "220ms",
+				"slow": "320ms"
+			},
+			"z": {
+				"sticky": "100",
+				"overlay": "400",
+				"modal": "500"
 			}
 		}
 	},
@@ -205,13 +220,24 @@
 				"typography": { "fontFamily": "var(--wp--preset--font-family--heading)" }
 			},
 			"core/pullquote": {
-				"typography": { "fontFamily": "var(--wp--preset--font-family--heading)" },
-				"border": { "left": { "width": "3px", "color": "var(--wp--preset--color--primary)" } }
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--heading)",
+					"fontSize": "var(--wp--preset--font-size--x-large)",
+					"fontWeight": "400",
+					"lineHeight": "1.2",
+					"letterSpacing": "-0.01em"
+				},
+				"color": { "text": "var(--wp--preset--color--contrast)" },
+				"border": {
+					"top": { "width": "1px", "color": "var(--wp--preset--color--border)" },
+					"bottom": { "width": "1px", "color": "var(--wp--preset--color--border)" }
+				},
+				"spacing": { "padding": { "top": "var(--wp--preset--spacing--60)", "bottom": "var(--wp--preset--spacing--60)" } }
 			},
 			"core/quote": {
-				"border": { "left": { "width": "3px", "color": "var(--wp--preset--color--primary)" } },
-				"color": { "text": "var(--wp--preset--color--text)" },
-				"spacing": { "padding": { "left": "var(--wp--preset--spacing--50)" } }
+				"color": { "text": "var(--wp--preset--color--text)", "background": "var(--wp--preset--color--surface)" },
+				"border": { "radius": "var(--wp--custom--radius--xl)", "color": "var(--wp--preset--color--border)", "width": "1px", "style": "solid" },
+				"spacing": { "padding": { "top": "var(--wp--preset--spacing--50)", "bottom": "var(--wp--preset--spacing--50)", "left": "var(--wp--preset--spacing--50)", "right": "var(--wp--preset--spacing--50)" } }
 			},
 			"core/code": {
 				"typography": { "fontFamily": "var(--wp--preset--font-family--mono)", "fontSize": "var(--wp--preset--font-size--small)" },
