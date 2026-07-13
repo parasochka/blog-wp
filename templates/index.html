@@ -1,39 +1,58 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 
-<!-- wp:group {"tagName":"main","style":{"spacing":{"margin":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|70"}}},"layout":{"type":"constrained"}} -->
-<main class="wp-block-group" style="margin-top:var(--wp--preset--spacing--60);margin-bottom:var(--wp--preset--spacing--70)">
-	<!-- wp:query {"queryId":0,"query":{"perPage":10,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"align":"wide","layout":{"type":"default"}} -->
-	<div class="wp-block-query alignwide">
-		<!-- wp:post-template {"style":{"spacing":{"blockGap":"var:preset|spacing|70"}},"layout":{"type":"default"}} -->
-			<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|30"}},"layout":{"type":"default"}} -->
-			<div class="wp-block-group">
-				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","style":{"border":{"radius":"var:custom|radius|md"}}} /-->
-				<!-- wp:post-terms {"term":"category","style":{"typography":{"fontSize":"var:preset|font-size|small","textTransform":"uppercase","letterSpacing":"0.05em"}},"textColor":"primary"} /-->
-				<!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"var:preset|font-size|x-large"}}} /-->
-				<!-- wp:post-excerpt {"moreText":"Read more","excerptLength":28} /-->
-				<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|30"}},"layout":{"type":"flex","flexWrap":"nowrap"}} -->
-				<div class="wp-block-group">
-					<!-- wp:post-author-name {"style":{"typography":{"fontSize":"var:preset|font-size|small"}},"textColor":"muted"} /-->
-					<!-- wp:post-date {"style":{"typography":{"fontSize":"var:preset|font-size|small"}},"textColor":"muted"} /-->
+<!-- wp:group {"tagName":"main","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|100"}}},"layout":{"type":"constrained"}} -->
+<main class="wp-block-group" style="margin-bottom:var(--wp--preset--spacing--100)">
+
+	<!-- wp:group {"align":"wide","style":{"spacing":{"blockGap":"var:preset|spacing|20","margin":{"top":"var:preset|spacing|70"}}},"layout":{"type":"constrained"}} -->
+	<div class="wp-block-group alignwide" style="margin-top:var(--wp--preset--spacing--70)">
+		<!-- wp:paragraph {"style":{"typography":{"fontSize":"var:preset|font-size|small","textTransform":"uppercase","letterSpacing":"0.14em"}},"textColor":"primary-light","fontFamily":"heading"} -->
+		<p class="has-primary-light-color has-text-color has-heading-font-family" style="font-size:var(--wp--preset--font-size--small);letter-spacing:0.14em;text-transform:uppercase">The NowPlix Blog</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:heading {"level":1,"style":{"typography":{"fontSize":"var:preset|font-size|huge","lineHeight":"1.05"}}} -->
+		<h1 class="wp-block-heading" style="font-size:var(--wp--preset--font-size--huge);line-height:1.05">Latest stories</h1>
+		<!-- /wp:heading -->
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:query {"queryId":0,"query":{"perPage":10,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"align":"wide","style":{"spacing":{"margin":{"top":"var:preset|spacing|60"}}}} -->
+	<div class="wp-block-query alignwide" style="margin-top:var(--wp--preset--spacing--60)">
+		<!-- wp:post-template {"className":"now-grid","layout":{"type":"default"}} -->
+			<!-- wp:group {"className":"now-card","layout":{"type":"default"}} -->
+			<div class="wp-block-group now-card">
+				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","style":{"border":{"radius":"var:custom|radius|lg"}}} /-->
+				<!-- wp:post-terms {"term":"category","style":{"typography":{"fontSize":"var:preset|font-size|small","textTransform":"uppercase","letterSpacing":"0.06em"}},"textColor":"primary-light"} /-->
+				<!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"var:preset|font-size|large"}}} /-->
+				<!-- wp:post-excerpt {"moreText":"","excerptLength":22} /-->
+				<!-- wp:group {"className":"now-meta","style":{"spacing":{"blockGap":"var:preset|spacing|30"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
+				<div class="wp-block-group now-meta">
+					<!-- wp:post-author-name {"style":{"typography":{"fontSize":"var:preset|font-size|small"}}} /-->
+					<!-- wp:post-date {"style":{"typography":{"fontSize":"var:preset|font-size|small"}}} /-->
 				</div>
 				<!-- /wp:group -->
 			</div>
 			<!-- /wp:group -->
 		<!-- /wp:post-template -->
 
-		<!-- wp:query-pagination {"paginationArrow":"arrow","style":{"spacing":{"margin":{"top":"var:preset|spacing|70"}}},"layout":{"type":"flex","justifyContent":"space-between"}} -->
+		<!-- wp:query-pagination {"paginationArrow":"arrow","style":{"spacing":{"margin":{"top":"var:preset|spacing|80"}}},"layout":{"type":"flex","justifyContent":"space-between"}} -->
 			<!-- wp:query-pagination-previous /-->
 			<!-- wp:query-pagination-numbers /-->
 			<!-- wp:query-pagination-next /-->
 		<!-- /wp:query-pagination -->
 
 		<!-- wp:query-no-results -->
-			<!-- wp:paragraph -->
-			<p>Nothing here yet. Check back soon.</p>
+			<!-- wp:paragraph {"textColor":"muted"} -->
+			<p class="has-muted-color has-text-color">Nothing here yet. Check back soon.</p>
 			<!-- /wp:paragraph -->
 		<!-- /wp:query-no-results -->
 	</div>
 	<!-- /wp:query -->
+
+	<!-- wp:group {"align":"wide","style":{"spacing":{"margin":{"top":"var:preset|spacing|100"}}},"layout":{"type":"constrained"}} -->
+	<div class="wp-block-group alignwide" style="margin-top:var(--wp--preset--spacing--100)">
+		<!-- wp:pattern {"slug":"now/newsletter-cta"} /-->
+	</div>
+	<!-- /wp:group -->
 </main>
 <!-- /wp:group -->
 
