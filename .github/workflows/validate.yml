@@ -1,0 +1,43 @@
+name: Validate theme
+
+# Sanity-checks the theme on every push so WP Pusher never pulls a broken build.
+# No secrets, no server access — pure validation. Deploy happens in WordPress
+# via the WP Pusher plugin (Install/Update Theme from this repo).
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate theme.json is well-formed JSON
+        run: |
+          python3 -c "import json; json.load(open('theme.json')); print('theme.json is valid JSON')"
+
+      - name: Ensure required theme files exist
+        run: |
+          for f in style.css theme.json functions.php templates/index.html; do
+            if [ ! -f "$f" ]; then
+              echo "::error title=Missing theme file::$f is required for a valid block theme"
+              exit 1
+            fi
+          done
+          echo "All required theme files present."
+
+      - name: Ensure style.css has a Theme Name header
+        run: |
+          if ! grep -q '^Theme Name:' style.css; then
+            echo "::error title=Bad style.css::style.css must contain a 'Theme Name:' header"
+            exit 1
+          fi
+          echo "style.css header OK."

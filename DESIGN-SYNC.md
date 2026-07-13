@@ -8,8 +8,8 @@ Design decisions live in Figma variables; the theme mirrors them in
 ## Pipeline
 
 ```
-Figma "NOW"  ──(Figma Dev Mode MCP)──►  theme.json  ──(git push)──►  GitHub Action  ──►  WordPress
-   variables     get_variable_defs         tokens          rsync/SSH                  live site
+Figma "NOW"  ──(Figma Dev Mode MCP)──►  theme.json  ──(git push)──►  WP Pusher  ──►  WordPress
+   variables     get_variable_defs         tokens        GitHub      (pull in wp-admin)  live site
    components     get_design_context       templates + patterns
    frames         get_screenshot           visual reference for QA
 ```

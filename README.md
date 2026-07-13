@@ -8,14 +8,16 @@ variables — see [`DESIGN-SYNC.md`](./DESIGN-SYNC.md).
 ## The pipeline
 
 ```
-Figma "NOW"  ──►  theme.json + templates  ──►  GitHub  ──►  GitHub Action  ──►  WordPress (self-hosted)
-  design system     this repo                    version         rsync/SSH          blog.nowplix.dev
+Figma "NOW"  ──►  theme.json + templates  ──►  GitHub  ──►  WP Pusher plugin  ──►  WordPress
+  design system     this repo                    version      (pull in wp-admin)     blog.nowplix.dev
 ```
 
 - **Figma is the source of truth.** Colors, type, spacing, radii, shadows
   come from Figma variables and land in `theme.json`.
-- **This repo IS the theme.** Its root is `wp-content/themes/now-blog/`.
-- **GitHub Action deploys on push** over SSH to the self-hosted server.
+- **This repo IS the theme.** Its root is the theme folder.
+- **WP Pusher pulls the theme from GitHub** straight through the WordPress
+  admin — no server/SSH access required. Push to GitHub, click Update in
+  wp-admin (or wire the webhook for one-click auto-update).
 
 ## Structure
 
@@ -37,7 +39,7 @@ Figma "NOW"  ──►  theme.json + templates  ──►  GitHub  ──►  Gi
 ├── parts/                   # header.html, footer.html
 ├── patterns/                # hero, newsletter-cta (reusable NOW blocks)
 ├── assets/css/theme.css     # supplemental styles theme.json can't express
-└── .github/workflows/       # deploy.yml (CI/CD)
+└── .github/workflows/       # validate.yml (checks theme.json/style.css on push)
 ```
 
 ## Pages covered
@@ -45,37 +47,50 @@ Figma "NOW"  ──►  theme.json + templates  ──►  GitHub  ──►  Gi
 Home/blog index, single post, static page, category, tag, date archive,
 author archive, search results, and 404 — the full set a blog needs.
 
-## Local install (quick test)
+## Install (Method A — manual zip)
 
-1. Zip the repo contents (not the folder) or clone into
-   `wp-content/themes/now-blog/`.
-2. In WordPress admin: **Appearance → Themes → Activate "NOW"**.
+No plugin, works everywhere:
+
+1. Download the repo as a zip:
+   `https://github.com/parasochka/blog-wp/archive/refs/heads/main.zip`
+2. WordPress admin: **Appearance → Themes → Add New → Upload Theme** →
+   pick the zip → **Install** → **Activate**.
 3. Edit visually under **Appearance → Editor** (Site Editor).
 
-## Deploy (CI/CD)
+The theme folder will be `blog-wp-main`; it shows in the theme list as
+**NOW**. To update, re-upload a fresh zip.
 
-Pushing to the working branch runs `.github/workflows/deploy.yml`, which
-rsyncs the theme to the server over SSH. Configure these **GitHub repo
-secrets** (Settings → Secrets and variables → Actions):
+## Install (Method B — WP Pusher, admin-only auto-update)
 
-| Secret            | Example                                              |
-| ----------------- | ---------------------------------------------------- |
-| `SSH_HOST`        | `123.45.67.89` or `nowplix.com`                      |
-| `SSH_PORT`        | `22` (optional, defaults to 22)                      |
-| `SSH_USER`        | `deploy`                                             |
-| `SSH_PRIVATE_KEY` | contents of the private key authorized on the server |
-| `WP_THEME_PATH`   | `/var/www/blog/wp-content/themes/now-blog`           |
-| `WP_PATH`         | `/var/www/blog` (optional, for WP-CLI cache flush)   |
+Deploy from GitHub without any server/SSH access — everything happens in
+wp-admin. Recommended once you're iterating on the theme.
 
-Generate a deploy key on your machine, add the **public** key to the
-server's `~/.ssh/authorized_keys`, and paste the **private** key into
-`SSH_PRIVATE_KEY`.
+1. Install the **WP Pusher** plugin: **Plugins → Add New → Upload Plugin**
+   (get it from [wppusher.com](https://wppusher.com)) → Activate.
+2. **WP Pusher → Install Theme**:
+   - Repository: `parasochka/blog-wp`
+   - Branch: `main`
+   - Leave "Install from subdirectory" empty (repo root **is** the theme).
+   - Click **Install Theme**.
+3. **Appearance → Themes → Activate "NOW"**.
+4. To update after a new push: **WP Pusher → Themes → Update**, or enable
+   **Push-to-Deploy** to have GitHub trigger updates automatically via the
+   webhook WP Pusher generates.
+
+WP Pusher pulls over HTTPS from the public repo — no keys, no secrets.
+
+## Continuous validation
+
+`.github/workflows/validate.yml` runs on every push: it checks `theme.json`
+is valid JSON and that the required theme files and `style.css` header are
+present, so WP Pusher never pulls a broken build. No secrets required.
 
 ## Updating design tokens from Figma
 
 See [`DESIGN-SYNC.md`](./DESIGN-SYNC.md) for the full mapping and the
 MCP-driven sync workflow. In short: pull Figma variables with the Figma
-MCP, map them to `theme.json` paths, commit, push — the Action deploys.
+MCP, map them to `theme.json` paths, commit, push — then update the theme
+in WP Pusher (or let Push-to-Deploy do it).
 
 > **Tokens are live.** `theme.json` now carries the **real NowPlix "NOW"**
 > design-system values — dark palette (`#0f0f2d` base, `#5149e6` primary,
