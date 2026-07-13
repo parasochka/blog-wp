@@ -1,59 +1,112 @@
 /*
- * NOW theme — supplemental styles.
- * Only what theme.json cannot express: custom block styles, transitions,
- * and small refinements. Design tokens are exposed by WordPress as
- * --wp--preset--* and --wp--custom--* CSS variables from theme.json.
+ * NOW theme — supplemental styles (dark iGaming design system).
+ * Only what theme.json cannot express: custom block styles, glows,
+ * transitions, form controls. Tokens come from theme.json as
+ * --wp--preset--* and --wp--custom--* CSS variables.
  */
 
-/* Smooth interactions across the theme */
+/* ---- Base polish ---------------------------------------------------- */
+
+body {
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+::selection {
+	background: var(--wp--preset--color--primary);
+	color: #fff;
+}
+
+/* Uppercase category eyebrow tracking */
+.wp-block-post-terms {
+	font-weight: 600;
+}
+
+/* Smooth interactions */
 a,
 .wp-block-button__link,
 .wp-block-post-featured-image img {
-	transition: color 0.15s ease, background-color 0.15s ease, opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+	transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, opacity 0.2s ease, transform 0.2s ease, box-shadow 0.25s ease;
 }
 
-/* Featured image hover lift on cards/listings */
+/* Featured image hover lift + brand glow on listings */
 .wp-block-post-featured-image a:hover img {
-	transform: translateY(-2px);
-	box-shadow: var(--wp--preset--shadow--md);
+	transform: translateY(-3px);
+	box-shadow: var(--wp--preset--shadow--glow);
 }
 
-/* Block style: "Card" for core/group */
+/* ---- Header / Footer ------------------------------------------------ */
+
+.site-header {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	background: color-mix(in srgb, var(--wp--preset--color--base) 82%, transparent);
+	backdrop-filter: saturate(140%) blur(12px);
+	border-bottom: 1px solid var(--wp--preset--color--border);
+}
+
+.site-header .wp-block-navigation a,
+.site-footer .wp-block-navigation a {
+	color: var(--wp--preset--color--text);
+	font-family: var(--wp--preset--font-family--heading);
+	font-weight: 500;
+}
+
+.site-header .wp-block-navigation a:hover {
+	color: var(--wp--preset--color--contrast);
+}
+
+.site-footer {
+	border-top: 1px solid var(--wp--preset--color--border);
+}
+
+/* ---- Block style: "Card" (core/group) ------------------------------ */
+
 .wp-block-group.is-style-card {
-	background-color: var(--wp--preset--color--base);
+	background-color: var(--wp--preset--color--surface);
 	border: 1px solid var(--wp--preset--color--border);
-	border-radius: var(--wp--custom--radius--lg);
+	border-radius: var(--wp--custom--radius--xl);
 	padding: var(--wp--preset--spacing--50);
-	box-shadow: var(--wp--preset--shadow--sm);
+	box-shadow: var(--wp--preset--shadow--card);
 }
 
 .wp-block-group.is-style-card:hover {
-	box-shadow: var(--wp--preset--shadow--md);
+	border-color: color-mix(in srgb, var(--wp--preset--color--primary) 55%, var(--wp--preset--color--border));
+	box-shadow: var(--wp--preset--shadow--glow);
 }
 
-/* Block style: "Rounded (large)" for core/image */
+/* ---- Block style: "Rounded (large)" (core/image) ------------------- */
+
 .wp-block-image.is-style-rounded-lg img {
-	border-radius: var(--wp--custom--radius--lg);
+	border-radius: var(--wp--custom--radius--xl);
 }
 
-/* Block style: "Ghost" for core/button */
+/* ---- Block style: "Ghost" button (secondary / outlined) ------------ */
+
 .wp-block-button.is-style-ghost .wp-block-button__link {
 	background-color: transparent;
-	color: var(--wp--preset--color--primary);
-	border: 1px solid var(--wp--preset--color--border);
+	color: var(--wp--preset--color--primary-light);
+	border: 1px solid var(--wp--preset--color--primary);
 }
 
 .wp-block-button.is-style-ghost .wp-block-button__link:hover {
-	background-color: var(--wp--preset--color--surface);
-	border-color: var(--wp--preset--color--primary);
+	background-color: color-mix(in srgb, var(--wp--preset--color--primary) 14%, transparent);
+	color: #fff;
 }
 
-/* Rounded avatars everywhere */
+/* Accent (gaming orange) button utility via .has-accent-background */
+.wp-block-button .wp-block-button__link.has-accent-background-color {
+	color: #1a1204;
+}
+
+/* Rounded avatars */
 .wp-block-avatar img {
 	border-radius: var(--wp--custom--radius--pill);
 }
 
-/* Post content rhythm: constrain media, keep comfortable measure */
+/* ---- Reading rhythm ------------------------------------------------- */
+
 .wp-block-post-content > * {
 	margin-block: var(--wp--preset--spacing--40);
 }
@@ -63,8 +116,75 @@ a,
 	margin-block: var(--wp--preset--spacing--50);
 }
 
-/* Search field polish */
+/* ---- Form controls (dark) ------------------------------------------ */
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="date"],
+textarea,
+select,
+.wp-block-search__input {
+	background-color: var(--wp--preset--color--surface);
+	color: var(--wp--preset--color--text);
+	border: 1px solid var(--wp--preset--color--border);
+	border-radius: var(--wp--custom--radius--md);
+	padding: 0.75rem 1rem;
+}
+
+input::placeholder,
+textarea::placeholder {
+	color: var(--wp--preset--color--muted);
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.wp-block-search__input:focus {
+	outline: none;
+	border-color: var(--wp--preset--color--primary);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--wp--preset--color--primary) 30%, transparent);
+}
+
+/* Search: field + button as one pill */
 .wp-block-search__inside-wrapper {
 	border: 1px solid var(--wp--preset--color--border);
+	border-radius: var(--wp--custom--radius--pill);
 	overflow: hidden;
+	background: var(--wp--preset--color--surface);
+}
+
+.wp-block-search__inside-wrapper .wp-block-search__input {
+	border: 0;
+	background: transparent;
+}
+
+.wp-block-search__button {
+	background: var(--wp--preset--color--primary);
+	color: #fff;
+	border: 0;
+}
+
+/* ---- Tables (badges/data vibe) ------------------------------------- */
+
+.wp-block-table td,
+.wp-block-table th {
+	border-color: var(--wp--preset--color--border);
+}
+
+.wp-block-table thead {
+	border-bottom: 2px solid var(--wp--preset--color--primary);
+}
+
+/* ---- Focus visibility for keyboard users --------------------------- */
+
+a:focus-visible,
+button:focus-visible,
+.wp-block-button__link:focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary-light);
+	outline-offset: 2px;
 }

@@ -77,6 +77,8 @@ See [`DESIGN-SYNC.md`](./DESIGN-SYNC.md) for the full mapping and the
 MCP-driven sync workflow. In short: pull Figma variables with the Figma
 MCP, map them to `theme.json` paths, commit, push — the Action deploys.
 
-> **Note:** current token values in `theme.json` are sensible placeholders.
-> They are replaced with the real NOW values once the Figma file is
-> accessible with an editor/Dev seat (or provided manually).
+> **Tokens are live.** `theme.json` now carries the **real NowPlix "NOW"**
+> design-system values — dark palette (`#0f0f2d` base, `#5149e6` primary,
+> `#ffac34` accent), the 12→72px type scale, 4px spacing grid, radii and
+> brand-glow elevation. Fonts: **Archivo Black** (headings) + **42dot Sans**
+> (body). See [`DESIGN-SYNC.md`](./DESIGN-SYNC.md) for the full mapping.
