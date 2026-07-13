@@ -2,7 +2,9 @@
 
 > The captured visual system for design tooling (`impeccable`). The machine
 > source of truth is [`theme.json`](./theme.json); the Figma→theme mapping is
-> [`DESIGN-SYNC.md`](./DESIGN-SYNC.md). This file is the human-readable summary.
+> [`DESIGN-SYNC.md`](./DESIGN-SYNC.md); the raw constants parsed out of
+> `NOW.fig` are in [`DESIGN-CONSTANTS.md`](./DESIGN-CONSTANTS.md). This file is
+> the human-readable summary.
 
 ## Color (dark)
 
@@ -19,7 +21,7 @@
 | Primary / brand | `primary` | `#5149e6` |
 | Primary hover | `primary-hover` | `#3b34c0` |
 | Link | `primary-light` | `#8a74ff` |
-| Secondary | `secondary` | `#6b5ff5` |
+| Secondary | `secondary` | `#6b55f5` |
 | Accent (gaming) | `accent` | `#ffac34` |
 
 Full numeric ramps (`primary`/`neutral`/`accent` 50–950) and 5 gradients live in
@@ -39,8 +41,11 @@ Full numeric ramps (`primary`/`neutral`/`accent` 50–950) and 5 gradients live 
 
 - **Spacing:** 4px grid, slugs `10…110` = 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 ·
   80 · 96 · 128px.
-- **Radius:** sm 4 · md 8 · lg 12 · xl 16 · 2xl 24 · pill 9999.
-- **Shadows:** `card` (L1), `glow` (brand, L2), `glow-strong` (L3).
+- **Radius:** xs 2 · sm 4 · md 8 · lg 12 · xl 16 · 2xl 24 · 3xl 32 · pill 9999
+  (8px is the workhorse).
+- **Shadows:** `card` `0 2 8 rgba(0,0,0,.3)` (L1) · `glow` `0 8 24
+  rgba(81,73,230,.2)` (brand, L2) · `glow-strong` `0 16 48 rgba(81,73,230,.4)`
+  (L3). Signature = the indigo glow ring.
 - **Layout:** content 760px, wide 1280px.
 
 ## Motion (Emil Kowalski)

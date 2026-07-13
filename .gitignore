@@ -7,6 +7,11 @@ vendor/
 dist/
 build/
 
+# Design source — keep the deployed theme lean; re-export from Figma to
+# re-sync (see DESIGN-CONSTANTS.md). The parsed tokens live in
+# design-constants.json + theme.json, so the binary need not ship to WP.
+*.fig
+
 # OS / editor
 .DS_Store
 Thumbs.db

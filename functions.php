@@ -36,7 +36,7 @@ add_action( 'after_setup_theme', 'now_blog_setup' );
  * `fontFace` in theme.json, and remove this enqueue.
  */
 function now_blog_fonts_url() {
-	return 'https://fonts.googleapis.com/css2?family=Archivo+Black&family=42dot+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap';
+	return 'https://fonts.googleapis.com/css2?family=Archivo+Black&family=42dot+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap';
 }
 
 function now_blog_enqueue_fonts() {

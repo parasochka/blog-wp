@@ -24,7 +24,7 @@
 				{ "slug": "primary", "color": "#5149e6", "name": "Primary / Brand" },
 				{ "slug": "primary-hover", "color": "#3b34c0", "name": "Primary Hover" },
 				{ "slug": "primary-light", "color": "#8a74ff", "name": "Primary Light" },
-				{ "slug": "secondary", "color": "#6b5ff5", "name": "Secondary" },
+				{ "slug": "secondary", "color": "#6b55f5", "name": "Secondary" },
 				{ "slug": "accent", "color": "#ffac34", "name": "Accent / Gaming" },
 				{ "slug": "accent-strong", "color": "#f5900a", "name": "Accent Strong" },
 				{ "slug": "success", "color": "#22c55e", "name": "Success" },
@@ -33,11 +33,11 @@
 				{ "slug": "info", "color": "#3b82f6", "name": "Info" }
 			],
 			"gradients": [
-				{ "slug": "brand", "gradient": "linear-gradient(135deg, #6b5ff5 0%, #5149e6 100%)", "name": "Brand" },
-				{ "slug": "deep-ocean", "gradient": "linear-gradient(135deg, #6b5ff5 0%, #0f0f60 100%)", "name": "Deep Ocean" },
+				{ "slug": "brand", "gradient": "linear-gradient(135deg, #8a74ff 0%, #5149e6 100%)", "name": "Brand" },
+				{ "slug": "deep-ocean", "gradient": "linear-gradient(135deg, #6b55f5 0%, #0f0f40 100%)", "name": "Deep Ocean" },
 				{ "slug": "sunset", "gradient": "linear-gradient(135deg, #ffc05e 0%, #7060f0 100%)", "name": "Sunset" },
 				{ "slug": "aurora", "gradient": "linear-gradient(135deg, #b09bff 0%, #ffac34 100%)", "name": "Aurora" },
-				{ "slug": "purple-fade", "gradient": "linear-gradient(180deg, #ababff 0%, #0f0f60 100%)", "name": "Purple Fade" }
+				{ "slug": "purple-fade", "gradient": "linear-gradient(180deg, #ababff 0%, #0f0f40 100%)", "name": "Purple Fade" }
 			]
 		},
 		"typography": {
@@ -96,23 +96,25 @@
 		"shadow": {
 			"defaultPresets": false,
 			"presets": [
-				{ "slug": "card", "name": "Card (Level 1)", "shadow": "0 2px 12px rgba(0, 0, 0, 0.4)" },
-				{ "slug": "glow", "name": "Brand Glow (Level 2)", "shadow": "0 0 28px rgba(81, 73, 230, 0.35)" },
-				{ "slug": "glow-strong", "name": "Strong Glow (Level 3)", "shadow": "0 0 52px rgba(81, 73, 230, 0.5)" }
+				{ "slug": "card", "name": "Card (Level 1)", "shadow": "0 2px 8px rgba(0, 0, 0, 0.3)" },
+				{ "slug": "glow", "name": "Brand Glow (Level 2)", "shadow": "0 8px 24px rgba(81, 73, 230, 0.2)" },
+				{ "slug": "glow-strong", "name": "Strong Glow (Level 3)", "shadow": "0 16px 48px rgba(81, 73, 230, 0.4)" }
 			]
 		},
 		"custom": {
 			"radius": {
+				"xs": "2px",
 				"sm": "4px",
 				"md": "8px",
 				"lg": "12px",
 				"xl": "16px",
 				"2xl": "24px",
+				"3xl": "32px",
 				"pill": "9999px"
 			},
 			"color": {
 				"primary": {
-					"50": "#ede8ff", "100": "#d4d5ff", "200": "#ababff", "300": "#8a74ff", "400": "#7060f0",
+					"50": "#edeeff", "100": "#d4d5ff", "200": "#ababff", "300": "#8a74ff", "400": "#7060f0",
 					"500": "#5149e6", "600": "#3b34c0", "700": "#2a2590", "800": "#1a1760", "900": "#0f0f40"
 				},
 				"neutral": {

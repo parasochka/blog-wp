@@ -16,22 +16,32 @@ Figma "NOW"  ──(Figma Dev Mode MCP)──►  theme.json  ──(git push)�
 
 ## How tokens were sourced
 
-The "NOW" file lives on a Figma **Starter** team where the connected
-account has a **View** seat. Figma Dev Mode (and its MCP `get_variable_defs`
-/ `get_screenshot`) requires a paid **Editor/Dev** seat, so the MCP could
-not read the file directly. Tokens were instead transcribed from the
-exported **design-system screenshots** (the `NowPlix Design System` frame,
-components, and grid). The values below are the real NOW values.
+Tokens are extracted **directly from the exported `NOW.fig`** (2026-07-13).
+The `.fig` is a ZIP; its `canvas.fig` is Figma's `fig-kiwi` format (a Kiwi
+schema block + a **Zstandard**-compressed data block). Decoding it yields all
+903 design nodes, and colors / type / radii / spacing / shadows are read from
+their fills, text runs and effects. The full extraction is recorded in
+[`DESIGN-CONSTANTS.md`](./DESIGN-CONSTANTS.md) and
+[`design-constants.json`](./design-constants.json); the values in the table
+below are verified against it.
 
-Also note the design system is built with **color/text styles**, not Figma
-**Variables/Collections** — another reason the variable API returns nothing.
+The design system is built with **Figma color/text styles**, not
+**Variables/Collections** — so `get_variable_defs` returns nothing and the
+`.fig` parse (or Dev Mode screenshots) is the way to read it. Earlier revisions
+transcribed values from screenshots because the connected account had only a
+**View** seat; the parsed `.fig` has since confirmed and corrected them.
 
-### To automate this later (with a Dev seat)
+### To re-sync from a fresh export
 
-1. Upgrade the Figma team to Professional and give the account a Dev/Full seat.
-2. Reconnect the Figma connector in claude.ai.
-3. Ask Claude to sync — it will `get_variable_defs` / `get_design_context`
-   / `get_screenshot` and map results to `theme.json` via the table below.
+1. Export the file from Figma (**⌘/Ctrl-Shift-S → Save local copy**) as `NOW.fig`.
+2. Parse it (see *Re-running this extraction* in `DESIGN-CONSTANTS.md`): unzip →
+   inflate the Kiwi schema → `zstd -d` the data → decode the Kiwi `Message`.
+3. Diff the extracted constants against `theme.json` and update any slug whose
+   value drifted, then re-validate JSON and commit.
+
+Alternatively, with a Dev/Full seat: reconnect the Figma connector and let
+Claude `get_variable_defs` / `get_design_context` / `get_screenshot`, mapping
+results to `theme.json` via the table below.
 
 ## Token mapping (NOW design system → theme.json)
 
@@ -49,7 +59,7 @@ Semantic roles (what content editors pick), mapped from the NOW palette:
 | Primary 500               | `color.palette[primary]`               | `#5149e6`  |
 | Primary 600               | `color.palette[primary-hover]`         | `#3b34c0`  |
 | Primary 300               | `color.palette[primary-light]` (links) | `#8a74ff`  |
-| Secondary 500             | `color.palette[secondary]`             | `#6b5ff5`  |
+| Secondary 500             | `color.palette[secondary]`             | `#6b55f5`  |
 | Accent 400 / 500          | `color.palette[accent]` / `accent-strong` | `#ffac34` / `#f5900a` |
 | Semantic                  | `success/warning/error/info`           | see theme.json |
 | Gradients (6)             | `color.gradients[*]`                    | brand / deep-ocean / sunset / aurora / purple-fade |
@@ -58,7 +68,7 @@ Semantic roles (what content editors pick), mapped from the NOW palette:
 | Body / content font       | `typography.fontFamilies[body]`        | **42dot Sans** |
 | Type scale 12→72px        | `typography.fontSizes[small…display]`  | Caption…Display XL |
 | Spacing 4px grid          | `spacing.spacingSizes[10…110]`         | 4…128px    |
-| Radius sm/md/lg/xl/2xl/full | `settings.custom.radius.*`            | 4/8/12/16/24/9999 |
+| Radius xs/sm/md/lg/xl/2xl/3xl/pill | `settings.custom.radius.*`       | 2/4/8/12/16/24/32/9999 |
 | Elevation L1/L2/L3        | `shadow.presets[card/glow/glow-strong]` | shadow + brand glow |
 
 > **Font weights:** Archivo Black ships a single weight (400) — it is
