@@ -14,8 +14,27 @@
 			var rail = document.getElementById(btn.getAttribute('data-rail'));
 			if (!rail) return;
 			var dir = parseInt(btn.getAttribute('data-dir'), 10) || 1;
-			rail.scrollBy({ left: dir * Math.max(320, rail.clientWidth * 0.8), behavior: 'smooth' });
+			var max = rail.scrollWidth - rail.clientWidth;
+			var target = rail.scrollLeft + dir * Math.max(320, rail.clientWidth * 0.8);
+			// Clamp so the rail never scrolls past its content into empty space.
+			rail.scrollTo({ left: Math.min(max, Math.max(0, target)), behavior: 'smooth' });
 		});
+	});
+
+	// Disable each arrow once its rail is already at that end.
+	document.querySelectorAll('.now-rail').forEach(function (rail) {
+		var btns = document.querySelectorAll('.now-rail-btn[data-rail="' + rail.id + '"]');
+		if (!btns.length) return;
+		var update = function () {
+			var max = rail.scrollWidth - rail.clientWidth - 1;
+			btns.forEach(function (b) {
+				var dir = parseInt(b.getAttribute('data-dir'), 10) || 1;
+				b.disabled = dir < 0 ? rail.scrollLeft <= 0 : rail.scrollLeft >= max;
+			});
+		};
+		rail.addEventListener('scroll', update, { passive: true });
+		window.addEventListener('resize', update);
+		update();
 	});
 
 	/* ---- 2. Article TOC + scrollspy ---- */
@@ -51,8 +70,13 @@
 
 			var spy = function () {
 				var pos = window.pageYOffset + 120;
-				var current = 0;
-				headings.forEach(function (h, i) { if (h.offsetTop <= pos) { current = i; } });
+				// Past the end of the article (e.g. the TOC card sits below the
+				// prose on mobile): nothing is being read, so highlight nothing.
+				var proseBottom = prose.getBoundingClientRect().bottom + window.pageYOffset;
+				var current = pos > proseBottom ? -1 : 0;
+				if (current === 0) {
+					headings.forEach(function (h, i) { if (h.offsetTop <= pos) { current = i; } });
+				}
 				links.forEach(function (a, i) { a.classList.toggle('now-active', i === current); });
 			};
 			window.addEventListener('scroll', spy, { passive: true });

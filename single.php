@@ -39,7 +39,7 @@ while ( have_posts() ) :
 	<?php if ( has_post_thumbnail() ) : ?>
 	<div style="width:100%; max-width:1200px; margin-inline:auto; padding-inline:24px">
 		<div style="overflow:hidden; border-radius:var(--radius-xl); aspect-ratio:21/9; background:var(--bg-page-deep); box-shadow:var(--elev-3)">
-			<?php the_post_thumbnail( 'full', array( 'style' => 'width:100%; height:100%; object-fit:cover; display:block', 'alt' => the_title_attribute( array( 'echo' => false ) ) ) ); ?>
+			<?php the_post_thumbnail( 'full', array( 'style' => 'width:100%; height:100%; object-fit:cover; display:block', 'alt' => the_title_attribute( array( 'echo' => false ) ), 'fetchpriority' => 'high', 'loading' => 'eager' ) ); ?>
 		</div>
 	</div>
 	<?php endif; ?>
@@ -69,17 +69,18 @@ while ( have_posts() ) :
 				<div style="background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:24px; box-shadow:var(--elev-1)">
 					<p style="font-family:var(--font-display); font-weight:400; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin:0 0 16px"><?php esc_html_e( 'Share', 'now-blog' ); ?></p>
 					<div style="display:flex; flex-wrap:wrap; gap:8px">
-						<a class="now-share" href="https://twitter.com/intent/tweet?url=<?php echo rawurlencode( $url ); ?>&text=<?php echo rawurlencode( $title ); ?>" target="_blank" rel="noreferrer" style="display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--bg-page); color:var(--text-secondary); font-family:var(--font-body); font-weight:600; font-size:13px">X</a>
-						<a class="now-share" href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo rawurlencode( $url ); ?>" target="_blank" rel="noreferrer" style="display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--bg-page); color:var(--text-secondary); font-family:var(--font-body); font-weight:600; font-size:13px">LinkedIn</a>
-						<a class="now-share" href="https://t.me/share/url?url=<?php echo rawurlencode( $url ); ?>&text=<?php echo rawurlencode( $title ); ?>" target="_blank" rel="noreferrer" style="display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--bg-page); color:var(--text-secondary); font-family:var(--font-body); font-weight:600; font-size:13px">Telegram</a>
+						<a class="now-share" href="https://twitter.com/intent/tweet?url=<?php echo rawurlencode( $url ); ?>&text=<?php echo rawurlencode( $title ); ?>" target="_blank" rel="nofollow noopener noreferrer" style="display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--bg-page); color:var(--text-secondary); font-family:var(--font-body); font-weight:600; font-size:13px">X</a>
+						<a class="now-share" href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo rawurlencode( $url ); ?>" target="_blank" rel="nofollow noopener noreferrer" style="display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--bg-page); color:var(--text-secondary); font-family:var(--font-body); font-weight:600; font-size:13px">LinkedIn</a>
+						<a class="now-share" href="https://t.me/share/url?url=<?php echo rawurlencode( $url ); ?>&text=<?php echo rawurlencode( $title ); ?>" target="_blank" rel="nofollow noopener noreferrer" style="display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--bg-page); color:var(--text-secondary); font-family:var(--font-body); font-weight:600; font-size:13px">Telegram</a>
+						<a class="now-share" href="https://wa.me/?text=<?php echo rawurlencode( $title . ' ' . $url ); ?>" target="_blank" rel="nofollow noopener noreferrer" style="display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--bg-page); color:var(--text-secondary); font-family:var(--font-body); font-weight:600; font-size:13px">WhatsApp</a>
 						<button type="button" class="now-share now-copy-link" data-url="<?php echo esc_url( $url ); ?>" style="display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--bg-page); color:var(--text-secondary); font-family:var(--font-body); font-weight:600; font-size:13px; cursor:pointer"><?php esc_html_e( 'Copy link', 'now-blog' ); ?></button>
 					</div>
 				</div>
 
 				<div style="background:var(--surface-card); border-radius:var(--radius-xl); padding:24px; box-shadow:var(--elev-2)">
-					<h3 style="font-family:var(--font-display); font-weight:400; font-size:18px; color:var(--text-primary); margin:0 0 8px; letter-spacing:-0.01em"><?php esc_html_e( 'Play on NowPlix', 'now-blog' ); ?></h3>
-					<p style="color:var(--text-secondary); font-size:14px; margin:0 0 16px"><?php esc_html_e( 'Casino, sportsbook and the tech behind them. See what the platform can do.', 'now-blog' ); ?></p>
-					<a href="https://nowplix.dev" target="_blank" rel="noreferrer" class="now-cta-accent" style="display:inline-flex; align-items:center; justify-content:center; width:100%; box-sizing:border-box; font-family:var(--font-body); font-weight:600; font-size:14px; height:44px; padding:0 20px; border-radius:var(--radius-md); background:var(--accent-400); color:#1a1204; box-shadow:var(--glow-accent)"><?php esc_html_e( 'Explore the platform', 'now-blog' ); ?></a>
+					<h3 style="font-family:var(--font-display); font-weight:400; font-size:18px; color:var(--text-primary); margin:0 0 8px; letter-spacing:-0.01em"><?php echo esc_html( now_mod( 'now_promo_title' ) ); ?></h3>
+					<p style="color:var(--text-secondary); font-size:14px; margin:0 0 16px"><?php echo esc_html( now_mod( 'now_promo_text' ) ); ?></p>
+					<a href="<?php echo esc_url( now_mod( 'now_promo_url' ) ); ?>" target="_blank" rel="<?php echo esc_attr( now_link_rel( now_mod( 'now_promo_url' ) ) ); ?>" class="now-cta-accent" style="display:inline-flex; align-items:center; justify-content:center; width:100%; box-sizing:border-box; font-family:var(--font-body); font-weight:600; font-size:14px; height:44px; padding:0 20px; border-radius:var(--radius-md); background:var(--accent-400); color:#1a1204; box-shadow:var(--glow-accent)"><?php echo esc_html( now_mod( 'now_promo_button' ) ); ?></a>
 				</div>
 			</aside>
 		</div>
