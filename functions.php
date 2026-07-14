@@ -628,6 +628,8 @@ function now_theme_defaults() {
 		'now_promo_button'   => __( 'Explore the platform', 'now-blog' ),
 		'now_promo_url'      => 'https://nowplix.com/about/contact',
 		'now_inline_related' => true,
+		'now_inline_related_interval' => 300,
+		'now_inline_related_max' => 2,
 	);
 	return $defaults;
 }
@@ -660,6 +662,8 @@ function now_customize_register( $wp_customize ) {
 		'now_promo_button'   => array( __( 'Article sidebar promo — button label', 'now-blog' ), 'text', 'sanitize_text_field' ),
 		'now_promo_url'      => array( __( 'Article sidebar promo — button URL', 'now-blog' ), 'url', 'esc_url_raw' ),
 		'now_inline_related' => array( __( 'Weave "Keep reading" story cards into long articles', 'now-blog' ), 'checkbox', 'rest_sanitize_boolean' ),
+		'now_inline_related_interval' => array( __( '"Keep reading" — words between inserts', 'now-blog' ), 'number', 'absint', array( 'min' => 100, 'max' => 2000, 'step' => 50 ) ),
+		'now_inline_related_max' => array( __( '"Keep reading" — max inserts per article', 'now-blog' ), 'number', 'absint', array( 'min' => 1, 'max' => 5 ) ),
 	);
 
 	foreach ( $fields as $key => $field ) {
@@ -670,14 +674,15 @@ function now_customize_register( $wp_customize ) {
 				'sanitize_callback' => $field[2],
 			)
 		);
-		$wp_customize->add_control(
-			$key,
-			array(
-				'label'   => $field[0],
-				'section' => 'now_theme',
-				'type'    => $field[1],
-			)
+		$control = array(
+			'label'   => $field[0],
+			'section' => 'now_theme',
+			'type'    => $field[1],
 		);
+		if ( isset( $field[3] ) ) {
+			$control['input_attrs'] = $field[3];
+		}
+		$wp_customize->add_control( $key, $control );
 	}
 }
 add_action( 'customize_register', 'now_customize_register' );
@@ -727,19 +732,21 @@ function now_inline_related_posts( $post_id, $count = 2 ) {
 }
 
 /**
- * One inline related-story card. Markup follows the story-card anatomy
- * (media · eyebrow · title · action); styled via .now-inline-read in now.css.
+ * One inline related-story banner: square thumb · eyebrow/title/blurb · amber
+ * "Read more" CTA. Compact horizontal strip with the brand ring (--elev-2),
+ * borrowing the sidebar-promo look; styled via .now-inline-read in now.css.
  */
 function now_inline_related_card( $rel ) {
 	$link  = get_permalink( $rel );
 	$thumb = get_the_post_thumbnail(
 		$rel,
-		'medium',
+		'thumbnail',
 		array(
 			'loading' => 'lazy',
 			'alt'     => get_the_title( $rel ),
 		)
 	);
+	$blurb = wp_trim_words( get_the_excerpt( $rel ), 20, '…' );
 
 	$html  = '<aside class="now-inline-read">';
 	if ( $thumb ) {
@@ -748,16 +755,21 @@ function now_inline_related_card( $rel ) {
 	$html .= '<div class="now-inline-read-body">';
 	$html .= '<span class="now-inline-read-eyebrow">' . esc_html__( 'Keep reading', 'now-blog' ) . '</span>';
 	$html .= '<a class="now-inline-read-title" href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $rel ) ) . '</a>';
-	$html .= '<a class="now-inline-read-more" href="' . esc_url( $link ) . '">' . esc_html__( 'Read the story', 'now-blog' ) . ' &rarr;</a>';
-	$html .= '</div></aside>';
+	if ( $blurb ) {
+		$html .= '<p class="now-inline-read-desc">' . esc_html( $blurb ) . '</p>';
+	}
+	$html .= '</div>';
+	$html .= '<a class="now-inline-read-btn" href="' . esc_url( $link ) . '">' . esc_html__( 'Read more', 'now-blog' ) . '</a>';
+	$html .= '</aside>';
 
 	return $html;
 }
 
 /**
- * Weave up to two "Keep reading" cards into long article bodies — one per
- * ~500 words, always after a closed paragraph that is followed by another
- * paragraph (never straight before a heading, list or figure).
+ * Weave "Keep reading" banners into long article bodies — one per N words
+ * and at most M per post (both editable in the Customizer, 300 words / 2
+ * inserts by default), always after a closed paragraph that is followed by
+ * another paragraph (never straight before a heading, list or figure).
  */
 function now_inline_related( $content ) {
 	if ( ! now_mod( 'now_inline_related' ) || ! is_singular( 'post' ) || ! in_the_loop() || ! is_main_query() || post_password_required() ) {
@@ -769,9 +781,9 @@ function now_inline_related( $content ) {
 		return $content;
 	}
 
-	/** Interval (words between inserts) and cap, filterable per site. */
-	$interval = max( 100, (int) apply_filters( 'now_inline_related_interval', 500 ) );
-	$max      = max( 1, (int) apply_filters( 'now_inline_related_max', 2 ) );
+	/** Interval (words between inserts) and cap — Customizer values, still filterable. */
+	$interval = max( 100, (int) apply_filters( 'now_inline_related_interval', (int) now_mod( 'now_inline_related_interval' ) ) );
+	$max      = max( 1, (int) apply_filters( 'now_inline_related_max', (int) now_mod( 'now_inline_related_max' ) ) );
 
 	$related = now_inline_related_posts( get_the_ID(), $max );
 	if ( empty( $related ) ) {

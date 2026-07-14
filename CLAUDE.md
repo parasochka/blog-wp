@@ -24,7 +24,7 @@ Claude Design "NOW"  ─►  _ds/tokens + PHP templates  ─►  GitHub  ─► 
 | Path | Purpose |
 | --- | --- |
 | `style.css` | WP theme header + a pointer note. No real CSS here. |
-| `functions.php` | Enqueue tokens/CSS/JS, theme supports, nav menus (4 locations: `primary`, `footer_platform`, `footer_company`, `footer_legal` — WP menus win, curated markup is the fallback; external links get `rel="nofollow noopener noreferrer"` automatically via `now_link_rel()`), Customizer basics (header CTA, footer tagline, sidebar promo, inline-related toggle — see `now_theme_defaults()`), the inline "Keep reading" content inserts (`now_inline_related`), and the design **helpers** (`now_render_card`, `now_reading_time`, `now_author_badge`, `now_primary_nav`, `now_category_pills`, `now_logo_img`). |
+| `functions.php` | Enqueue tokens/CSS/JS, theme supports, nav menus (4 locations: `primary`, `footer_platform`, `footer_company`, `footer_legal` — WP menus win, curated markup is the fallback; external links get `rel="nofollow noopener noreferrer"` automatically via `now_link_rel()`), Customizer basics (header CTA, footer tagline, sidebar promo, inline-related controls: on/off toggle, word interval, max inserts per post — see `now_theme_defaults()`), the inline "Keep reading" content inserts (`now_inline_related`), and the design **helpers** (`now_render_card`, `now_reading_time`, `now_author_badge`, `now_primary_nav`, `now_category_pills`, `now_logo_img`). |
 | `header.php` / `footer.php` | Sticky glass masthead / footer. Shared by every template. |
 | `home.php` | Blog front page: hero → featured lead → one horizontal rail per category → newsletter. |
 | `single.php` | Article: centered head → 21:9 hero → 760px prose + sticky TOC/share sidebar → related. |
