@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NOW_VERSION', '1.2.1' ); // bump on CSS/JS changes — busts the ?ver= asset cache.
+define( 'NOW_VERSION', '1.2.2' ); // bump on CSS/JS changes — busts the ?ver= asset cache.
 define( 'NOW_DS_DIR', '_ds/nowplix-igaming-design-system-5bcffbc0-c8f0-442c-b6f3-9be1de820175' );
 
 /* ------------------------------------------------------------------ *
