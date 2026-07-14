@@ -48,7 +48,7 @@ $now_topic_ids = array_unique( $now_topic_ids );
 
 <section style="width:100%; max-width:1200px; margin-inline:auto; padding:64px 24px 32px">
 	<div class="now-author-hero" style="display:flex; align-items:flex-start; gap:28px">
-		<span aria-hidden="true" style="flex:0 0 auto; width:88px; height:88px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:30px; box-shadow:var(--elev-2); background:<?php echo esc_attr( $now_badge['grad'] ); ?>"><?php echo esc_html( $now_badge['mono'] ); ?></span>
+		<span aria-hidden="true" style="position:relative; overflow:hidden; flex:0 0 auto; width:88px; height:88px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:30px; box-shadow:var(--elev-2); background:<?php echo esc_attr( $now_badge['grad'] ); ?>"><?php echo esc_html( $now_badge['mono'] ); echo now_author_avatar_img( $now_author, 88 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 		<div style="min-width:0">
 			<span style="font-family:var(--font-display); font-weight:400; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-brand)"><?php esc_html_e( 'Author', 'now-blog' ); ?></span>
 			<h1 style="font-family:var(--font-display); font-weight:400; font-size:clamp(34px,5vw,54px); letter-spacing:-0.02em; color:var(--text-primary); margin:10px 0 12px"><?php echo esc_html( $now_name ); ?></h1>
@@ -61,7 +61,7 @@ $now_topic_ids = array_unique( $now_topic_ids );
 				<?php endif; ?>
 				<?php if ( $now_site ) : ?>
 					<span style="width:3px; height:3px; border-radius:50%; background:var(--text-muted)"></span>
-					<a href="<?php echo esc_url( $now_site ); ?>" rel="me" style="color:var(--text-brand)"><?php esc_html_e( 'Website', 'now-blog' ); ?></a>
+					<a href="<?php echo esc_url( $now_site ); ?>" rel="me nofollow noopener noreferrer" style="color:var(--text-brand)"><?php esc_html_e( 'Website', 'now-blog' ); ?></a>
 				<?php endif; ?>
 			</div>
 		</div>

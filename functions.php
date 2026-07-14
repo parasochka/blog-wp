@@ -176,6 +176,40 @@ function now_user_badge( $author ) {
 }
 
 /**
+ * Gravatar <img> overlay for an author avatar chip. Layers the admin-set
+ * Gravatar on top of the monogram badge: `default=blank` returns a transparent
+ * image for authors with no Gravatar, so the monogram gradient shows through —
+ * the design's fallback is preserved 1:1, while a real Gravatar simply appears.
+ *
+ * Drop the return value inside a circular chip that is `position:relative;
+ * overflow:hidden` (the six badge chips across the templates). Returns '' when
+ * avatars are disabled (Settings → Discussion) so the monogram stands alone.
+ *
+ * @param int $author User ID.
+ * @param int $size   Rendered pixel size (2× is requested from Gravatar for HiDPI).
+ * @return string <img> HTML, or '' if avatars are off / no URL.
+ */
+function now_author_avatar_img( $author, $size ) {
+	$author = (int) $author;
+	$size   = (int) $size;
+	$url    = get_avatar_url(
+		$author,
+		array(
+			'size'    => $size * 2,
+			'default' => 'blank',
+		)
+	);
+	if ( ! $url ) {
+		return '';
+	}
+	return sprintf(
+		'<img src="%1$s" alt="" aria-hidden="true" loading="lazy" decoding="async" width="%2$d" height="%2$d" style="position:absolute; inset:0; width:100%%; height:100%%; object-fit:cover; display:block; border-radius:inherit" />',
+		esc_url( $url ),
+		$size
+	);
+}
+
+/**
  * A short, clamp-friendly excerpt (the card CSS clamps to 2 lines).
  */
 function now_card_excerpt( $words = 24 ) {
@@ -188,9 +222,10 @@ function now_card_excerpt( $words = 24 ) {
  * only the dynamic slots are WordPress calls.
  */
 function now_render_card( $show_excerpt = true ) {
-	$pid   = get_the_ID();
-	$badge = now_author_badge( $pid );
-	$cats  = get_the_category( $pid );
+	$pid    = get_the_ID();
+	$author = (int) get_post_field( 'post_author', $pid );
+	$badge  = now_author_badge( $pid );
+	$cats   = get_the_category( $pid );
 	$cat   = ! empty( $cats ) ? $cats[0] : null;
 	?>
 	<article class="now-card" style="display:flex; flex-direction:column; gap:12px; scroll-snap-align:start">
@@ -216,7 +251,7 @@ function now_render_card( $show_excerpt = true ) {
 			<p style="font-size:14px; color:var(--text-secondary); margin:0; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden"><?php echo esc_html( now_card_excerpt() ); ?></p>
 		<?php endif; ?>
 		<div style="display:flex; align-items:center; gap:12px; color:var(--text-muted); font-size:13px">
-			<span style="width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:9px; background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); ?></span>
+			<span style="position:relative; overflow:hidden; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:9px; background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); echo now_author_avatar_img( $author, 22 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 			<span><?php echo esc_html( get_the_date() ); ?></span>
 			<span style="width:3px; height:3px; border-radius:50%; background:var(--text-muted)"></span>
 			<span><?php echo esc_html( now_reading_time( $pid ) ); ?></span>
@@ -578,7 +613,7 @@ function now_author_card( $author = 0 ) {
 	$site  = (string) get_the_author_meta( 'url', $author );
 	?>
 	<aside class="now-author-card">
-		<a class="now-author-card-avatar" href="<?php echo esc_url( $url ); ?>" aria-hidden="true" tabindex="-1" style="background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); ?></a>
+		<a class="now-author-card-avatar" href="<?php echo esc_url( $url ); ?>" aria-hidden="true" tabindex="-1" style="background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); echo now_author_avatar_img( $author, 56 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
 		<div class="now-author-card-body">
 			<span class="now-author-card-eyebrow"><?php esc_html_e( 'Written by', 'now-blog' ); ?></span>
 			<a class="now-author-card-name" href="<?php echo esc_url( $url ); ?>" rel="author"><?php echo esc_html( $name ); ?></a>
@@ -589,7 +624,7 @@ function now_author_card( $author = 0 ) {
 				<a href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'All articles', 'now-blog' ); ?> &rarr;</a>
 				<?php if ( $site && untrailingslashit( $site ) !== untrailingslashit( home_url( '/' ) ) ) : ?>
 					<span class="now-author-card-dot" aria-hidden="true"></span>
-					<a href="<?php echo esc_url( $site ); ?>" rel="me"><?php esc_html_e( 'Website', 'now-blog' ); ?></a>
+					<a href="<?php echo esc_url( $site ); ?>" rel="me nofollow noopener noreferrer"><?php esc_html_e( 'Website', 'now-blog' ); ?></a>
 				<?php endif; ?>
 			</div>
 		</div>
