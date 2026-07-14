@@ -1,0 +1,24 @@
+/*
+Theme Name: NOW — NowPlix Blog
+Theme URI: https://blog.nowplix.dev
+Author: NowPlix
+Author URI: https://nowplix.dev
+Description: Classic PHP theme for the NowPlix "NOW" blog. The Claude Design "NOW" design system (_ds/now/tokens/*.css) is the single source of truth for styling; the design-handoff screens are reproduced pixel-for-pixel in plain PHP templates. Edit a token in _ds/now/tokens to re-theme the whole site.
+Requires at least: 6.4
+Tested up to: 7.0
+Requires PHP: 7.4
+Version: 1.3.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: now-blog
+Tags: blog, dark, one-column, custom-logo, custom-menu, featured-images, translation-ready
+*/
+
+/*
+ * This file carries the WordPress theme header above and is the canonical
+ * stylesheet handle. The real styling lives in:
+ *   • _ds/now/tokens/*.css + styles.css — the design-system source of truth
+ *   • assets/css/now.css                — supplemental theme CSS (prose, hovers,
+ *                                         body halo, responsive, reduced-motion)
+ * Both are enqueued from inc/enqueue.php. Keep design changes in those files.
+ */

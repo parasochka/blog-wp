@@ -1,9 +1,10 @@
 name: Validate theme
 
 # Sanity-checks the theme on every push so WP Pusher never pulls a broken build.
-# Classic PHP theme: lint every PHP file, confirm the required theme files exist,
-# and confirm the design-system tokens are present. No secrets, no server access.
-# Deploy happens in WordPress via WP Pusher (Install/Update Theme from this repo).
+# Classic PHP theme in theme/: lint every PHP file, confirm the required theme
+# files exist, and confirm the design-system tokens are present. No secrets, no
+# server access. Deploy happens in WordPress via WP Pusher (Install/Update Theme
+# from this repo, subdirectory: theme).
 
 on:
   push:
@@ -29,15 +30,19 @@ jobs:
       - name: Lint all PHP files
         run: |
           set -e
-          find . -name '*.php' -not -path './vendor/*' -print0 \
+          find . -name '*.php' -not -path './vendor/*' -not -path './tools/*/node_modules/*' -print0 \
             | xargs -0 -n1 -P4 php -l
           echo "All PHP files parse."
 
       - name: Ensure required theme files exist
         run: |
-          for f in style.css functions.php index.php header.php footer.php home.php single.php; do
-            if [ ! -f "$f" ]; then
-              echo "::error title=Missing theme file::$f is required for this classic theme"
+          for f in style.css functions.php index.php header.php footer.php home.php single.php \
+                   inc/setup.php inc/enqueue.php inc/template-tags.php inc/nav.php \
+                   inc/customizer.php inc/inline-related.php \
+                   template-parts/card.php template-parts/author-card.php \
+                   page-templates/canvas.php; do
+            if [ ! -f "theme/$f" ]; then
+              echo "::error title=Missing theme file::theme/$f is required for this classic theme"
               exit 1
             fi
           done
@@ -45,7 +50,7 @@ jobs:
 
       - name: Ensure the design-system tokens are present
         run: |
-          DS="_ds/nowplix-igaming-design-system-5bcffbc0-c8f0-442c-b6f3-9be1de820175"
+          DS="theme/_ds/now"
           for f in "styles.css" "tokens/colors.css" "tokens/typography.css" "tokens/spacing.css" "tokens/radius.css" "tokens/elevation.css" "tokens/fonts.css"; do
             if [ ! -f "$DS/$f" ]; then
               echo "::error title=Missing design token::$DS/$f is required"
@@ -56,8 +61,8 @@ jobs:
 
       - name: Ensure style.css has a Theme Name header
         run: |
-          if ! grep -q '^Theme Name:' style.css; then
-            echo "::error title=Bad style.css::style.css must contain a 'Theme Name:' header"
+          if ! grep -q '^Theme Name:' theme/style.css; then
+            echo "::error title=Bad style.css::theme/style.css must contain a 'Theme Name:' header"
             exit 1
           fi
           echo "style.css header OK."
