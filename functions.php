@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NOW_VERSION', '1.2.0' ); // bump on CSS/JS changes — busts the ?ver= asset cache.
+define( 'NOW_VERSION', '1.2.1' ); // bump on CSS/JS changes — busts the ?ver= asset cache.
 define( 'NOW_DS_DIR', '_ds/nowplix-igaming-design-system-5bcffbc0-c8f0-442c-b6f3-9be1de820175' );
 
 /* ------------------------------------------------------------------ *
@@ -613,7 +613,7 @@ function now_author_card( $author = 0 ) {
 	$site  = (string) get_the_author_meta( 'url', $author );
 	?>
 	<aside class="now-author-card">
-		<a class="now-author-card-avatar" href="<?php echo esc_url( $url ); ?>" aria-hidden="true" tabindex="-1" style="background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); echo now_author_avatar_img( $author, 56 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
+		<a class="now-author-card-avatar" href="<?php echo esc_url( $url ); ?>" aria-hidden="true" tabindex="-1" style="position:relative; overflow:hidden; background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); echo now_author_avatar_img( $author, 56 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
 		<div class="now-author-card-body">
 			<span class="now-author-card-eyebrow"><?php esc_html_e( 'Written by', 'now-blog' ); ?></span>
 			<a class="now-author-card-name" href="<?php echo esc_url( $url ); ?>" rel="author"><?php echo esc_html( $name ); ?></a>
