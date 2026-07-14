@@ -65,7 +65,7 @@ if ( $featured->have_posts() ) :
 			<h2 style="font-family:var(--font-display); font-weight:400; font-size:clamp(30px,3.4vw,46px); line-height:1.08; color:var(--text-primary); margin:0; text-wrap:balance"><a href="<?php the_permalink(); ?>" style="color:inherit"><?php the_title(); ?></a></h2>
 			<p style="font-size:18px; color:var(--text-secondary); margin:0; text-wrap:pretty"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 34, '…' ) ); ?></p>
 			<div style="display:flex; align-items:center; gap:12px; color:var(--text-muted); font-size:13px">
-				<span style="width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:10px; background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); ?></span>
+				<span style="position:relative; overflow:hidden; width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:10px; background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); echo now_author_avatar_img( (int) get_the_author_meta( 'ID' ), 24 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 				<span style="color:var(--text-secondary)"><?php the_author(); ?></span>
 				<span style="width:3px; height:3px; border-radius:50%; background:var(--text-muted)"></span>
 				<span><?php echo esc_html( get_the_date() ); ?></span>

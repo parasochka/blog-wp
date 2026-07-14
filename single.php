@@ -26,7 +26,7 @@ while ( have_posts() ) :
 		<h1 style="font-family:var(--font-display); font-weight:400; font-size:clamp(34px,5vw,60px); line-height:1.06; letter-spacing:-0.01em; color:var(--text-primary); max-width:20ch; margin:16px auto; text-wrap:balance"><?php the_title(); ?></h1>
 		<?php $now_author_url = get_author_posts_url( (int) get_the_author_meta( 'ID' ) ); ?>
 		<div style="display:inline-flex; align-items:center; gap:12px">
-			<a href="<?php echo esc_url( $now_author_url ); ?>" rel="author" aria-hidden="true" tabindex="-1" style="width:40px; height:40px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:15px; background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); ?></a>
+			<a href="<?php echo esc_url( $now_author_url ); ?>" rel="author" aria-hidden="true" tabindex="-1" style="position:relative; overflow:hidden; width:40px; height:40px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:15px; background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); echo now_author_avatar_img( (int) get_the_author_meta( 'ID' ), 40 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
 			<div style="text-align:left">
 				<a class="now-author-link" href="<?php echo esc_url( $now_author_url ); ?>" rel="author" style="display:block; color:var(--text-primary); font-family:var(--font-body); font-weight:600; font-size:14px"><?php the_author(); ?></a>
 				<div style="display:flex; align-items:center; gap:12px; color:var(--text-muted); font-size:13px; margin-top:2px">

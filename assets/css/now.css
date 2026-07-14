@@ -258,6 +258,7 @@ a:hover { color: var(--primary-200); }
 	border-radius: var(--radius-xl); box-shadow: var(--elev-1);
 }
 .now-author-card .now-author-card-avatar {
+	position: relative; overflow: hidden;
 	flex: 0 0 auto;
 	width: 56px; height: 56px; border-radius: 50%;
 	display: inline-flex; align-items: center; justify-content: center;
