@@ -340,6 +340,15 @@ a:hover { color: var(--primary-200); }
 .now-pagination .page-numbers:hover { border-color: var(--primary-500); color: #fff; }
 .now-pagination .nav-links { display: flex; flex-wrap: wrap; align-items: center; }
 
+/* ---- Newsletter form ------------------------------------------------------ */
+/* iOS Safari paints its native look (gray fill, own radius) over the input's
+   inline DS styles — strip the UA appearance so the handoff styling shows. */
+.now-newsletter input[type="email"],
+.now-newsletter button {
+	-webkit-appearance: none;
+	appearance: none;
+}
+
 /* ---- Responsive ---------------------------------------------------------- */
 @media (max-width: 960px) {
 	.now-search { display: none !important; }
@@ -363,6 +372,9 @@ a:hover { color: var(--primary-200); }
 	.now-related-grid { grid-template-columns: 1fr !important; }
 	/* Newsletter: the row layout pushed the button off-screen on phones. */
 	.now-newsletter { flex-direction: column !important; }
+	/* In the column layout the input's inline flex:1 (flex-basis:0%) overrides
+	   its height and squashes it — pin it back to its natural 48px box. */
+	.now-newsletter input[type="email"] { flex: 0 0 auto !important; width: 100%; }
 }
 /* The mobile panel is a phone-only affordance: never show it once the inline
    nav returns, even if it was left open before a resize. */
