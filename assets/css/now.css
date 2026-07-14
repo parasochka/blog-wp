@@ -152,7 +152,7 @@ a:hover { color: var(--primary-200); }
 /* ---- Section "view all" + rail arrows ------------------------------------ */
 .now-viewall:hover { color: var(--primary-200); }
 .now-rail-btn:hover:not(:disabled) { border-color: var(--primary-500); color: #fff; }
-.now-rail-btn:disabled { opacity: 0.35; cursor: default; }
+.now-rail-btn:disabled { opacity: 0.35; cursor: default !important; } /* !important: beats the handoff's inline cursor:pointer */
 
 /* ---- Story cards --------------------------------------------------------- */
 .now-card-media img {

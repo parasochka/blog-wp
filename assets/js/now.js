@@ -26,7 +26,9 @@
 		var btns = document.querySelectorAll('.now-rail-btn[data-rail="' + rail.id + '"]');
 		if (!btns.length) return;
 		var update = function () {
-			var max = rail.scrollWidth - rail.clientWidth - 1;
+			// 2px tolerance: fractional zoom/HiDPI can leave a sub-pixel gap
+			// that scrollLeft never fully closes.
+			var max = rail.scrollWidth - rail.clientWidth - 2;
 			btns.forEach(function (b) {
 				var dir = parseInt(b.getAttribute('data-dir'), 10) || 1;
 				b.disabled = dir < 0 ? rail.scrollLeft <= 0 : rail.scrollLeft >= max;
@@ -34,6 +36,7 @@
 		};
 		rail.addEventListener('scroll', update, { passive: true });
 		window.addEventListener('resize', update);
+		window.addEventListener('load', update);
 		update();
 	});
 
@@ -72,7 +75,9 @@
 				var pos = window.pageYOffset + 120;
 				// Past the end of the article (e.g. the TOC card sits below the
 				// prose on mobile): nothing is being read, so highlight nothing.
-				var proseBottom = prose.getBoundingClientRect().bottom + window.pageYOffset;
+				// offsetTop keeps this in the same coordinate space as the
+				// headings' offsetTop checks below.
+				var proseBottom = prose.offsetTop + prose.offsetHeight;
 				var current = pos > proseBottom ? -1 : 0;
 				if (current === 0) {
 					headings.forEach(function (h, i) { if (h.offsetTop <= pos) { current = i; } });

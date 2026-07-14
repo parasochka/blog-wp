@@ -109,12 +109,20 @@ add_filter( 'wp_resource_hints', 'now_resource_hints', 10, 2 );
  * ------------------------------------------------------------------ */
 
 /**
+ * Unicode-aware word count — str_word_count() only sees ASCII words, which
+ * silently returns 0 for Cyrillic/Greek/CJK content.
+ */
+function now_word_count( $text ) {
+	return (int) preg_match_all( '/[\p{L}\p{N}][\p{L}\p{N}\'’-]*/u', (string) $text );
+}
+
+/**
  * Estimated reading time, e.g. "8 min". ~200 wpm, minimum 1.
  */
 function now_reading_time( $post_id = 0 ) {
 	$post_id = $post_id ? $post_id : get_the_ID();
 	$content = get_post_field( 'post_content', $post_id );
-	$words   = str_word_count( wp_strip_all_tags( (string) $content ) );
+	$words   = now_word_count( wp_strip_all_tags( (string) $content ) );
 	$minutes = max( 1, (int) ceil( $words / 200 ) );
 	/* translators: %d: minutes to read. */
 	return sprintf( _n( '%d min', '%d min', $minutes, 'now-blog' ), $minutes );
@@ -214,10 +222,13 @@ function now_render_card( $show_excerpt = true ) {
  * on an internal link. XFN rel values set in the admin are preserved.
  */
 function now_link_rel( $url, $classes = array(), $xfn = '' ) {
+	static $home = null;
+	if ( null === $home ) {
+		$home = wp_parse_url( home_url( '/' ), PHP_URL_HOST );
+	}
 	$rel     = array_filter( array_map( 'trim', explode( ' ', (string) $xfn ) ) );
 	$classes = (array) $classes;
 	$host    = wp_parse_url( (string) $url, PHP_URL_HOST );
-	$home    = wp_parse_url( home_url( '/' ), PHP_URL_HOST );
 
 	$external = $host && 0 !== strcasecmp( $host, (string) $home );
 	if ( ( $external && ! in_array( 'follow', $classes, true ) ) || in_array( 'nofollow', $classes, true ) ) {
@@ -238,15 +249,20 @@ function now_link_rel( $url, $classes = array(), $xfn = '' ) {
  * @return WP_Term|null
  */
 function now_menu_for_location( $location, $slug ) {
+	static $cache = array();
+	if ( array_key_exists( $location, $cache ) ) {
+		return $cache[ $location ];
+	}
+	$menu      = null;
 	$locations = get_nav_menu_locations();
 	if ( ! empty( $locations[ $location ] ) ) {
 		$menu = wp_get_nav_menu_object( $locations[ $location ] );
-		if ( $menu ) {
-			return $menu;
-		}
 	}
-	$menu = wp_get_nav_menu_object( $slug );
-	return $menu ? $menu : null;
+	if ( ! $menu ) {
+		$menu = wp_get_nav_menu_object( $slug );
+	}
+	$cache[ $location ] = $menu ? $menu : null;
+	return $cache[ $location ];
 }
 
 /**
@@ -524,11 +540,12 @@ function now_footer_links( $location, $slug, $fallback, $inline = false ) {
 		? 'color:var(--text-muted)'
 		: 'display:block; color:var(--text-secondary); font-family:var(--font-body); font-size:14px; padding:5px 0';
 
-	$menu  = now_menu_for_location( $location, $slug );
-	$items = $menu ? wp_get_nav_menu_items( $menu ) : false;
-
-	if ( $items ) {
-		foreach ( $items as $item ) {
+	$menu = now_menu_for_location( $location, $slug );
+	if ( $menu ) {
+		// A menu that exists but was deliberately emptied stays empty —
+		// don't resurrect the designed defaults over the editor's choice.
+		$items = wp_get_nav_menu_items( $menu );
+		foreach ( (array) $items as $item ) {
 			$rel = now_link_rel( $item->url, (array) $item->classes, $item->xfn );
 			printf(
 				'<a class="now-foot-link" href="%s"%s%s style="%s">%s</a>',
@@ -543,10 +560,12 @@ function now_footer_links( $location, $slug, $fallback, $inline = false ) {
 	}
 
 	foreach ( $fallback as $label => $url ) {
+		$rel = now_link_rel( $url );
 		printf(
-			'<a class="now-foot-link" href="%s" target="_blank" rel="%s" style="%s">%s</a>',
+			'<a class="now-foot-link" href="%s"%s%s style="%s">%s</a>',
 			esc_url( $url ),
-			esc_attr( now_link_rel( $url ) ),
+			$rel ? ' target="_blank"' : '', // new tab only for external hosts
+			$rel ? ' rel="' . esc_attr( $rel ) . '"' : '',
 			esc_attr( $style ),
 			esc_html( $label )
 		);
@@ -596,7 +615,11 @@ add_filter( 'excerpt_more', 'now_excerpt_more' );
  * value is changed in the Customizer.
  */
 function now_theme_defaults() {
-	return array(
+	static $defaults = null;
+	if ( null !== $defaults ) {
+		return $defaults;
+	}
+	$defaults = array(
 		'now_cta_label'      => __( 'Explore platform', 'now-blog' ),
 		'now_cta_url'        => 'https://nowplix.com/about/contact',
 		'now_footer_tagline' => __( 'Signals from the future of iGaming — product, design and engineering stories from the NowPlix platform.', 'now-blog' ),
@@ -606,6 +629,7 @@ function now_theme_defaults() {
 		'now_promo_url'      => 'https://nowplix.com/about/contact',
 		'now_inline_related' => true,
 	);
+	return $defaults;
 }
 
 /**
@@ -745,31 +769,33 @@ function now_inline_related( $content ) {
 		return $content;
 	}
 
-	$related = now_inline_related_posts( get_the_ID(), 2 );
+	/** Interval (words between inserts) and cap, filterable per site. */
+	$interval = max( 100, (int) apply_filters( 'now_inline_related_interval', 500 ) );
+	$max      = max( 1, (int) apply_filters( 'now_inline_related_max', 2 ) );
+
+	$related = now_inline_related_posts( get_the_ID(), $max );
 	if ( empty( $related ) ) {
 		return $content;
 	}
 
-	$out       = '';
-	$words     = 0;
-	$threshold = 500;
-	$used      = 0;
+	$out   = '';
+	$words = 0;
+	$used  = 0;
 
 	foreach ( $blocks as $i => $chunk ) {
 		$out .= $chunk;
+		if ( $used >= count( $related ) ) {
+			continue; // all cards placed — just pass the rest through.
+		}
 		if ( '</p>' !== strtolower( $chunk ) ) {
-			$words += str_word_count( wp_strip_all_tags( $chunk ) );
+			$words += now_word_count( wp_strip_all_tags( $chunk ) );
 			continue;
 		}
 		$next = isset( $blocks[ $i + 1 ] ) ? ltrim( $blocks[ $i + 1 ] ) : '';
-		if (
-			$used < count( $related )
-			&& $words >= $threshold
-			&& 0 === stripos( $next, '<p' ) // only between two paragraphs
-		) {
-			$out       .= now_inline_related_card( $related[ $used ] );
+		if ( $words >= $interval && 0 === stripos( $next, '<p' ) ) { // only between two paragraphs
+			$out .= now_inline_related_card( $related[ $used ] );
 			$used++;
-			$threshold += 500;
+			$words = 0;
 		}
 	}
 

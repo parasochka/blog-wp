@@ -80,7 +80,11 @@ while ( have_posts() ) :
 				<div style="background:var(--surface-card); border-radius:var(--radius-xl); padding:24px; box-shadow:var(--elev-2)">
 					<h3 style="font-family:var(--font-display); font-weight:400; font-size:18px; color:var(--text-primary); margin:0 0 8px; letter-spacing:-0.01em"><?php echo esc_html( now_mod( 'now_promo_title' ) ); ?></h3>
 					<p style="color:var(--text-secondary); font-size:14px; margin:0 0 16px"><?php echo esc_html( now_mod( 'now_promo_text' ) ); ?></p>
-					<a href="<?php echo esc_url( now_mod( 'now_promo_url' ) ); ?>" target="_blank" rel="<?php echo esc_attr( now_link_rel( now_mod( 'now_promo_url' ) ) ); ?>" class="now-cta-accent" style="display:inline-flex; align-items:center; justify-content:center; width:100%; box-sizing:border-box; font-family:var(--font-body); font-weight:600; font-size:14px; height:44px; padding:0 20px; border-radius:var(--radius-md); background:var(--accent-400); color:#1a1204; box-shadow:var(--glow-accent)"><?php echo esc_html( now_mod( 'now_promo_button' ) ); ?></a>
+					<?php
+					$now_promo_url = now_mod( 'now_promo_url' );
+					$now_promo_rel = now_link_rel( $now_promo_url ); // empty for internal URLs → same tab, no rel
+					?>
+					<a href="<?php echo esc_url( $now_promo_url ); ?>"<?php echo $now_promo_rel ? ' target="_blank" rel="' . esc_attr( $now_promo_rel ) . '"' : ''; ?> class="now-cta-accent" style="display:inline-flex; align-items:center; justify-content:center; width:100%; box-sizing:border-box; font-family:var(--font-body); font-weight:600; font-size:14px; height:44px; padding:0 20px; border-radius:var(--radius-md); background:var(--accent-400); color:#1a1204; box-shadow:var(--glow-accent)"><?php echo esc_html( now_mod( 'now_promo_button' ) ); ?></a>
 				</div>
 			</aside>
 		</div>

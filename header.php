@@ -31,7 +31,11 @@
 				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
 				<input type="search" name="s" value="<?php echo esc_attr( get_search_query() ); ?>" placeholder="<?php esc_attr_e( 'Search stories', 'now-blog' ); ?>" aria-label="<?php esc_attr_e( 'Search stories', 'now-blog' ); ?>" style="border:0; background:transparent; outline:none; color:var(--text-primary); font:inherit; width:110px"/>
 			</form>
-			<a href="<?php echo esc_url( now_mod( 'now_cta_url' ) ); ?>" target="_blank" rel="<?php echo esc_attr( now_link_rel( now_mod( 'now_cta_url' ) ) ); ?>" class="now-cta-accent" style="display:inline-flex; align-items:center; justify-content:center; font-family:var(--font-body); font-weight:600; font-size:13px; height:38px; padding:0 16px; border-radius:var(--radius-md); background:var(--accent-400); color:#1a1204; box-shadow:var(--glow-accent)"><?php echo esc_html( now_mod( 'now_cta_label' ) ); ?></a>
+			<?php
+			$now_cta_url = now_mod( 'now_cta_url' );
+			$now_cta_rel = now_link_rel( $now_cta_url ); // empty for internal URLs → same tab, no rel
+			?>
+			<a href="<?php echo esc_url( $now_cta_url ); ?>"<?php echo $now_cta_rel ? ' target="_blank" rel="' . esc_attr( $now_cta_rel ) . '"' : ''; ?> class="now-cta-accent" style="display:inline-flex; align-items:center; justify-content:center; font-family:var(--font-body); font-weight:600; font-size:13px; height:38px; padding:0 16px; border-radius:var(--radius-md); background:var(--accent-400); color:#1a1204; box-shadow:var(--glow-accent)"><?php echo esc_html( now_mod( 'now_cta_label' ) ); ?></a>
 			<button type="button" class="now-burger" aria-label="<?php esc_attr_e( 'Menu', 'now-blog' ); ?>" aria-controls="now-mobile-menu" aria-expanded="false">
 				<span class="now-burger-box" aria-hidden="true"><span class="now-burger-line"></span><span class="now-burger-line"></span><span class="now-burger-line"></span></span>
 			</button>
