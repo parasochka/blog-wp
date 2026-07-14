@@ -7,7 +7,7 @@ vendor/
 dist/
 build/
 
-# Design source binary — the live tokens ship as CSS in _ds/…/tokens/*.css,
+# Design source binary — the live tokens ship as CSS in theme/_ds/now/tokens/*.css,
 # so the Figma export need not be committed.
 *.fig
 

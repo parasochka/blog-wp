@@ -38,7 +38,8 @@
 ## 2. Деплой (WP Pusher)
 
 WP Pusher уже установлен и настроен на `parasochka/blog-wp`, ветка **main**,
-install from subdirectory — пусто (корень репо = папка темы).
+install from subdirectory — **`theme`** (тема живёт в `theme/`; docs и tools
+из корня репо на сервер не попадают).
 
 1. **Влить ветку в `main`** (PR или прямой merge). WP Pusher деплоит именно
    `main` — пока правки в фиче-ветке, на сайте старая тема.
@@ -103,7 +104,7 @@ Inline Related Posts · Instant Images · Rank Math SEO · WP Pusher.
 - **Вариант B — укрупнить таксономию** до ~5 разделов (как в дизайне),
   переназначив посты. «Дизайнернее», но меняет структуру блога.
 - **Страницы About / Platform.** В демо это богатые лендинги. Могу создать их
-  как страницы на шаблоне **«Full-width canvas»** (`page-canvas.php`) из HTML
+  как страницы на шаблоне **«Full-width canvas»** (`page-templates/canvas.php`) из HTML
   хэндофа + 3D-иллюстрации. Ссылки на них уже есть в футере.
 
 ---
@@ -111,15 +112,16 @@ Inline Related Posts · Instant Images · Rank Math SEO · WP Pusher.
 ## 6. Дальнейший pipeline
 
 ```
-_ds/tokens + *.php  ──push→ main──►  WP Pusher  ──►  WordPress (тема)
+theme/ (_ds/now + *.php)  ──push→ main──►  WP Pusher  ──►  WordPress (тема)
        (код, git)                     (Update)         рендерит контент
 контент (посты/категории/меню/медиа) ──────────────►  WordPress (админка / MCP)
 ```
 
 - **Дизайн/токены/шаблоны** → правки в репо → push в `main` → WP Pusher тянет.
-  Правка `--primary-500` в `_ds/…/tokens/colors.css` перекрашивает весь сайт.
+  Правка `--primary-500` в `theme/_ds/now/tokens/colors.css` перекрашивает весь сайт.
 - **Контент** → в WordPress (админка или через MCP), **не** в git.
-- **Ре-экспорт дизайн-системы** Claude Design → положить новый `_ds/…/` поверх
-  старого (тот же путь) → чистый diff, без ручной перетрансляции.
+- **Ре-экспорт дизайн-системы** Claude Design → положить содержимое нового
+  экспорта поверх `theme/_ds/now/` (тот же путь) → чистый diff, без ручной
+  перетрансляции.
 
 Подробные правила разработки темы — в [`CLAUDE.md`](./CLAUDE.md).
