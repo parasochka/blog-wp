@@ -24,10 +24,11 @@ while ( have_posts() ) :
 			<a href="<?php echo esc_url( get_category_link( $cat ) ); ?>" style="font-family:var(--font-display); font-weight:400; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-brand)"><?php echo esc_html( $cat->name ); ?></a>
 		<?php endif; ?>
 		<h1 style="font-family:var(--font-display); font-weight:400; font-size:clamp(34px,5vw,60px); line-height:1.06; letter-spacing:-0.01em; color:var(--text-primary); max-width:20ch; margin:16px auto; text-wrap:balance"><?php the_title(); ?></h1>
+		<?php $now_author_url = get_author_posts_url( (int) get_the_author_meta( 'ID' ) ); ?>
 		<div style="display:inline-flex; align-items:center; gap:12px">
-			<span style="width:40px; height:40px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:15px; background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); ?></span>
+			<a href="<?php echo esc_url( $now_author_url ); ?>" rel="author" aria-hidden="true" tabindex="-1" style="width:40px; height:40px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:15px; background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); ?></a>
 			<div style="text-align:left">
-				<div style="color:var(--text-primary); font-family:var(--font-body); font-weight:600; font-size:14px"><?php the_author(); ?></div>
+				<a class="now-author-link" href="<?php echo esc_url( $now_author_url ); ?>" rel="author" style="display:block; color:var(--text-primary); font-family:var(--font-body); font-weight:600; font-size:14px"><?php the_author(); ?></a>
 				<div style="display:flex; align-items:center; gap:12px; color:var(--text-muted); font-size:13px; margin-top:2px">
 					<span><?php echo esc_html( get_the_date() ); ?></span><span style="width:3px; height:3px; border-radius:50%; background:var(--text-muted)"></span><span><?php echo esc_html( now_reading_time() ); ?> <?php esc_html_e( 'read', 'now-blog' ); ?></span>
 				</div>
@@ -48,16 +49,30 @@ while ( have_posts() ) :
 	<div style="width:100%; max-width:1200px; margin-inline:auto; padding-inline:24px">
 		<div class="now-article-grid" style="display:grid; grid-template-columns:minmax(0,760px) 300px; gap:80px; justify-content:center; align-items:start; margin-top:64px">
 
-			<div class="now-prose" style="font-size:18px; line-height:1.78; color:var(--text-secondary); min-width:0">
-				<?php
-				the_content();
-				wp_link_pages(
-					array(
-						'before' => '<div class="now-page-links">' . esc_html__( 'Pages:', 'now-blog' ),
-						'after'  => '</div>',
-					)
-				);
-				?>
+			<div style="min-width:0; display:flex; flex-direction:column">
+				<div class="now-prose" style="font-size:18px; line-height:1.78; color:var(--text-secondary); min-width:0">
+					<?php
+					the_content();
+					wp_link_pages(
+						array(
+							'before' => '<div class="now-page-links">' . esc_html__( 'Pages:', 'now-blog' ),
+							'after'  => '</div>',
+						)
+					);
+					?>
+				</div>
+
+				<?php $now_post_tags = get_the_tags(); ?>
+				<?php if ( $now_post_tags && ! is_wp_error( $now_post_tags ) ) : ?>
+				<div class="now-article-tags" style="margin-top:48px; padding-top:32px; border-top:1px solid var(--border)">
+					<p style="font-family:var(--font-display); font-weight:400; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin:0 0 14px"><?php esc_html_e( 'Tagged', 'now-blog' ); ?></p>
+					<div style="display:flex; flex-wrap:wrap; gap:8px">
+						<?php now_tag_pills( $now_post_tags ); ?>
+					</div>
+				</div>
+				<?php endif; ?>
+
+				<?php now_author_card(); ?>
 			</div>
 
 			<aside class="now-sidebar" style="position:sticky; top:92px; display:flex; flex-direction:column; gap:16px">

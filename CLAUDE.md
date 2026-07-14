@@ -24,11 +24,13 @@ Claude Design "NOW"  ─►  _ds/tokens + PHP templates  ─►  GitHub  ─► 
 | Path | Purpose |
 | --- | --- |
 | `style.css` | WP theme header + a pointer note. No real CSS here. |
-| `functions.php` | Enqueue tokens/CSS/JS, theme supports, nav menus (4 locations: `primary`, `footer_platform`, `footer_company`, `footer_legal` — WP menus win, curated markup is the fallback; external links get `rel="nofollow noopener noreferrer"` automatically via `now_link_rel()`), Customizer basics (header CTA, footer tagline, sidebar promo, inline-related controls: on/off toggle, word interval, max inserts per post — see `now_theme_defaults()`), the inline "Keep reading" content inserts (`now_inline_related`), and the design **helpers** (`now_render_card`, `now_reading_time`, `now_author_badge`, `now_primary_nav`, `now_category_pills`, `now_logo_img`). |
+| `functions.php` | Enqueue tokens/CSS/JS, theme supports, nav menus (4 locations: `primary`, `footer_platform`, `footer_company`, `footer_legal` — WP menus win, curated markup is the fallback; external links get `rel="nofollow noopener noreferrer"` automatically via `now_link_rel()`), Customizer basics (header CTA, footer tagline, sidebar promo, inline-related controls: on/off toggle, word interval, max inserts per post — see `now_theme_defaults()`), the inline "Keep reading" content inserts (`now_inline_related`), and the design **helpers** (`now_render_card`, `now_reading_time`, `now_author_badge`/`now_user_badge`, `now_author_card`, `now_author_bio`, `now_primary_nav`, `now_category_pills`, `now_tag_pills`, `now_logo_img`). |
 | `header.php` / `footer.php` | Sticky glass masthead / footer. Shared by every template. |
 | `home.php` | Blog front page: hero → featured lead → one horizontal rail per category → newsletter. |
 | `single.php` | Article: centered head → 21:9 hero → 760px prose + sticky TOC/share sidebar → related. |
-| `archive.php` | Category/tag/author/date: header + responsive card grid. |
+| `archive.php` | Generic archive (date, fallback): header + responsive card grid. |
+| `tag.php` | Tag archive: `#`-titled header + most-used-tags browse row + card grid. |
+| `author.php` | Author profile (E-E-A-T): badge, bio, article count, topics + card grid. |
 | `search.php` | Search results (card grid). |
 | `page.php` | Standard page (readable prose column). |
 | `page-canvas.php` | Template Name **"Full-width canvas"** — edge-to-edge `the_content()`; use for the designed About/Platform pages. |
