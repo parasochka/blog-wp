@@ -41,7 +41,10 @@ function now_setup() {
 
 	register_nav_menus(
 		array(
-			'primary' => __( 'Primary (header)', 'now-blog' ),
+			'primary'         => __( 'Primary (header)', 'now-blog' ),
+			'footer_platform' => __( 'Footer — Platform column', 'now-blog' ),
+			'footer_company'  => __( 'Footer — Company column', 'now-blog' ),
+			'footer_legal'    => __( 'Footer — Legal (Terms / Privacy)', 'now-blog' ),
 		)
 	);
 
@@ -106,12 +109,20 @@ add_filter( 'wp_resource_hints', 'now_resource_hints', 10, 2 );
  * ------------------------------------------------------------------ */
 
 /**
+ * Unicode-aware word count — str_word_count() only sees ASCII words, which
+ * silently returns 0 for Cyrillic/Greek/CJK content.
+ */
+function now_word_count( $text ) {
+	return (int) preg_match_all( '/[\p{L}\p{N}][\p{L}\p{N}\'’-]*/u', (string) $text );
+}
+
+/**
  * Estimated reading time, e.g. "8 min". ~200 wpm, minimum 1.
  */
 function now_reading_time( $post_id = 0 ) {
 	$post_id = $post_id ? $post_id : get_the_ID();
 	$content = get_post_field( 'post_content', $post_id );
-	$words   = str_word_count( wp_strip_all_tags( (string) $content ) );
+	$words   = now_word_count( wp_strip_all_tags( (string) $content ) );
 	$minutes = max( 1, (int) ceil( $words / 200 ) );
 	/* translators: %d: minutes to read. */
 	return sprintf( _n( '%d min', '%d min', $minutes, 'now-blog' ), $minutes );
@@ -205,12 +216,150 @@ function now_render_card( $show_excerpt = true ) {
 }
 
 /**
- * Primary navigation: a short curated menu — Home · Categories (a dropdown
- * listing every live category) · About · Platform. Kept short by design; the
- * full taxonomy hangs off the Categories dropdown. Styled via .now-nav in
- * now.css. Pages resolve by slug (about / platform) with a sensible fallback.
+ * rel="" for a menu/footer link. External hosts get nofollow + noopener +
+ * noreferrer automatically; add the CSS class `follow` to a menu item in
+ * Appearance → Menus to opt a link out of nofollow, or `nofollow` to force it
+ * on an internal link. XFN rel values set in the admin are preserved.
+ */
+function now_link_rel( $url, $classes = array(), $xfn = '' ) {
+	static $home = null;
+	if ( null === $home ) {
+		$home = wp_parse_url( home_url( '/' ), PHP_URL_HOST );
+	}
+	$rel     = array_filter( array_map( 'trim', explode( ' ', (string) $xfn ) ) );
+	$classes = (array) $classes;
+	$host    = wp_parse_url( (string) $url, PHP_URL_HOST );
+
+	$external = $host && 0 !== strcasecmp( $host, (string) $home );
+	if ( ( $external && ! in_array( 'follow', $classes, true ) ) || in_array( 'nofollow', $classes, true ) ) {
+		$rel[] = 'nofollow';
+	}
+	if ( $external ) {
+		$rel[] = 'noopener';
+		$rel[] = 'noreferrer';
+	}
+	return implode( ' ', array_unique( $rel ) );
+}
+
+/**
+ * The menu to render for a location: the admin-assigned menu if the location
+ * is set, else a conventionally-slugged menu (so menus managed over MCP are
+ * picked up without touching Appearance → Menus), else null → theme fallback.
+ *
+ * @return WP_Term|null
+ */
+function now_menu_for_location( $location, $slug ) {
+	static $cache = array();
+	if ( array_key_exists( $location, $cache ) ) {
+		return $cache[ $location ];
+	}
+	$menu      = null;
+	$locations = get_nav_menu_locations();
+	if ( ! empty( $locations[ $location ] ) ) {
+		$menu = wp_get_nav_menu_object( $locations[ $location ] );
+	}
+	if ( ! $menu ) {
+		$menu = wp_get_nav_menu_object( $slug );
+	}
+	$cache[ $location ] = $menu ? $menu : null;
+	return $cache[ $location ];
+}
+
+/**
+ * Walker: header nav from a WP menu, matching the handoff markup — top-level
+ * `.now-nav-link` anchors; an item with children becomes the `.now-nav-item`
+ * hover dropdown (`.now-dropdown-grid` of name + blurb links).
+ */
+class Now_Walker_Nav extends Walker_Nav_Menu {
+	public function start_lvl( &$output, $depth = 0, $args = null ) {
+		$output .= '<div class="now-dropdown"><div class="now-dropdown-grid">';
+	}
+	public function end_lvl( &$output, $depth = 0, $args = null ) {
+		$output .= '</div></div>';
+	}
+	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+		$classes      = (array) $item->classes;
+		$has_children = in_array( 'menu-item-has-children', $classes, true );
+		$is_current   = (bool) array_intersect( array( 'current-menu-item', 'current-menu-parent', 'current-menu-ancestor' ), $classes );
+		$rel          = now_link_rel( $item->url, $classes, $item->xfn );
+		$attrs        = ( $item->target ? ' target="' . esc_attr( $item->target ) . '"' : '' ) . ( $rel ? ' rel="' . esc_attr( $rel ) . '"' : '' );
+		$url          = (string) $item->url;
+
+		if ( 0 === $depth ) {
+			if ( $has_children ) {
+				// '#' custom items are pure toggles; real URLs stay clickable.
+				$href    = ( '' === $url || '#' === $url ) ? ' tabindex="0" role="button"' : ' href="' . esc_url( $url ) . '"' . $attrs;
+				$output .= '<div class="now-nav-item">';
+				$output .= '<a class="now-nav-link now-dropdown-toggle' . ( $is_current ? ' now-active' : '' ) . '"' . $href . ' aria-haspopup="true" aria-expanded="false">' . esc_html( $item->title ) . ' <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></a>';
+			} else {
+				$output .= '<a class="now-nav-link' . ( $is_current ? ' now-active' : '' ) . '" href="' . esc_url( $url ) . '"' . $attrs . '>' . esc_html( $item->title ) . '</a>';
+			}
+			return;
+		}
+
+		$blurb = trim( wp_strip_all_tags( (string) $item->description ) );
+		if ( '' === $blurb && 'category' === $item->object ) {
+			$blurb = trim( wp_strip_all_tags( (string) term_description( (int) $item->object_id ) ) );
+		}
+		$output .= '<a class="now-dropdown-link" href="' . esc_url( $url ) . '"' . $attrs . '><span class="now-dropdown-name">' . esc_html( $item->title ) . '</span>'
+			. ( $blurb ? '<span class="now-dropdown-blurb">' . esc_html( $blurb ) . '</span>' : '' ) . '</a>';
+	}
+	public function end_el( &$output, $item, $depth = 0, $args = null ) {
+		if ( 0 === $depth && in_array( 'menu-item-has-children', (array) $item->classes, true ) ) {
+			$output .= '</div>';
+		}
+	}
+}
+
+/**
+ * Walker: the same menu flattened for the burger panel — every destination
+ * becomes one tap-friendly `.now-mobile-link`; '#' toggle rows are dropped
+ * (their children are promoted to the flat list).
+ */
+class Now_Walker_Mobile extends Walker_Nav_Menu {
+	public function start_lvl( &$output, $depth = 0, $args = null ) {}
+	public function end_lvl( &$output, $depth = 0, $args = null ) {}
+	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+		$url = (string) $item->url;
+		if ( '' === $url || '#' === $url ) {
+			return;
+		}
+		$rel     = now_link_rel( $url, (array) $item->classes, $item->xfn );
+		$attrs   = ( $item->target ? ' target="' . esc_attr( $item->target ) . '"' : '' ) . ( $rel ? ' rel="' . esc_attr( $rel ) . '"' : '' );
+		$output .= '<a class="now-mobile-link" href="' . esc_url( $url ) . '"' . $attrs . '>' . esc_html( $item->title ) . '</a>';
+	}
+	public function end_el( &$output, $item, $depth = 0, $args = null ) {}
+}
+
+/**
+ * Primary navigation. Renders the WP menu assigned to the `primary` location
+ * (or slugged `main-menu`) so nav is managed in Appearance → Menus; falls back
+ * to the curated Home · Categories · About · Platform menu when none exists.
  */
 function now_primary_nav() {
+	$menu = now_menu_for_location( 'primary', 'main-menu' );
+	if ( $menu ) {
+		wp_nav_menu(
+			array(
+				'menu'        => $menu,
+				'container'   => false,
+				'items_wrap'  => '%3$s',
+				'depth'       => 2,
+				'walker'      => new Now_Walker_Nav(),
+				'fallback_cb' => false,
+			)
+		);
+		return;
+	}
+	now_primary_nav_fallback();
+}
+
+/**
+ * Curated fallback nav (no WP menu exists): Home · Categories (a dropdown
+ * listing every live category) · About · Platform. Styled via .now-nav in
+ * now.css. Pages resolve by slug (about / platform) with a sensible fallback.
+ */
+function now_primary_nav_fallback() {
 	$home_active = ( is_front_page() || is_home() ) ? ' now-active' : '';
 	printf(
 		'<a class="now-nav-link%s" href="%s">%s</a>',
@@ -265,11 +414,33 @@ function now_primary_nav() {
 
 /**
  * Mobile navigation — a flat, tap-friendly list shown inside the burger menu.
- * The desktop header hides its nav (and hover Categories dropdown, which touch
- * can't open) below 560px; this restores full navigation on phones: Home, every
- * live category, then About · Platform. Styled via .now-mobile-* in now.css.
+ * Uses the same WP menu as the header (flattened by Now_Walker_Mobile); falls
+ * back to Home, every live category, then About · Platform.
  */
 function now_mobile_nav() {
+	$menu = now_menu_for_location( 'primary', 'main-menu' );
+	if ( $menu ) {
+		echo '<nav class="now-mobile-links" aria-label="' . esc_attr__( 'Mobile', 'now-blog' ) . '">';
+		wp_nav_menu(
+			array(
+				'menu'        => $menu,
+				'container'   => false,
+				'items_wrap'  => '%3$s',
+				'depth'       => 2,
+				'walker'      => new Now_Walker_Mobile(),
+				'fallback_cb' => false,
+			)
+		);
+		echo '</nav>';
+		return;
+	}
+	now_mobile_nav_fallback();
+}
+
+/**
+ * Curated fallback for the burger panel (no WP menu exists).
+ */
+function now_mobile_nav_fallback() {
 	echo '<nav class="now-mobile-links" aria-label="' . esc_attr__( 'Mobile', 'now-blog' ) . '">';
 
 	printf(
@@ -358,6 +529,50 @@ function now_footer_sections() {
 }
 
 /**
+ * One footer link column (Platform / Company / Legal). Rendered from the WP
+ * menu assigned to $location (or slugged $slug) so labels, URLs, targets and
+ * follow/nofollow are managed in Appearance → Menus; $fallback (label => url)
+ * keeps the designed defaults when no menu exists. External links get
+ * rel="nofollow noopener noreferrer" automatically (see now_link_rel).
+ */
+function now_footer_links( $location, $slug, $fallback, $inline = false ) {
+	$style = $inline
+		? 'color:var(--text-muted)'
+		: 'display:block; color:var(--text-secondary); font-family:var(--font-body); font-size:14px; padding:5px 0';
+
+	$menu = now_menu_for_location( $location, $slug );
+	if ( $menu ) {
+		// A menu that exists but was deliberately emptied stays empty —
+		// don't resurrect the designed defaults over the editor's choice.
+		$items = wp_get_nav_menu_items( $menu );
+		foreach ( (array) $items as $item ) {
+			$rel = now_link_rel( $item->url, (array) $item->classes, $item->xfn );
+			printf(
+				'<a class="now-foot-link" href="%s"%s%s style="%s">%s</a>',
+				esc_url( $item->url ),
+				$item->target ? ' target="' . esc_attr( $item->target ) . '"' : '',
+				$rel ? ' rel="' . esc_attr( $rel ) . '"' : '',
+				esc_attr( $style ),
+				esc_html( $item->title )
+			);
+		}
+		return;
+	}
+
+	foreach ( $fallback as $label => $url ) {
+		$rel = now_link_rel( $url );
+		printf(
+			'<a class="now-foot-link" href="%s"%s%s style="%s">%s</a>',
+			esc_url( $url ),
+			$rel ? ' target="_blank"' : '', // new tab only for external hosts
+			$rel ? ' rel="' . esc_attr( $rel ) . '"' : '',
+			esc_attr( $style ),
+			esc_html( $label )
+		);
+	}
+}
+
+/**
  * The glass wordmark lockup used in the header/footer: the custom logo if the
  * site owner set one, else the bundled glass PNG. $height in px.
  */
@@ -390,3 +605,200 @@ function now_excerpt_more() {
 	return '…';
 }
 add_filter( 'excerpt_more', 'now_excerpt_more' );
+
+/* ------------------------------------------------------------------ *
+ * Customizer — the theme's editable basics (Appearance → Customize → NOW)
+ * ------------------------------------------------------------------ */
+
+/**
+ * Defaults mirror the approved design so the site reads identically until a
+ * value is changed in the Customizer.
+ */
+function now_theme_defaults() {
+	static $defaults = null;
+	if ( null !== $defaults ) {
+		return $defaults;
+	}
+	$defaults = array(
+		'now_cta_label'      => __( 'Explore platform', 'now-blog' ),
+		'now_cta_url'        => 'https://nowplix.com/about/contact',
+		'now_footer_tagline' => __( 'Signals from the future of iGaming — product, design and engineering stories from the NowPlix platform.', 'now-blog' ),
+		'now_promo_title'    => __( 'Play on NowPlix', 'now-blog' ),
+		'now_promo_text'     => __( 'Casino, sportsbook and the tech behind them. See what the platform can do.', 'now-blog' ),
+		'now_promo_button'   => __( 'Explore the platform', 'now-blog' ),
+		'now_promo_url'      => 'https://nowplix.com/about/contact',
+		'now_inline_related' => true,
+	);
+	return $defaults;
+}
+
+/**
+ * get_theme_mod with the design defaults baked in.
+ */
+function now_mod( $key ) {
+	$defaults = now_theme_defaults();
+	return get_theme_mod( $key, isset( $defaults[ $key ] ) ? $defaults[ $key ] : '' );
+}
+
+function now_customize_register( $wp_customize ) {
+	$d = now_theme_defaults();
+
+	$wp_customize->add_section(
+		'now_theme',
+		array(
+			'title'    => __( 'NOW theme', 'now-blog' ),
+			'priority' => 30,
+		)
+	);
+
+	$fields = array(
+		'now_cta_label'      => array( __( 'Header CTA — label', 'now-blog' ), 'text', 'sanitize_text_field' ),
+		'now_cta_url'        => array( __( 'Header CTA — URL', 'now-blog' ), 'url', 'esc_url_raw' ),
+		'now_footer_tagline' => array( __( 'Footer tagline', 'now-blog' ), 'textarea', 'sanitize_textarea_field' ),
+		'now_promo_title'    => array( __( 'Article sidebar promo — title', 'now-blog' ), 'text', 'sanitize_text_field' ),
+		'now_promo_text'     => array( __( 'Article sidebar promo — text', 'now-blog' ), 'textarea', 'sanitize_textarea_field' ),
+		'now_promo_button'   => array( __( 'Article sidebar promo — button label', 'now-blog' ), 'text', 'sanitize_text_field' ),
+		'now_promo_url'      => array( __( 'Article sidebar promo — button URL', 'now-blog' ), 'url', 'esc_url_raw' ),
+		'now_inline_related' => array( __( 'Weave "Keep reading" story cards into long articles', 'now-blog' ), 'checkbox', 'rest_sanitize_boolean' ),
+	);
+
+	foreach ( $fields as $key => $field ) {
+		$wp_customize->add_setting(
+			$key,
+			array(
+				'default'           => $d[ $key ],
+				'sanitize_callback' => $field[2],
+			)
+		);
+		$wp_customize->add_control(
+			$key,
+			array(
+				'label'   => $field[0],
+				'section' => 'now_theme',
+				'type'    => $field[1],
+			)
+		);
+	}
+}
+add_action( 'customize_register', 'now_customize_register' );
+
+/* ------------------------------------------------------------------ *
+ * Inline "Keep reading" inserts — related stories woven into the prose
+ * ------------------------------------------------------------------ */
+
+/**
+ * Related stories for the inline inserts: same tags first, same category as
+ * a fallback. Returns at most $count posts, never the current one.
+ *
+ * @return WP_Post[]
+ */
+function now_inline_related_posts( $post_id, $count = 2 ) {
+	$base = array(
+		'posts_per_page'      => $count,
+		'post__not_in'        => array( $post_id ),
+		'ignore_sticky_posts' => true,
+		'no_found_rows'       => true,
+	);
+
+	$posts = array();
+	$tags  = wp_get_post_tags( $post_id, array( 'fields' => 'ids' ) );
+	if ( ! empty( $tags ) && ! is_wp_error( $tags ) ) {
+		$posts = get_posts( $base + array( 'tag__in' => $tags ) );
+	}
+
+	if ( count( $posts ) < $count ) {
+		$cats = wp_get_post_categories( $post_id );
+		if ( ! empty( $cats ) && ! is_wp_error( $cats ) ) {
+			$exclude = array_merge( array( $post_id ), wp_list_pluck( $posts, 'ID' ) );
+			$more    = get_posts(
+				array(
+					'posts_per_page'      => $count - count( $posts ),
+					'post__not_in'        => $exclude,
+					'category__in'        => $cats,
+					'ignore_sticky_posts' => true,
+					'no_found_rows'       => true,
+				)
+			);
+			$posts = array_merge( $posts, $more );
+		}
+	}
+
+	return $posts;
+}
+
+/**
+ * One inline related-story card. Markup follows the story-card anatomy
+ * (media · eyebrow · title · action); styled via .now-inline-read in now.css.
+ */
+function now_inline_related_card( $rel ) {
+	$link  = get_permalink( $rel );
+	$thumb = get_the_post_thumbnail(
+		$rel,
+		'medium',
+		array(
+			'loading' => 'lazy',
+			'alt'     => get_the_title( $rel ),
+		)
+	);
+
+	$html  = '<aside class="now-inline-read">';
+	if ( $thumb ) {
+		$html .= '<a class="now-inline-read-thumb" href="' . esc_url( $link ) . '" tabindex="-1" aria-hidden="true">' . $thumb . '</a>';
+	}
+	$html .= '<div class="now-inline-read-body">';
+	$html .= '<span class="now-inline-read-eyebrow">' . esc_html__( 'Keep reading', 'now-blog' ) . '</span>';
+	$html .= '<a class="now-inline-read-title" href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $rel ) ) . '</a>';
+	$html .= '<a class="now-inline-read-more" href="' . esc_url( $link ) . '">' . esc_html__( 'Read the story', 'now-blog' ) . ' &rarr;</a>';
+	$html .= '</div></aside>';
+
+	return $html;
+}
+
+/**
+ * Weave up to two "Keep reading" cards into long article bodies — one per
+ * ~500 words, always after a closed paragraph that is followed by another
+ * paragraph (never straight before a heading, list or figure).
+ */
+function now_inline_related( $content ) {
+	if ( ! now_mod( 'now_inline_related' ) || ! is_singular( 'post' ) || ! in_the_loop() || ! is_main_query() || post_password_required() ) {
+		return $content;
+	}
+
+	$blocks = preg_split( '/(<\/p>)/i', $content, -1, PREG_SPLIT_DELIM_CAPTURE );
+	if ( false === $blocks || count( $blocks ) < 5 ) {
+		return $content;
+	}
+
+	/** Interval (words between inserts) and cap, filterable per site. */
+	$interval = max( 100, (int) apply_filters( 'now_inline_related_interval', 500 ) );
+	$max      = max( 1, (int) apply_filters( 'now_inline_related_max', 2 ) );
+
+	$related = now_inline_related_posts( get_the_ID(), $max );
+	if ( empty( $related ) ) {
+		return $content;
+	}
+
+	$out   = '';
+	$words = 0;
+	$used  = 0;
+
+	foreach ( $blocks as $i => $chunk ) {
+		$out .= $chunk;
+		if ( $used >= count( $related ) ) {
+			continue; // all cards placed — just pass the rest through.
+		}
+		if ( '</p>' !== strtolower( $chunk ) ) {
+			$words += now_word_count( wp_strip_all_tags( $chunk ) );
+			continue;
+		}
+		$next = isset( $blocks[ $i + 1 ] ) ? ltrim( $blocks[ $i + 1 ] ) : '';
+		if ( $words >= $interval && 0 === stripos( $next, '<p' ) ) { // only between two paragraphs
+			$out .= now_inline_related_card( $related[ $used ] );
+			$used++;
+			$words = 0;
+		}
+	}
+
+	return $out;
+}
+add_filter( 'the_content', 'now_inline_related', 20 );

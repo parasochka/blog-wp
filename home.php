@@ -51,8 +51,10 @@ if ( $featured->have_posts() ) :
 				the_post_thumbnail(
 					'large',
 					array(
-						'style' => 'width:100%; height:100%; object-fit:cover; display:block',
-						'alt'   => the_title_attribute( array( 'echo' => false ) ),
+						'style'         => 'width:100%; height:100%; object-fit:cover; display:block',
+						'alt'           => the_title_attribute( array( 'echo' => false ) ),
+						'fetchpriority' => 'high',
+						'loading'       => 'eager',
 					)
 				);
 			}
