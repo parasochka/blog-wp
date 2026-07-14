@@ -908,8 +908,11 @@ function now_inline_related_card( $rel ) {
 /**
  * Weave "Keep reading" banners into long article bodies — one per N words
  * and at most M per post (both editable in the Customizer, 300 words / 2
- * inserts by default), always after a closed paragraph that is followed by
- * another paragraph (never straight before a heading, list or figure).
+ * inserts by default), preferably after a closed paragraph that is followed
+ * by another paragraph. Sectioned articles where every paragraph is
+ * immediately followed by a heading never offer such a slot, so if the
+ * first pass places nothing we rerun it allowing inserts at a section
+ * boundary (before an <h2>–<h6>) — still never before a list or figure.
  */
 function now_inline_related( $content ) {
 	if ( ! now_mod( 'now_inline_related' ) || ! is_singular( 'post' ) || ! in_the_loop() || ! is_main_query() || post_password_required() ) {
@@ -930,27 +933,38 @@ function now_inline_related( $content ) {
 		return $content;
 	}
 
-	$out   = '';
-	$words = 0;
-	$used  = 0;
+	$weave = static function ( $allow_before_heading ) use ( $blocks, $related, $interval ) {
+		$out   = '';
+		$words = 0;
+		$used  = 0;
 
-	foreach ( $blocks as $i => $chunk ) {
-		$out .= $chunk;
-		if ( $used >= count( $related ) ) {
-			continue; // all cards placed — just pass the rest through.
+		foreach ( $blocks as $i => $chunk ) {
+			$out .= $chunk;
+			if ( $used >= count( $related ) ) {
+				continue; // all cards placed — just pass the rest through.
+			}
+			if ( '</p>' !== strtolower( $chunk ) ) {
+				$words += now_word_count( wp_strip_all_tags( $chunk ) );
+				continue;
+			}
+			$next = isset( $blocks[ $i + 1 ] ) ? ltrim( $blocks[ $i + 1 ] ) : '';
+			$slot = ( 0 === stripos( $next, '<p' ) ) // between two paragraphs
+				|| ( $allow_before_heading && preg_match( '/^<h[2-6]\b/i', $next ) );
+			if ( $words >= $interval && $slot ) {
+				$out .= now_inline_related_card( $related[ $used ] );
+				$used++;
+				$words = 0;
+			}
 		}
-		if ( '</p>' !== strtolower( $chunk ) ) {
-			$words += now_word_count( wp_strip_all_tags( $chunk ) );
-			continue;
-		}
-		$next = isset( $blocks[ $i + 1 ] ) ? ltrim( $blocks[ $i + 1 ] ) : '';
-		if ( $words >= $interval && 0 === stripos( $next, '<p' ) ) { // only between two paragraphs
-			$out .= now_inline_related_card( $related[ $used ] );
-			$used++;
-			$words = 0;
-		}
+
+		return array( $out, $used );
+	};
+
+	list( $out, $used ) = $weave( false );
+	if ( 0 === $used ) {
+		list( $out, $used ) = $weave( true );
 	}
 
-	return $out;
+	return $used > 0 ? $out : $content;
 }
 add_filter( 'the_content', 'now_inline_related', 20 );
