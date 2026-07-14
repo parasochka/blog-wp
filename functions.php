@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NOW_VERSION', '1.1.0' ); // bump on CSS/JS changes — busts the ?ver= asset cache.
+define( 'NOW_VERSION', '1.2.0' ); // bump on CSS/JS changes — busts the ?ver= asset cache.
 define( 'NOW_DS_DIR', '_ds/nowplix-igaming-design-system-5bcffbc0-c8f0-442c-b6f3-9be1de820175' );
 
 /* ------------------------------------------------------------------ *
@@ -136,8 +136,18 @@ function now_reading_time( $post_id = 0 ) {
  */
 function now_author_badge( $post_id = 0 ) {
 	$post_id = $post_id ? $post_id : get_the_ID();
-	$author  = (int) get_post_field( 'post_author', $post_id );
-	$name    = get_the_author_meta( 'display_name', $author );
+	return now_user_badge( (int) get_post_field( 'post_author', $post_id ) );
+}
+
+/**
+ * The same monogram badge keyed by user ID directly — for author archives and
+ * author cards, where there is no post in scope.
+ *
+ * @return array{mono:string,grad:string}
+ */
+function now_user_badge( $author ) {
+	$author = (int) $author;
+	$name   = get_the_author_meta( 'display_name', $author );
 
 	$mono = '';
 	foreach ( preg_split( '/\s+/', trim( (string) $name ) ) as $part ) {
@@ -509,6 +519,85 @@ function now_category_pills( $active = 0 ) {
 }
 
 /**
+ * Tag "pills" row — the article-footer "Tagged" block and the tag-archive
+ * browse row. Same pill DNA as now_category_pills (inline styles mirror the
+ * handoff; hover via .now-pill) with a brand "#" prefix so tags read as tags.
+ * $tags is an array of WP_Term; $active highlights the current tag.
+ */
+function now_tag_pills( $tags, $active = 0 ) {
+	foreach ( (array) $tags as $t ) {
+		if ( ! ( $t instanceof WP_Term ) ) {
+			continue;
+		}
+		$is     = ( $active && (int) $active === (int) $t->term_id );
+		$border = $is ? 'var(--primary-500)' : 'var(--border)';
+		$bg     = $is ? 'color-mix(in srgb, var(--primary-500) 16%, var(--surface-card))' : 'var(--surface-card)';
+		$color  = $is ? '#fff' : 'var(--text-secondary)';
+		printf(
+			'<a class="now-pill" href="%1$s" style="padding:8px 16px; border-radius:999px; border:1px solid %2$s; background:%3$s; color:%4$s; font-family:var(--font-body); font-weight:500; font-size:13px"><span style="color:var(--text-brand); margin-right:2px">#</span>%5$s</a>',
+			esc_url( get_term_link( $t ) ),
+			esc_attr( $border ),
+			esc_attr( $bg ),
+			esc_attr( $color ),
+			esc_html( $t->name )
+		);
+	}
+}
+
+/**
+ * Author bio for the author card / author page. The wp-admin profile
+ * "Biographical Info" is the source; a designed default keeps the card
+ * substantive (E-E-A-T) until the profile is filled in.
+ */
+function now_author_bio( $author ) {
+	$bio = trim( (string) get_the_author_meta( 'description', (int) $author ) );
+	if ( '' !== $bio ) {
+		return $bio;
+	}
+	return sprintf(
+		/* translators: %s: author display name. */
+		__( '%s writes about the iGaming industry on the NowPlix blog — launch playbooks, platform economics, market entry, compliance and player retention, drawn from work on the NowPlix platform.', 'now-blog' ),
+		get_the_author_meta( 'display_name', (int) $author )
+	);
+}
+
+/**
+ * The article-footer author card: monogram badge · "Written by" · name →
+ * author archive · bio · article count + links. One substantive, linked
+ * author block per post (E-E-A-T). Styled via .now-author-card in now.css.
+ */
+function now_author_card( $author = 0 ) {
+	$author = $author ? (int) $author : (int) get_post_field( 'post_author', get_the_ID() );
+	if ( ! $author ) {
+		return;
+	}
+	$badge = now_user_badge( $author );
+	$name  = get_the_author_meta( 'display_name', $author );
+	$url   = get_author_posts_url( $author );
+	$count = (int) count_user_posts( $author, 'post', true );
+	$site  = (string) get_the_author_meta( 'url', $author );
+	?>
+	<aside class="now-author-card">
+		<a class="now-author-card-avatar" href="<?php echo esc_url( $url ); ?>" aria-hidden="true" tabindex="-1" style="background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); ?></a>
+		<div class="now-author-card-body">
+			<span class="now-author-card-eyebrow"><?php esc_html_e( 'Written by', 'now-blog' ); ?></span>
+			<a class="now-author-card-name" href="<?php echo esc_url( $url ); ?>" rel="author"><?php echo esc_html( $name ); ?></a>
+			<p class="now-author-card-bio"><?php echo esc_html( now_author_bio( $author ) ); ?></p>
+			<div class="now-author-card-meta">
+				<span><?php echo esc_html( sprintf( _n( '%d article', '%d articles', $count, 'now-blog' ), $count ) ); ?></span>
+				<span class="now-author-card-dot" aria-hidden="true"></span>
+				<a href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'All articles', 'now-blog' ); ?> &rarr;</a>
+				<?php if ( $site && untrailingslashit( $site ) !== untrailingslashit( home_url( '/' ) ) ) : ?>
+					<span class="now-author-card-dot" aria-hidden="true"></span>
+					<a href="<?php echo esc_url( $site ); ?>" rel="me"><?php esc_html_e( 'Website', 'now-blog' ); ?></a>
+				<?php endif; ?>
+			</div>
+		</div>
+	</aside>
+	<?php
+}
+
+/**
  * Footer "Sections" column — the site's categories.
  */
 function now_footer_sections() {
@@ -692,8 +781,10 @@ add_action( 'customize_register', 'now_customize_register' );
  * ------------------------------------------------------------------ */
 
 /**
- * Related stories for the inline inserts: same tags first, same category as
- * a fallback. Returns at most $count posts, never the current one.
+ * Related stories for the inline inserts: same tags first, then the latest
+ * from the post's categories, then the latest site-wide — so the module
+ * renders on every article even when tags don't intersect. Returns at most
+ * $count posts, never the current one.
  *
  * @return WP_Post[]
  */
@@ -726,6 +817,20 @@ function now_inline_related_posts( $post_id, $count = 2 ) {
 			);
 			$posts = array_merge( $posts, $more );
 		}
+	}
+
+	// Last resort: the freshest stories site-wide, so no article goes without.
+	if ( count( $posts ) < $count ) {
+		$exclude = array_merge( array( $post_id ), wp_list_pluck( $posts, 'ID' ) );
+		$more    = get_posts(
+			array(
+				'posts_per_page'      => $count - count( $posts ),
+				'post__not_in'        => $exclude,
+				'ignore_sticky_posts' => true,
+				'no_found_rows'       => true,
+			)
+		);
+		$posts = array_merge( $posts, $more );
 	}
 
 	return $posts;
