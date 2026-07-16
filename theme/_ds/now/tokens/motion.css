@@ -1,0 +1,26 @@
+/* NowPlix iGaming — Motion & Layout Tokens
+   Motion values from the NOW handoff (TOKENS.md §6). Layout widths from the
+   editorial layer (content 1200 / readable prose 760) plus corporate-site
+   section rhythm. */
+
+:root {
+  /* ── Easing ───────────────────────────────────────────── */
+  --ease-out:   cubic-bezier(0.23, 1, 0.32, 1); /* @kind other */ /* signature ease-out */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* @kind other */
+
+  /* ── Durations ────────────────────────────────────────── */
+  --dur-fast: 160ms; /* @kind other */
+  --dur-base: 220ms; /* @kind other */
+  --dur-slow: 320ms; /* @kind other */
+
+  /* ── Layout widths ────────────────────────────────────── */
+  --content-max: 1200px;  /* primary content column */
+  --content-wide: 1320px; /* wide marketing sections */
+  --prose-max:   760px;   /* readable article / legal column */
+  --header-h:    68px;    /* sticky masthead height */
+
+  /* ── Hover/press motion ───────────────────────────────── */
+  --lift: -3px;           /* hover lift */
+  --press: 0.97;          /* @kind other */ /* press scale */
+  --media-scale: 1.045;   /* @kind other */ /* image zoom on hover */
+}
