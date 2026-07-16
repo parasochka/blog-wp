@@ -109,7 +109,43 @@
 		});
 	});
 
-	/* ---- 4. Mobile menu (burger) ---- */
+	/* ---- 4. Header dropdown (Categories mega-menu) ----
+	 * Hover/:focus-within open it via CSS; this adds click + touch + keyboard
+	 * toggling with a real aria-expanded state, so the menu also works where
+	 * hover doesn't exist (touch screens) or a pure toggle item has no URL. */
+	document.querySelectorAll('.now-nav-item > .now-dropdown-toggle').forEach(function (toggle) {
+		var item = toggle.parentElement;
+		var setOpen = function (open) {
+			item.classList.toggle('now-open', open);
+			toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+		};
+		var isToggleOnly = !toggle.hasAttribute('href');
+		toggle.addEventListener('click', function (e) {
+			// Pure toggles ('#' items) always toggle; real links toggle on the
+			// first tap on touch devices (no hover) and navigate on the second.
+			var open = item.classList.contains('now-open');
+			if (isToggleOnly || (!open && window.matchMedia('(hover: none)').matches)) {
+				e.preventDefault();
+				setOpen(!open);
+			}
+		});
+		toggle.addEventListener('keydown', function (e) {
+			if (isToggleOnly && (e.key === 'Enter' || e.key === ' ')) {
+				e.preventDefault();
+				setOpen(!item.classList.contains('now-open'));
+			}
+		});
+		document.addEventListener('click', function (e) {
+			if (!item.contains(e.target)) { setOpen(false); }
+		});
+		document.addEventListener('keydown', function (e) {
+			if (e.key === 'Escape' && item.classList.contains('now-open')) {
+				setOpen(false); toggle.focus();
+			}
+		});
+	});
+
+	/* ---- 5. Mobile menu (burger) ---- */
 	var burger = document.querySelector('.now-burger');
 	var mobileMenu = document.getElementById('now-mobile-menu');
 	if (burger && mobileMenu) {
