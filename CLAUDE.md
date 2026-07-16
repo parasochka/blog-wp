@@ -28,7 +28,7 @@ Claude Design "NOW"  ─►  theme/ (_ds/now + PHP)  ─►  GitHub  ─►  WP 
 | `style.css` | WP theme header + a pointer note. No real CSS here. |
 | `functions.php` | Thin loader: `NOW_VERSION` / `NOW_DS_DIR` constants + `require inc/*`. |
 | `inc/setup.php` | Theme supports, the 4 nav locations (`primary`, `footer_platform`, `footer_company`, `footer_legal`), content width, and the back-compat shim mapping the old `page-canvas.php` template slug to `page-templates/canvas.php`. |
-| `inc/enqueue.php` | Enqueues DS tokens (`_ds/now/styles.css`), `assets/css/now.css`, `style.css`, `assets/js/now.js`; Google-Fonts preconnect. |
+| `inc/enqueue.php` | Enqueues DS tokens (each sheet the `_ds/now/styles.css` manifest `@import`s, expanded to parallel `<link>`s for performance — DS files stay byte-identical), `assets/css/now.css`, `style.css`, `assets/js/now.js`; Google-Fonts preconnect + hoisted early `<link>`. |
 | `inc/template-tags.php` | Display helpers: `now_reading_time`, `now_author_badge`/`now_user_badge`, `now_author_avatar_img`, `now_card_excerpt`, `now_link_rel` (external links get `rel="nofollow noopener noreferrer"` automatically), `now_author_bio`, `now_logo_img`, plus the one-liner wrappers `now_render_card()` / `now_author_card()` around the template-parts. |
 | `inc/nav.php` | `now_primary_nav` / `now_mobile_nav` (+ fallbacks and walkers — WP menus win, curated markup is the fallback), `now_category_pills`, `now_tag_pills`, `now_footer_sections`, `now_footer_links`. |
 | `inc/customizer.php` | `now_theme_defaults()` / `now_mod()` + Customizer basics: header CTA, footer tagline, sidebar promo, inline-related controls (on/off toggle, word interval, max inserts per post). |

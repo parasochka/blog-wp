@@ -25,7 +25,9 @@
 	document.querySelectorAll('.now-rail').forEach(function (rail) {
 		var btns = document.querySelectorAll('.now-rail-btn[data-rail="' + rail.id + '"]');
 		if (!btns.length) return;
+		var raf = 0;
 		var update = function () {
+			raf = 0;
 			// 2px tolerance: fractional zoom/HiDPI can leave a sub-pixel gap
 			// that scrollLeft never fully closes.
 			var max = rail.scrollWidth - rail.clientWidth - 2;
@@ -34,10 +36,15 @@
 				b.disabled = dir < 0 ? rail.scrollLeft <= 0 : rail.scrollLeft >= max;
 			});
 		};
-		rail.addEventListener('scroll', update, { passive: true });
-		window.addEventListener('resize', update);
-		window.addEventListener('load', update);
-		update();
+		// rAF-coalesced: scroll/resize can fire many times per frame, and the
+		// scrollWidth/clientWidth reads force a reflow if run mid-mutation.
+		var schedule = function () {
+			if (!raf) { raf = requestAnimationFrame(update); }
+		};
+		rail.addEventListener('scroll', schedule, { passive: true });
+		window.addEventListener('resize', schedule);
+		window.addEventListener('load', schedule);
+		schedule();
 	});
 
 	/* ---- 2. Article TOC + scrollspy ---- */

@@ -186,19 +186,25 @@ function now_author_card( $author = 0 ) {
 function now_logo_img( $height = 26 ) {
 	$alt = get_bloginfo( 'name' );
 	if ( has_custom_logo() ) {
-		$id  = (int) get_theme_mod( 'custom_logo' );
-		$src = wp_get_attachment_image_url( $id, 'full' );
+		$id = (int) get_theme_mod( 'custom_logo' );
+		// 'medium' (≤300px wide), not 'full': the wordmark renders ≤34px tall,
+		// so a 300px rendition covers 2× screens while the original can be a
+		// multi-hundred-KB upload. Explicit width/height give the browser the
+		// aspect ratio up front (no layout shift while it loads).
+		$src = wp_get_attachment_image_src( $id, 'medium' );
 		if ( $src ) {
 			return sprintf(
-				'<img src="%s" alt="%s" style="height:%dpx; width:auto; display:block"/>',
-				esc_url( $src ),
+				'<img src="%s" alt="%s" width="%d" height="%d" style="height:%dpx; width:auto; display:block"/>',
+				esc_url( $src[0] ),
 				esc_attr( $alt ),
+				(int) $src[1],
+				(int) $src[2],
 				(int) $height
 			);
 		}
 	}
 	return sprintf(
-		'<img src="%s" alt="%s" style="height:%dpx; width:auto; display:block"/>',
+		'<img src="%s" alt="%s" width="512" height="147" style="height:%dpx; width:auto; display:block"/>',
 		esc_url( get_theme_file_uri( 'assets/img/logo-now-glass.png' ) ),
 		esc_attr( $alt ),
 		(int) $height
