@@ -12,11 +12,11 @@ get_header();
 <!-- ============ HERO ============ -->
 <section style="width:100%; max-width:1200px; margin-inline:auto; padding:96px 24px 48px; text-align:center">
 	<span style="font-family:var(--font-display); font-weight:400; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-brand)"><?php esc_html_e( 'The NowPlix Blog', 'now-blog' ); ?></span>
-	<h1 style="font-family:var(--font-display); font-weight:400; font-size:clamp(44px,6.5vw,84px); line-height:1.02; letter-spacing:-0.02em; color:var(--text-primary); margin:16px 0; text-wrap:balance"><?php esc_html_e( 'Signals from the future of iGaming.', 'now-blog' ); ?></h1>
+	<h1 style="font-family:var(--font-display); font-weight:400; font-size:clamp(40px,5vw,48px); line-height:1.05; letter-spacing:-0.02em; color:var(--text-primary); margin:16px 0; text-wrap:balance"><?php esc_html_e( 'Signals from the future of iGaming.', 'now-blog' ); ?></h1>
 	<p style="font-size:19px; color:var(--text-secondary); max-width:620px; margin:0 auto 24px; text-wrap:pretty"><?php esc_html_e( 'Product, design and technology stories from the NowPlix platform — casino, sportsbook and everything around them.', 'now-blog' ); ?></p>
 	<div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap">
-		<a href="#latest" class="now-btn-primary" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:var(--font-body); font-weight:600; font-size:14px; height:44px; padding:0 20px; border-radius:var(--radius-md); background:var(--primary-500); color:#fff"><?php esc_html_e( 'Read the latest', 'now-blog' ); ?></a>
-		<a href="<?php echo esc_url( home_url( '/about/' ) ); ?>" class="now-btn-ghost" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:var(--font-body); font-weight:600; font-size:14px; height:44px; padding:0 20px; border-radius:var(--radius-md); background:transparent; color:var(--primary-200); border:1px solid var(--primary-500)"><?php esc_html_e( 'About NowPlix', 'now-blog' ); ?></a>
+		<a href="#latest" class="now-btn-primary" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:var(--font-ui); font-weight:600; font-size:14px; line-height:1; letter-spacing:0.1px; height:44px; padding:0 16px; border-radius:var(--radius-md); background:var(--primary-500); color:#fff"><?php esc_html_e( 'Read the latest', 'now-blog' ); ?></a>
+		<a href="<?php echo esc_url( home_url( '/about/' ) ); ?>" class="now-btn-ghost" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:var(--font-ui); font-weight:600; font-size:14px; line-height:1; letter-spacing:0.1px; height:44px; padding:0 16px; border-radius:var(--radius-md); background:transparent; color:var(--primary-200); box-shadow:inset 0 0 0 1.5px var(--primary-500)"><?php esc_html_e( 'About NowPlix', 'now-blog' ); ?></a>
 	</div>
 	<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:32px">
 		<?php now_category_pills(); ?>
@@ -44,7 +44,7 @@ if ( $featured->have_posts() ) :
 		$cat   = ! empty( $cats ) ? $cats[0] : null;
 		?>
 <section id="latest" style="width:100%; max-width:1200px; margin-inline:auto; padding-inline:24px; margin-top:64px">
-	<div class="now-featured" style="display:grid; grid-template-columns:1.35fr 1fr; gap:64px; align-items:center">
+	<div class="now-featured" style="display:grid; grid-template-columns:1fr 1.3fr; gap:48px; align-items:center">
 		<a href="<?php the_permalink(); ?>" class="now-card-media" style="display:block; overflow:hidden; border-radius:var(--radius-2xl); box-shadow:var(--elev-3); aspect-ratio:3/2; background:var(--bg-page-deep)">
 			<?php
 			if ( has_post_thumbnail() ) {
@@ -137,14 +137,17 @@ $row_cats = get_categories(
 
 <!-- ============ NEWSLETTER ============ -->
 <section style="width:100%; max-width:1200px; margin-inline:auto; padding-inline:24px; margin-top:96px">
-	<div style="position:relative; overflow:hidden; border-radius:var(--radius-2xl); background:var(--gradient-brand); box-shadow:var(--glow-brand); padding:64px 32px; text-align:center">
-		<span style="font-family:var(--font-display); font-weight:400; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.85)"><?php esc_html_e( 'Newsletter', 'now-blog' ); ?></span>
-		<h2 style="font-family:var(--font-display); font-weight:400; font-size:clamp(28px,3vw,40px); color:#fff; margin:8px 0 0; letter-spacing:-0.01em"><?php esc_html_e( 'Never miss a signal', 'now-blog' ); ?></h2>
-		<p style="color:rgba(255,255,255,0.86); max-width:460px; margin:12px auto 24px"><?php esc_html_e( 'New stories delivered to your inbox. No spam, unsubscribe anytime.', 'now-blog' ); ?></p>
-		<form class="now-newsletter" action="#" method="post" style="display:flex; gap:10px; max-width:460px; margin:0 auto">
-			<input type="email" name="email" placeholder="you@email.com" required style="flex:1; height:48px; padding:0 16px; border-radius:var(--radius-md); border:1px solid rgba(255,255,255,0.28); background:rgba(8,8,24,0.35); color:#fff; font-family:var(--font-body); font-size:15px; outline:none"/>
-			<button type="submit" class="now-cta-accent" style="display:inline-flex; align-items:center; justify-content:center; font-family:var(--font-body); font-weight:600; font-size:14px; height:48px; padding:0 20px; border-radius:var(--radius-md); background:var(--accent-400); color:#1a1204; box-shadow:var(--glow-accent); border:none; cursor:pointer"><?php esc_html_e( 'Subscribe', 'now-blog' ); ?></button>
-		</form>
+	<div style="position:relative; overflow:hidden; border-radius:var(--radius-2xl); background:var(--gradient-ocean); box-shadow:var(--elev-2); padding:56px 48px">
+		<div style="position:absolute; inset:0; background:radial-gradient(600px 300px at 85% 20%, rgba(255,172,52,0.16), transparent 60%); pointer-events:none"></div>
+		<div style="position:relative; max-width:640px; display:flex; flex-direction:column; gap:18px">
+			<span style="font-family:var(--font-display); font-weight:400; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.85)"><?php esc_html_e( 'Newsletter', 'now-blog' ); ?></span>
+			<h2 style="font-family:var(--font-display); font-weight:400; font-size:clamp(26px,3.6vw,38px); line-height:1.1; color:#fff; margin:0; letter-spacing:-0.01em"><?php esc_html_e( 'Never miss a signal', 'now-blog' ); ?></h2>
+			<p style="font-size:18px; line-height:1.6; color:rgba(255,255,255,0.82); margin:0"><?php esc_html_e( 'New stories delivered to your inbox. No spam, unsubscribe anytime.', 'now-blog' ); ?></p>
+			<form class="now-newsletter" action="#" method="post" style="display:flex; gap:12px; flex-wrap:wrap; max-width:520px; margin-top:8px">
+				<input type="email" name="email" placeholder="you@email.com" required style="flex:1; min-width:220px; height:52px; padding:0 16px; border-radius:var(--radius-md); border:1px solid rgba(255,255,255,0.28); background:rgba(8,8,24,0.35); color:#fff; font-family:var(--font-ui); font-size:15px; outline:none"/>
+				<button type="submit" class="now-cta-accent" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:var(--font-ui); font-weight:700; font-size:15px; line-height:1; letter-spacing:0.1px; height:52px; padding:0 24px; border-radius:var(--radius-cta); background:var(--accent-400); color:var(--neutral-950); box-shadow:var(--glow-accent); border:none; cursor:pointer"><?php esc_html_e( 'Subscribe', 'now-blog' ); ?> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+			</form>
+		</div>
 	</div>
 </section>
 

@@ -34,13 +34,43 @@ function now_menu_for_location( $location, $slug ) {
 }
 
 /**
+ * Icon for a category row in the mega-menu, keyed by slug/name keywords (the
+ * handoff assigns one feather icon per section). Unknown categories get a
+ * neutral folder. Returns a full inline <svg> string (trusted static markup).
+ */
+function now_category_icon( $label ) {
+	$key   = strtolower( remove_accents( (string) $label ) );
+	$icons = array(
+		'acquisition' => '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+		'compliance'  => '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+		'econom'      => '<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+		'insight'     => '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
+		'launch'      => '<line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>',
+		'market'      => '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+		'retention'   => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+		'crm'         => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+		'ai'          => '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+		'tech'        => '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+	);
+	$body  = '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>'; // folder default
+	foreach ( $icons as $needle => $svg ) {
+		if ( false !== strpos( $key, $needle ) ) {
+			$body = $svg;
+			break;
+		}
+	}
+	return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $body . '</svg>';
+}
+
+/**
  * Walker: header nav from a WP menu, matching the handoff markup — top-level
  * `.now-nav-link` anchors; an item with children becomes the `.now-nav-item`
- * hover dropdown (`.now-dropdown-grid` of name + blurb links).
+ * hover mega-menu (`.now-mega-grid` of icon-tile links: icon chip + name +
+ * blurb, per the NowBlog handoff header).
  */
 class Now_Walker_Nav extends Walker_Nav_Menu {
 	public function start_lvl( &$output, $depth = 0, $args = null ) {
-		$output .= '<div class="now-dropdown"><div class="now-dropdown-grid">';
+		$output .= '<div class="now-dropdown now-mega"><div class="now-mega-grid">';
 	}
 	public function end_lvl( &$output, $depth = 0, $args = null ) {
 		$output .= '</div></div>';
@@ -69,8 +99,10 @@ class Now_Walker_Nav extends Walker_Nav_Menu {
 		if ( '' === $blurb && 'category' === $item->object ) {
 			$blurb = trim( wp_strip_all_tags( (string) term_description( (int) $item->object_id ) ) );
 		}
-		$output .= '<a class="now-dropdown-link" href="' . esc_url( $url ) . '"' . $attrs . '><span class="now-dropdown-name">' . esc_html( $item->title ) . '</span>'
-			. ( $blurb ? '<span class="now-dropdown-blurb">' . esc_html( $blurb ) . '</span>' : '' ) . '</a>';
+		$output .= '<a class="now-mega-link" href="' . esc_url( $url ) . '"' . $attrs . '>'
+			. '<span class="now-mega-icon">' . now_category_icon( $item->title ) . '</span>'
+			. '<span class="now-mega-text"><span class="now-dropdown-name">' . esc_html( $item->title ) . '</span>'
+			. ( $blurb ? '<span class="now-dropdown-blurb">' . esc_html( $blurb ) . '</span>' : '' ) . '</span></a>';
 	}
 	public function end_el( &$output, $item, $depth = 0, $args = null ) {
 		if ( 0 === $depth && in_array( 'menu-item-has-children', (array) $item->classes, true ) ) {
@@ -152,12 +184,13 @@ function now_primary_nav_fallback() {
 			esc_attr( $cat_active ),
 			esc_html__( 'Categories', 'now-blog' )
 		);
-		echo '<div class="now-dropdown"><div class="now-dropdown-grid">';
+		echo '<div class="now-dropdown now-mega"><div class="now-mega-grid">';
 		foreach ( $cats as $c ) {
 			$blurb = trim( wp_strip_all_tags( $c->description ) );
 			printf(
-				'<a class="now-dropdown-link" href="%s"><span class="now-dropdown-name">%s</span>%s</a>',
+				'<a class="now-mega-link" href="%s"><span class="now-mega-icon">%s</span><span class="now-mega-text"><span class="now-dropdown-name">%s</span>%s</span></a>',
 				esc_url( get_category_link( $c ) ),
+				now_category_icon( $c->name ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG markup.
 				esc_html( $c->name ),
 				$blurb ? '<span class="now-dropdown-blurb">' . esc_html( $blurb ) . '</span>' : ''
 			);
