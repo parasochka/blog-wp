@@ -76,6 +76,13 @@ while ( have_posts() ) :
 			</div>
 
 			<aside class="now-sidebar" style="position:sticky; top:92px; display:flex; flex-direction:column; gap:16px">
+				<!-- On-this-page TOC: kept from the previous cut (the new screens simply omit it);
+				     surface/tokens follow the new DS. Hidden until now.js finds ≥2 h2s. -->
+				<div class="now-toc-card" style="background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:24px; box-shadow:var(--elev-1); display:none">
+					<p style="font-family:var(--font-display); font-weight:400; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin:0 0 16px"><?php esc_html_e( 'On this page', 'now-blog' ); ?></p>
+					<ul class="now-toc-list" style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px"></ul>
+				</div>
+
 				<div style="background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:24px; box-shadow:var(--elev-1)">
 					<p style="font-family:var(--font-display); font-weight:400; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin:0 0 16px"><?php esc_html_e( 'Share', 'now-blog' ); ?></p>
 					<div style="display:flex; flex-wrap:wrap; gap:8px">
