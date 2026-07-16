@@ -1,0 +1,168 @@
+/* NowPlix "NOW" — interaction & animation patterns for the layout / marketing
+   components. Class-based ONLY where inline styles can't reach: :hover states,
+   @keyframes, and JS-toggled scroll state. Every value references a DS token. */
+
+/* Glow card — dull hairline at rest; bright brand ring + inner glow + lift on
+   hover/selection (the signature "glass, not gray" treatment). */
+.now-glow{position:relative;transition:transform var(--dur-base) var(--ease-out),box-shadow var(--dur-slow) var(--ease-out)}
+.now-glow::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity var(--dur-base) ease;box-shadow:inset 0 0 0 1px var(--primary-500),inset 0 0 34px 0 rgba(81,73,230,0.18)}
+.now-glow:hover,.now-glow.is-hot{transform:translateY(-3px);box-shadow:var(--glow-brand)}
+.now-glow:hover::after,.now-glow.is-hot::after{opacity:1}
+
+/* Unified brand icon chip on feature/related cards. */
+.now-ichip{width:44px;height:44px;border-radius:var(--radius-md);background:color-mix(in srgb,var(--primary-500) 14%,var(--surface-panel));display:flex;align-items:center;justify-content:center;color:var(--primary-200);flex-shrink:0;transition:color var(--dur-base) ease,background var(--dur-base) ease}
+.now-glow:hover .now-ichip{color:#fff;background:color-mix(in srgb,var(--primary-500) 26%,var(--surface-panel))}
+
+/* Inline text link row with an arrow that nudges on hover. */
+.now-linkrow{display:inline-flex;align-items:center;gap:8px;color:var(--text-brand);font-family:var(--font-body);font-weight:600;font-size:14px;cursor:pointer;background:none;border:none;padding:0}
+.now-linkrow:hover{color:var(--primary-200)}
+.now-linkrow svg{transition:transform var(--dur-base) var(--ease-out)}
+.now-linkrow:hover svg{transform:translateX(3px)}
+
+/* Count-up stat — tabular numerals + brand underline that draws in on reveal. */
+.now-statv{font-family:var(--font-ui);font-weight:800;font-variant-numeric:tabular-nums;line-height:1;color:var(--text-primary)}
+.now-stat-underline{height:2px;width:40px;border-radius:2px;background:var(--gradient-brand);margin-top:12px;transform:scaleX(0);transform-origin:left;transition:transform 720ms var(--ease-out)}
+.now-stat.in .now-stat-underline{transform:scaleX(1)}
+
+/* Full-width auto-scrolling glass showcase (pauses on hover). */
+.now-marquee{width:100%;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.now-marquee-track{display:flex;gap:22px;width:max-content;animation:now-marquee 46s linear infinite}
+.now-marquee:hover .now-marquee-track{animation-play-state:paused}
+.now-marquee-item{flex:0 0 auto;width:340px;aspect-ratio:16/11;border-radius:var(--radius-xl);overflow:hidden;border:1px solid var(--border);background:var(--bg-page-deep);box-shadow:var(--elev-1)}
+.now-marquee-item img{width:100%;height:100%;object-fit:cover}
+@keyframes now-marquee{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 11px))}}
+
+/* Responsive stat grid. */
+.now-grid-4{display:grid;gap:20px}
+@media (max-width:1040px){.now-grid-4{grid-template-columns:repeat(2,1fr)!important}}
+@media (max-width:720px){.now-grid-4{grid-template-columns:1fr!important}}
+
+/* Scroll reveal (gated behind reduced-motion). */
+@media (prefers-reduced-motion:no-preference){.reveal{opacity:0;transform:translateY(18px);transition:opacity 640ms var(--ease-out),transform 640ms var(--ease-out)}.reveal.in{opacity:1;transform:none}}
+
+/* ===========================================================================
+   NowPlix "NOW" — patterns.css ADDITIONS (corporate-site sync)
+   ---------------------------------------------------------------------------
+   APPEND this block to components/patterns.css. It is purely additive: every
+   value references an EXISTING DS token (colors / motion / radius / elevation /
+   layout-width). No token file changes are required.
+
+   Already in patterns.css (do NOT duplicate): .now-glow, .now-ichip,
+   .now-linkrow, .now-statv/.now-stat-underline, .now-marquee, .now-grid-4,
+   .reveal. The two small extensions below only propagate their hover state
+   from an outer .now-tile wrapper.
+   =========================================================================== */
+
+/* --- Canvas: deep-field background with fixed brand halos ------------------
+   THE signature ambient glow. A full-viewport indigo field carrying four faint
+   radial brand halos, fixed behind everything so the whole page keeps ambient
+   brand light while scrolling — no dark, unlit stretches between blocks. Wrap
+   the page body in .now-canvas (or use the PageCanvas layout component). */
+.now-canvas{
+  background-color:var(--bg-page);
+  background-image:
+    radial-gradient(1200px 720px at 14% -6%, rgba(81,73,230,0.24), transparent 58%),
+    radial-gradient(1040px 640px at 90% 2%,  rgba(107,85,245,0.18), transparent 60%),
+    radial-gradient(900px 720px at 82% 48%,  rgba(107,85,245,0.10), transparent 62%),
+    radial-gradient(1000px 820px at 6% 92%,  rgba(81,73,230,0.12), transparent 60%);
+  background-attachment:fixed;
+  background-repeat:no-repeat;
+  min-height:100vh;
+}
+
+/* --- Tile: hover-lift wrapper + image zoom --------------------------------
+   Wrap any clickable card in .now-tile to lift it and zoom its .now-media
+   image on hover. Propagates hover to inner .now-glow / .now-mediacard /
+   .now-ichip so an entire card lights up as one target. */
+.now-tile{border-radius:var(--radius-xl);transition:transform var(--dur-base) var(--ease-out),box-shadow var(--dur-slow) var(--ease-out);cursor:pointer}
+.now-tile:hover{transform:translateY(var(--lift));box-shadow:var(--elev-2)}
+.now-media{overflow:hidden}
+.now-media img{transition:transform var(--dur-slow) var(--ease-out);width:100%;height:100%;object-fit:cover}
+.now-tile:hover .now-media img{transform:scale(var(--media-scale))}
+.now-tile:hover .now-media{box-shadow:var(--glow-brand)}
+/* Extensions to existing patterns: let the outer tile drive their hover. */
+.now-tile:hover .now-glow{transform:translateY(var(--lift));box-shadow:var(--glow-brand)}
+.now-tile:hover .now-glow::after{opacity:1}
+.now-tile:hover .now-ichip{color:#fff;background:color-mix(in srgb,var(--primary-500) 26%,var(--surface-panel))}
+
+/* --- Media card: full-bleed glass render behind legible text --------------
+   Boxed surface whose background is a 3D glass render at reduced opacity under
+   a bottom scrim; hover brightens the ring, blooms the brand halo and scales
+   the render ("select highlights the image"). Pair with a .now-tile wrapper. */
+.now-mediacard{position:relative;overflow:hidden;border-radius:var(--radius-xl);border:1px solid var(--border);background:var(--bg-page-deep);transition:transform var(--dur-base) var(--ease-out),box-shadow var(--dur-slow) var(--ease-out),border-color var(--dur-base) ease}
+.now-mediacard .now-mc-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.72;transition:transform var(--dur-slow) var(--ease-out),opacity var(--dur-base) ease}
+.now-mediacard .now-mc-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,24,0) 0%,rgba(8,8,24,.28) 46%,rgba(8,8,24,.86) 100%)}
+.now-mediacard .now-mc-body{position:relative;z-index:1}
+.now-tile:hover .now-mediacard,.now-mediacard.is-hot{border-color:var(--primary-500);box-shadow:var(--glow-brand)}
+.now-tile:hover .now-mediacard .now-mc-bg,.now-mediacard.is-hot .now-mc-bg{transform:scale(1.06);opacity:.95}
+
+/* --- Mega-menu icon chip (smaller sibling of .now-ichip) ------------------- */
+.now-mega-ico{flex:0 0 auto;width:34px;height:34px;border-radius:var(--radius-md);background:var(--surface-card);display:flex;align-items:center;justify-content:center;color:var(--primary-300)}
+
+/* --- Numbered step flow (distinct from the card grids) --------------------- */
+.now-steps{position:relative;display:grid;gap:20px}
+.now-step{position:relative;display:flex;flex-direction:column;gap:12px;padding:24px;border-radius:var(--radius-lg);background:var(--surface-card);box-shadow:var(--elev-1)}
+.now-step-num{font-family:var(--font-ui);font-weight:800;font-size:34px;line-height:1;background:var(--gradient-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.now-step-rule{height:2px;width:34px;border-radius:2px;background:var(--primary-500);opacity:.5}
+
+/* ===========================================================================
+   HEADER / MEGA-MENU — sticky glass masthead concept
+   =========================================================================== */
+.now-header{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg-page) 80%,transparent);backdrop-filter:saturate(150%) blur(14px);-webkit-backdrop-filter:saturate(150%) blur(14px);border-bottom:1px solid var(--border)}
+.now-navbar{display:flex;align-items:center;justify-content:space-between;gap:32px;height:var(--header-h)}
+.now-nav{display:flex;align-items:center;gap:4px}
+.now-navitem{position:relative}
+.now-navlink{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:var(--radius-md);background:none;border:none;cursor:pointer;font-family:var(--font-body);font-weight:600;font-size:14px;color:var(--text-secondary);white-space:nowrap;transition:color var(--dur-fast) ease,background var(--dur-fast) ease}
+.now-navlink:hover,.now-navitem:hover .now-navlink,.now-navlink.is-active{color:var(--text-primary)}
+.now-navlink svg{transition:transform var(--dur-base) var(--ease-out)}
+.now-navitem:hover .now-navlink svg{transform:rotate(180deg)}
+.now-mega{position:absolute;top:calc(100% + 10px);left:0;min-width:560px;background:var(--surface-panel);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--elev-3);padding:14px;z-index:200;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(6px);transition:opacity var(--dur-fast) ease,transform var(--dur-base) var(--ease-out)}
+.now-mega::before{content:"";position:absolute;top:-12px;left:0;right:0;height:12px}
+.now-navitem:hover .now-mega,.now-navitem:focus-within .now-mega{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+.now-mega-cols{display:flex;gap:10px}
+.now-mega-col{flex:1;min-width:0}
+.now-mega-col + .now-mega-col{border-left:1px solid var(--border);padding-left:10px}
+.now-mega-title{font-family:var(--font-display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:6px 12px 8px}
+.now-mega-link{display:flex;gap:12px;padding:10px 12px;border-radius:var(--radius-md);cursor:pointer;align-items:flex-start;text-align:left;background:none;border:none;width:100%}
+.now-mega-link:hover{background:color-mix(in srgb,var(--primary-500) 14%,transparent)}
+.now-mega-name{font-family:var(--font-display);font-weight:400;font-size:14px;color:var(--text-primary);display:flex;align-items:center;gap:8px}
+.now-mega-blurb{font-family:var(--font-body);font-size:12px;color:var(--text-muted);line-height:1.45;margin-top:2px}
+.now-burger{display:none;width:42px;height:42px;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-card);color:var(--text-secondary);cursor:pointer}
+.now-burger:hover{border-color:var(--primary-500);color:#fff}
+.now-mobile{display:none;border-top:1px solid var(--border);background:color-mix(in srgb,var(--bg-page) 94%,transparent);max-height:calc(100dvh - var(--header-h));overflow-y:auto}
+.now-mobile.open{display:block}
+.now-mobile-group{border-bottom:1px solid var(--border);padding:6px 0}
+.now-mobile-link{display:block;width:100%;text-align:left;background:none;border:none;padding:11px 4px;font-family:var(--font-body);font-weight:600;font-size:15px;color:var(--text-secondary);cursor:pointer}
+.now-mobile-link:hover{color:#fff}
+.now-mobile-sub{padding:6px 4px 10px;display:flex;flex-direction:column;gap:2px}
+.now-mobile-sub button{text-align:left;background:none;border:none;color:var(--text-muted);font-family:var(--font-body);font-size:14px;padding:6px 12px;cursor:pointer;border-radius:var(--radius-sm)}
+.now-mobile-sub button:hover{color:#fff;background:color-mix(in srgb,var(--primary-500) 12%,transparent)}
+@media (max-width:960px){.now-nav,.now-header-search{display:none!important}.now-burger{display:inline-flex}}
+
+/* ===========================================================================
+   LEAD HERO — abstract-dissolve schema
+   Centered copy over a horizontal glass render that bleeds behind the text and
+   dissolves into the canvas on every edge. Sized by @container so the same
+   schema drops onto Home / Casino / Sportsbook and reflows to its column.
+   =========================================================================== */
+.now-lead{position:relative;container-type:inline-size;overflow-x:clip;padding-top:92px;padding-bottom:40px}
+.now-lead-aura{position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:1180px;max-width:130%;height:720px;pointer-events:none;z-index:0;background:radial-gradient(560px 340px at 50% 0%,rgba(107,85,245,.30),transparent 70%);filter:blur(6px)}
+.now-lead-abstract{position:absolute;inset:0;pointer-events:none;z-index:0}
+.now-lead-abstract img{width:100%;height:100%;object-fit:cover;object-position:center 42%;opacity:.88}
+.now-lead-abstract::after{content:"";position:absolute;inset:0;background:radial-gradient(90% 66% at 50% 30%,color-mix(in srgb,var(--bg-page) 68%,transparent) 0%,transparent 62%),linear-gradient(180deg,color-mix(in srgb,var(--bg-page) 46%,transparent) 0%,transparent 34%,transparent 66%,var(--bg-page) 100%)}
+.now-lead-head{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;gap:22px;padding-bottom:220px}
+.now-lead-title{font-family:var(--font-display);font-weight:400;color:var(--text-primary);letter-spacing:-.02em;line-height:1.04;text-wrap:balance;margin:0;font-size:clamp(30px,4.7cqi,48px);max-width:min(94%,880px)}
+.now-lead-sub{font-family:var(--font-body);color:var(--text-secondary);line-height:1.55;text-wrap:pretty;font-size:clamp(15px,1.7cqi,20px);max-width:58ch}
+.now-lead-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.now-lead-trust{display:flex;align-items:stretch;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:22px}
+.now-lead-trust-item{display:flex;flex-direction:column;align-items:center;gap:5px;padding:16px 26px;min-width:132px;background:color-mix(in srgb,var(--surface-card) 55%,transparent);border:1px solid color-mix(in srgb,#fff 12%,transparent);border-radius:var(--radius-lg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.now-lead-trust-v{font-family:var(--font-ui);font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1;font-size:clamp(18px,2.3cqi,26px)}
+.now-lead-trust-l{font-family:var(--font-body);color:var(--text-secondary);font-size:12.5px}
+@container (max-width:900px){.now-lead{padding-top:64px}.now-lead-head{gap:18px;padding-bottom:150px}}
+@container (max-width:560px){.now-lead{padding-top:48px}.now-lead-head{gap:15px;padding-bottom:110px}.now-lead-title{font-size:clamp(26px,8cqi,40px);max-width:100%}.now-lead-sub{font-size:15px}.now-lead-ctas{width:100%;flex-direction:column}.now-lead-ctas>*{width:100%}.now-lead-trust{gap:10px}.now-lead-trust-item{padding:13px 16px;min-width:calc(50% - 5px);flex:1 1 calc(50% - 5px)}}
+
+
+/* --- Header layout helpers (self-contained; the site supplied these via site.css) --- */
+.now-wrap{width:100%;max-width:var(--content-max);margin-inline:auto;padding-inline:24px}
+.now-hide-md{display:contents}
+@media (max-width:960px){.now-hide-md{display:none!important}}

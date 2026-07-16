@@ -51,7 +51,7 @@ $now_topic_ids = array_unique( $now_topic_ids );
 		<span aria-hidden="true" style="position:relative; overflow:hidden; flex:0 0 auto; width:88px; height:88px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:30px; box-shadow:var(--elev-2); background:<?php echo esc_attr( $now_badge['grad'] ); ?>"><?php echo esc_html( $now_badge['mono'] ); echo now_author_avatar_img( $now_author, 88 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 		<div style="min-width:0">
 			<span style="font-family:var(--font-display); font-weight:400; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-brand)"><?php esc_html_e( 'Author', 'now-blog' ); ?></span>
-			<h1 style="font-family:var(--font-display); font-weight:400; font-size:clamp(34px,5vw,54px); letter-spacing:-0.02em; color:var(--text-primary); margin:10px 0 12px"><?php echo esc_html( $now_name ); ?></h1>
+			<h1 style="font-family:var(--font-display); font-weight:400; font-size:clamp(34px,5vw,48px); letter-spacing:-0.02em; color:var(--text-primary); margin:10px 0 12px"><?php echo esc_html( $now_name ); ?></h1>
 			<p style="color:var(--text-secondary); font-size:18px; line-height:1.6; max-width:640px; margin:0 0 16px"><?php echo esc_html( now_author_bio( $now_author ) ); ?></p>
 			<div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px; color:var(--text-muted); font-family:var(--font-body); font-size:13px">
 				<span><?php echo esc_html( sprintf( _n( '%d article', '%d articles', $now_count, 'now-blog' ), $now_count ) ); ?></span>

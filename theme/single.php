@@ -23,7 +23,7 @@ while ( have_posts() ) :
 		<?php if ( $cat ) : ?>
 			<a href="<?php echo esc_url( get_category_link( $cat ) ); ?>" style="font-family:var(--font-display); font-weight:400; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-brand)"><?php echo esc_html( $cat->name ); ?></a>
 		<?php endif; ?>
-		<h1 style="font-family:var(--font-display); font-weight:400; font-size:clamp(34px,5vw,60px); line-height:1.06; letter-spacing:-0.01em; color:var(--text-primary); max-width:20ch; margin:16px auto; text-wrap:balance"><?php the_title(); ?></h1>
+		<h1 style="font-family:var(--font-display); font-weight:400; font-size:clamp(34px,5vw,48px); line-height:1.06; letter-spacing:-0.01em; color:var(--text-primary); max-width:20ch; margin:16px auto; text-wrap:balance"><?php the_title(); ?></h1>
 		<?php $now_author_url = get_author_posts_url( (int) get_the_author_meta( 'ID' ) ); ?>
 		<div style="display:inline-flex; align-items:center; gap:12px">
 			<a href="<?php echo esc_url( $now_author_url ); ?>" rel="author" aria-hidden="true" tabindex="-1" style="position:relative; overflow:hidden; width:40px; height:40px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:15px; background:<?php echo esc_attr( $badge['grad'] ); ?>"><?php echo esc_html( $badge['mono'] ); echo now_author_avatar_img( (int) get_the_author_meta( 'ID' ), 40 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
@@ -76,6 +76,8 @@ while ( have_posts() ) :
 			</div>
 
 			<aside class="now-sidebar" style="position:sticky; top:92px; display:flex; flex-direction:column; gap:16px">
+				<!-- On-this-page TOC: kept from the previous cut (the new screens simply omit it);
+				     surface/tokens follow the new DS. Hidden until now.js finds ≥2 h2s. -->
 				<div class="now-toc-card" style="background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:24px; box-shadow:var(--elev-1); display:none">
 					<p style="font-family:var(--font-display); font-weight:400; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin:0 0 16px"><?php esc_html_e( 'On this page', 'now-blog' ); ?></p>
 					<ul class="now-toc-list" style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px"></ul>
@@ -99,7 +101,7 @@ while ( have_posts() ) :
 					$now_promo_url = now_mod( 'now_promo_url' );
 					$now_promo_rel = now_link_rel( $now_promo_url ); // empty for internal URLs → same tab, no rel
 					?>
-					<a href="<?php echo esc_url( $now_promo_url ); ?>"<?php echo $now_promo_rel ? ' target="_blank" rel="' . esc_attr( $now_promo_rel ) . '"' : ''; ?> class="now-cta-accent" style="display:inline-flex; align-items:center; justify-content:center; width:100%; box-sizing:border-box; font-family:var(--font-body); font-weight:600; font-size:14px; height:44px; padding:0 20px; border-radius:var(--radius-md); background:var(--accent-400); color:#1a1204; box-shadow:var(--glow-accent)"><?php echo esc_html( now_mod( 'now_promo_button' ) ); ?></a>
+					<a href="<?php echo esc_url( $now_promo_url ); ?>"<?php echo $now_promo_rel ? ' target="_blank" rel="' . esc_attr( $now_promo_rel ) . '"' : ''; ?> class="now-cta-accent" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; font-family:var(--font-ui); font-weight:700; font-size:14px; line-height:1; letter-spacing:0.1px; height:44px; padding:0 16px; border-radius:var(--radius-cta); background:var(--accent-400); color:var(--neutral-950); box-shadow:var(--glow-accent)"><?php echo esc_html( now_mod( 'now_promo_button' ) ); ?></a>
 				</div>
 			</aside>
 		</div>
@@ -127,7 +129,7 @@ while ( have_posts() ) :
 			<?php
 			while ( $related->have_posts() ) {
 				$related->the_post();
-				now_render_card( false );
+				now_render_card( true );
 			}
 			wp_reset_postdata();
 			?>

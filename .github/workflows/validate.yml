@@ -51,7 +51,7 @@ jobs:
       - name: Ensure the design-system tokens are present
         run: |
           DS="theme/_ds/now"
-          for f in "styles.css" "tokens/colors.css" "tokens/typography.css" "tokens/spacing.css" "tokens/radius.css" "tokens/elevation.css" "tokens/fonts.css"; do
+          for f in "styles.css" "tokens/colors.css" "tokens/typography.css" "tokens/spacing.css" "tokens/radius.css" "tokens/elevation.css" "tokens/fonts.css" "tokens/motion.css" "components/patterns.css"; do
             if [ ! -f "$DS/$f" ]; then
               echo "::error title=Missing design token::$DS/$f is required"
               exit 1

@@ -67,8 +67,8 @@
   --border-strong:  var(--neutral-600);
 
   --text-primary:   #FFFFFF;
-  --text-secondary: var(--neutral-200);   /* #D0D0E0 — one step lighter than the .fig source (#ABABC8): body copy sank into the dark bg on non-Retina/low-gamut panels */
-  --text-muted:     var(--neutral-400);   /* #8080A8 — one step lighter than the .fig source (#5A5A80), which was ~2.6:1 on --bg-page (fails WCAG); now ~4.6:1 */
+  --text-secondary: var(--neutral-200);   /* #D0D0E0 — raised one step for readability (~4.6:1) */
+  --text-muted:     var(--neutral-400);   /* #8080A8 — raised one step (old #5A5A80 failed WCAG on non-Retina) */
   --text-brand:     var(--secondary-400); /* #8A74FF link / highlight */
   --text-on-brand:  #FFFFFF;
 

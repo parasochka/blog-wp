@@ -29,7 +29,7 @@ if ( is_category() || is_tag() || is_tax() ) {
 
 <section style="width:100%; max-width:1200px; margin-inline:auto; padding:64px 24px 32px">
 	<span style="font-family:var(--font-display); font-weight:400; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-brand)"><?php echo esc_html( $now_eyebrow ); ?></span>
-	<h1 style="font-family:var(--font-display); font-weight:400; font-size:clamp(38px,5vw,60px); letter-spacing:-0.02em; color:var(--text-primary); margin:12px 0 8px"><?php echo esc_html( $now_title ); ?></h1>
+	<h1 style="font-family:var(--font-display); font-weight:400; font-size:clamp(38px,5vw,48px); letter-spacing:-0.02em; color:var(--text-primary); margin:12px 0 8px"><?php echo esc_html( $now_title ); ?></h1>
 	<?php if ( '' !== $now_blurb ) : ?>
 		<p style="color:var(--text-secondary); font-size:18px; max-width:560px; margin:0"><?php echo esc_html( $now_blurb ); ?></p>
 	<?php endif; ?>
