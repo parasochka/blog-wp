@@ -25,6 +25,10 @@ body {
 	background-repeat: no-repeat;
 }
 
+/* .now-band breaks out to 100vw inside canvas pages; the DS requires the main
+   scroll container to clip overflow-x so the breakout never adds a scrollbar. */
+main { overflow-x: clip; }
+
 img { max-width: 100%; height: auto; }
 a { color: var(--text-brand); text-decoration: none; }
 a:hover { color: var(--primary-200); }
