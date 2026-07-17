@@ -55,6 +55,8 @@ if ( $featured->have_posts() ) :
 						'alt'           => the_title_attribute( array( 'echo' => false ) ),
 						'fetchpriority' => 'high',
 						'loading'       => 'eager',
+						// Left column of the 1fr/1.3fr featured grid ≈ 480px.
+						'sizes'         => '(max-width: 767px) calc(100vw - 48px), 480px',
 					)
 				);
 			}

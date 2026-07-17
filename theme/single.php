@@ -40,7 +40,7 @@ while ( have_posts() ) :
 	<?php if ( has_post_thumbnail() ) : ?>
 	<div style="width:100%; max-width:1200px; margin-inline:auto; padding-inline:24px">
 		<div style="overflow:hidden; border-radius:var(--radius-xl); aspect-ratio:21/9; background:var(--bg-page-deep); box-shadow:var(--elev-3)">
-			<?php the_post_thumbnail( 'full', array( 'style' => 'width:100%; height:100%; object-fit:cover; display:block', 'alt' => the_title_attribute( array( 'echo' => false ) ), 'fetchpriority' => 'high', 'loading' => 'eager' ) ); ?>
+			<?php the_post_thumbnail( 'full', array( 'style' => 'width:100%; height:100%; object-fit:cover; display:block', 'alt' => the_title_attribute( array( 'echo' => false ) ), 'fetchpriority' => 'high', 'loading' => 'eager', 'sizes' => '(max-width: 1200px) calc(100vw - 48px), 1152px' ) ); ?>
 		</div>
 	</div>
 	<?php endif; ?>

@@ -29,6 +29,9 @@ $cat    = ! empty( $cats ) ? $cats[0] : null;
 				'large',
 				array(
 					'loading' => 'lazy',
+					// Cards render ≤ ~400px wide (rail columns / archive grid);
+					// without this the browser picks a much larger srcset entry.
+					'sizes'   => '(max-width: 767px) calc(100vw - 48px), 400px',
 					'style'   => 'width:100%; height:100%; object-fit:cover; display:block',
 					'alt'     => the_title_attribute( array( 'echo' => false ) ),
 				)
