@@ -166,3 +166,56 @@
 .now-wrap{width:100%;max-width:var(--content-max);margin-inline:auto;padding-inline:24px}
 .now-hide-md{display:contents}
 @media (max-width:960px){.now-hide-md{display:none!important}}
+
+/* ===========================================================================
+   NowPlix "NOW" — patterns.css ADDITIONS (corporate-site sync · package 2)
+   Purely additive; every value references an EXISTING DS token. Pairs with the
+   Band + LogoWall layout/marketing components.
+   =========================================================================== */
+
+/* --- Band: full-bleed deep "chapter" section -------------------------------
+   100vw breakout with a hairline top/bottom and two brand halos. The parent
+   scroll container must clip overflow-x (add `main{overflow-x:clip}` once). */
+.now-band{
+  position:relative; width:100vw; margin-left:calc(50% - 50vw);
+  padding:84px 0;
+  background:color-mix(in srgb, var(--bg-page-deep) 78%, transparent);
+  border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+}
+.now-band::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(820px 440px at 50% -8%,  rgba(81,73,230,0.24), transparent 62%),
+    radial-gradient(680px 460px at 88% 108%, rgba(107,85,245,0.16), transparent 60%);
+}
+.now-band > *{ position:relative; z-index:1; }
+/* Amber variant — reserved for the single highest-intent movement. */
+.now-band-amber::before{
+  background:
+    radial-gradient(760px 420px at 50% -8%,  rgba(255,172,52,0.10), transparent 60%),
+    radial-gradient(700px 460px at 50% 110%, rgba(81,73,230,0.16), transparent 62%);
+}
+
+/* --- LogoWall: third-party marks on dark tiles ----------------------------- */
+.now-logowall{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.now-logo{
+  height:92px; display:flex; align-items:center; justify-content:center;
+  border-radius:var(--radius-lg); border:1px solid var(--border);
+  background:color-mix(in srgb, var(--surface-card) 60%, transparent);
+  transition:border-color var(--dur-base) ease, box-shadow var(--dur-slow) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+.now-logo:hover{
+  border-color:var(--primary-500);
+  background:color-mix(in srgb, var(--primary-500) 8%, var(--surface-card));
+  transform:translateY(-2px); box-shadow:var(--glow-brand);
+}
+/* Monochrome-white by default; .is-color opts a solid-shape mark OUT of the
+   invert so it doesn't collapse to a blob. */
+.now-logo-img{ max-width:72%; max-height:40px; object-fit:contain; filter:brightness(0) invert(1); opacity:0.9; transition:opacity var(--dur-base) ease; }
+.now-logo-img.is-color{ filter:none; opacity:1; }
+.now-logo:hover .now-logo-img{ opacity:1; }
+/* Text fallback when there's no logo file. */
+.now-logo-name{ font-family:var(--font-display); font-weight:400; font-size:17px; letter-spacing:-0.01em; color:var(--neutral-300); white-space:nowrap; transition:color var(--dur-base) ease; }
+.now-logo:hover .now-logo-name{ color:#fff; }
+@media (max-width:860px){ .now-logowall{ grid-template-columns:repeat(3,1fr); } }
+@media (max-width:560px){ .now-logowall{ grid-template-columns:repeat(2,1fr); } .now-logo{ height:76px; } .now-logo-name{ font-size:15px; } }
