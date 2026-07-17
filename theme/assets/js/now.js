@@ -78,21 +78,36 @@
 			var card = document.querySelector('.now-toc-card');
 			if (card) { card.style.display = 'block'; }
 
+			// Geometry is cached and only re-read when layout can actually
+			// change (resize, full load, webfont swap) — reading offsetTop per
+			// scroll event forces a reflow on every frame.
+			var tops = [];
+			var proseBottom = 0;
+			var spyRaf = 0;
+			var measure = function () {
+				proseBottom = prose.offsetTop + prose.offsetHeight;
+				tops = headings.map(function (h) { return h.offsetTop; });
+			};
 			var spy = function () {
+				spyRaf = 0;
 				var pos = window.pageYOffset + 120;
 				// Past the end of the article (e.g. the TOC card sits below the
-				// prose on mobile): nothing is being read, so highlight nothing.
-				// offsetTop keeps this in the same coordinate space as the
-				// headings' offsetTop checks below.
-				var proseBottom = prose.offsetTop + prose.offsetHeight;
+				// prose on mobile): nothing is being read, highlight nothing.
 				var current = pos > proseBottom ? -1 : 0;
 				if (current === 0) {
-					headings.forEach(function (h, i) { if (h.offsetTop <= pos) { current = i; } });
+					tops.forEach(function (t, i) { if (t <= pos) { current = i; } });
 				}
 				links.forEach(function (a, i) { a.classList.toggle('now-active', i === current); });
 			};
-			window.addEventListener('scroll', spy, { passive: true });
-			spy();
+			var scheduleSpy = function () {
+				if (!spyRaf) { spyRaf = requestAnimationFrame(spy); }
+			};
+			var remeasure = function () { measure(); scheduleSpy(); };
+			window.addEventListener('scroll', scheduleSpy, { passive: true });
+			window.addEventListener('resize', remeasure);
+			window.addEventListener('load', remeasure);
+			if (document.fonts && document.fonts.ready) { document.fonts.ready.then(remeasure); }
+			remeasure();
 		}
 	}
 

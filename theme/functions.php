@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NOW_VERSION', '1.4.2' ); // bump on CSS/JS changes — busts the ?ver= asset cache.
+define( 'NOW_VERSION', '1.4.3' ); // bump on CSS/JS changes — busts the ?ver= asset cache.
 define( 'NOW_DS_DIR', '_ds/now' );
 
 require get_template_directory() . '/inc/setup.php';
